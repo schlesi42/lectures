@@ -1,0 +1,176 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{3}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+\aufgabetitel{$3$}{Mengen}\\
+Bestimmen Sie die folgenden Mengen:
+\begin{enumerate}[(i)]
+  \item $(\{1,2\}\times\{3,4\})\cup\{1,2,3\}$
+  \item $\{a,b\}\times\mathscr{P}(\{1,2\})$
+  \item $\mathscr{P}(\{1,2\})\cap\mathscr{P}(\{1\})$
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}[(i)]
+  \item $\{1,2,3,(1,3),(1,4),(2,3),(2,4)\}$
+  \item $\{(a,\emptyset),(b,\emptyset),(a,\{1\}),(b,\{1\}),(a,\{2\}),(b,\{2\}),(a,\{1,2\}),(b,\{1,2\})\}$
+  \item $\{\emptyset, \{1\}\}$
+  
+\end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$11$}{Aussagen "uber Mengen}\\
+Es sei $A=\{1,2\}$ und $B=\{1,2,3\}$. Welche der folgenden Beziehungen sind richtig?
+\begin{enumerate}[(i)]
+  \item $1\in A$
+  \item $\{1\}\subseteq A$
+  \item $1\in\mathscr{P}(A)$
+  \item $\{1\}\in\mathscr{P}(A)$
+  \item $\mathscr{P}(A)\subseteq\mathscr{P}(B)$
+  \item $A\in\mathscr{P}(B)$
+  \item $\emptyset\in\mathscr{P}(A)$
+  \item $\emptyset\subseteq\mathscr{P}(A)$
+  \item $\{\{1\},A\}\subseteq\mathscr{P}(A)$
+  \item $(1,2)\in\mathscr{P}(A\times B)$
+  \item $\{1,2\}\times\{1,2\}\in\mathscr{P}(A)\times\mathscr{P}(B)$
+\end{enumerate}
+
+\begin{loesung}
+  \begin{enumerate}[(i)]
+    \item wahr
+    \item wahr
+    \item falsch
+    \item wahr
+    \item wahr
+    \item wahr
+    \item wahr
+    \item wahr
+    \item wahr
+    \item wahr
+    \item falsch
+  \end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$4$}{Kartesische Produkte}\\
+Es sei $A=\{1,2\}$ und $B=\{2,3,4\}$.
+Bilden Sie die folgenden Mengen:
+\begin{enumerate}[(i)]
+  \item $A\times B$
+  \item $(A\times A)\cap (B\times B)$
+  \item $(A\times B)\backslash (B\times B)$
+  \item $A\times A\times A$
+\end{enumerate}
+
+\begin{loesung}
+  \begin{enumerate}[(i)]
+    \item $A\times B=\{(1,2),(1,3),(1,4),(2,2),(2,3),(2,4)\}$
+    \item $(A\times A)\cap (B\times B)=\{(1,1),(1,2),(2,1),(2,2)\}\cap\{(2,2),(2,3),(2,4),(3,2),(3,3),(3,4),(4,2),(4,3),(4,4)\}=\{(2,2)\}$
+    \item $(A\times B)\backslash (B\times B)=\{(1,2),(1,3),(1,4)\}$
+    \item $A\times A\times A=\{(1,1,1),(1,1,2),(1,2,1),(2,1,1),(1,2,2),(2,1,2),(2,2,1),(2,2,2)\}$
+  \end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$4$}{Potenzmengenbeweis}\\
+Zeigen Sie für beliebige Mengen $A,B$:
+
+  \[A\subseteq B\Leftrightarrow \mathscr{P}(A)\subseteq\mathscr{P}(B)\]
+
+
+\begin{loesung}
+  \glqq$\Rightarrow$\grqq:
+
+  Sei $M\in\mathscr{P}(A)$. Wir wollen zeigen, dass dann auch $M\in\mathscr{P}(B)$.
+  
+  Dann ist $M\subseteq A$. Da aber $A\subseteq B$ ist auch $M\subseteq B$ und damit $M\in\mathscr{P}(B)$.
+
+  \glqq$\Leftarrow$\grqq:
+
+  Sei $x\in A$. Wir wollen zeigen, dass dann $x\in B$. Es ist $\{x\}\subseteq A$, also $\{x\}\in\mathscr{P}(A)$.
+  
+  Wegen Voraussetzung ist aber $\mathscr{P}(A)\subseteq\mathscr{P}(B)$, also $\{x\}\in\mathscr{P}(B)$ und damit $x\in B$. 
+
+  \qed
+\end{loesung}
+\aufgabetitel{$4$}{Mengenbeweis}\\
+Zeigen Sie für beliebige Mengen $A,B$:
+\[A\cap (B\cup A)=A\]
+
+\begin{loesung}
+\glqq$\subseteq$\grqq:
+
+Sei $x\in A\cap(B\cup A)$. Dann ist $x\in A$ (und irgendwas anderem), also $A\cap(B\cup A)\subseteq A$.
+
+\glqq$\supseteq$\grqq:
+
+Sei $x\in A$. Dann ist $x\in A\vee (x\in A\wedge x\in B)$.
+
+$\Leftrightarrow (x\in A\vee x\in A)\wedge (x\in A\vee x\in B)$ (Distributivit"at)
+
+$\Leftrightarrow x\in A\wedge (x\in A\vee x\in B)$
+
+$\Leftrightarrow x\in A\cap(A\cup B)$
+
+\qed
+\end{loesung}
+\aufgabetitel{$4$}{Potenzmengenbeweis}\\
+Zeigen Sie für beliebige Mengen $A,B$:
+\[\mathscr{P}(A\cap B)=\mathscr{P}(A)\cap\mathscr{P}(B)\]
+
+\begin{loesung}
+Sei $M\in\mathscr{P}(A\cap B)$
+
+$\Leftrightarrow M\subseteq A\cap B$
+
+$\Leftrightarrow \forall x\in M:x\in A\cap B$
+
+$\Leftrightarrow \forall x\in M: x\in A\wedge x\in B$
+
+$\Leftrightarrow M\subseteq A\wedge M\subseteq B$
+
+$\Leftrightarrow M\in\mathscr{P}(A)\wedge M\in\mathscr{P}(B)$
+
+$\Leftrightarrow M\in\mathscr{P}(A)\cap\mathscr{P}(B)$
+
+\qed
+\end{loesung}
+
+\aufgabetitel{$2$}{Relationendarstellungen}\\
+Sei $R=\{(1,1),(2,2),(1,3),(2,3),(2,1),(3,1)\}$ eine Relation. Stellen Sie die Relation als Graph und Adjazenzmatrix dar.
+
+\aufgabetitel{$5$}{Relation}\\
+Diese Aufgabe ist etwas schwieriger.
+
+Wir definieren $a\equiv b\Leftrightarrow 3|(a-b)$ mit $a,b\in\mathbb{Z}$. Beschreiben Sie was die Relation ausdr"uckt.
+
+\begin{notes}
+Hinweis: Denken Sie an die Division mit Rest.
+\end{notes}
+
+\begin{loesung}
+ Zwei Zahlen sind in Relation, wenn sie den gleichen Rest bei der Division durch $3$ haben. 
+ 
+ Begr"undung:
+
+ Jede Zahl $a$ l"asst sich darstellen als $a=3\cdot \xi+\eta$ mit geeignetem $a,\xi,\eta$, wobei $\eta\in\{0,1,2\}$.
+ $\eta$ ist der Rest bei der Division von $a$ durch $3$. Hat man nun $b=3\cdot\kappa+\lambda$, dann ist 
+ $a-b=3\cdot\xi+\eta-3\cdot\kappa-\lambda=\eta-\lambda$ und es gilt $3|(a-b)\Leftrightarrow \eta-\lambda=0$, also wenn $a$ und $b$ denselben Rest bei der Division durch $3$ ergeben.
+\end{loesung}
+\end{document}

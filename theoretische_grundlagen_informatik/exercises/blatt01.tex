@@ -1,0 +1,61 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+\aufgabetitel{$7$}{Aussagen} \\
+Sind die folgenden Aussagen im mathematischen Sinne wahr oder
+falsch?
+
+\begin{enumerate}[(i)]
+  \item Eine un"uberdachte Stra\ss e ist genau dann nass, wenn es geregnet hat.
+  \item Wenn $n$ eine Primzahl ist, dann ist $n$ ungerade.
+  \item Wenn eine Wand gelb ist, dann ist sie gelb oder gr"un.
+  \item Wenn die Erde eine Scheibe ist, dann ist $1=1$.
+  \item Wenn $3=4$ ist, dann ist $10=20$.
+  \item Jede nat"urliche Zahl ist gr"o\ss er als $10$ oder kleiner als $100$.
+  \item Es ist $0=0$ oder $1=1$.
+\end{enumerate}
+
+
+\aufgabetitel{$5$}{Direkter Beweis} \\
+Zeigen Sie:
+
+Sei $n$ eine natürliche Zahl. Dann ist $n$ genau dann gerade, wenn es $n^2$ ist.
+
+\begin{notes}
+	\textit{Genau dann wenn} bezeichnet eine "Aquivalenz. Zum Beweis zeigen Sie beide Richtungen der Implikation (\glqq $\Rightarrow$\grqq und \glqq$\Leftarrow$\grqq).
+\end{notes}
+
+\aufgabetitel{$3$}{Quantoren} \\
+Wir hatten die Quantoren $\forall$ und $\exists$ eingef"uhrt. Mengen wurden noch nicht oder nur teilweise eingef"uhrt. 
+Wir holen das hier kurz nach.
+\begin{notes}
+	Eine Menge ist die Zusammenfassung von bestimmten unterschiedlichen Objekten (die Elemente der Menge) zu einem neuen Ganzen.
+	
+	Wir schreiben $x\in M$, falls das Objekt $x$ zur Menge $M$ geh"ort.
+	Wir schreiben $x\notin M$, falls das Objekt $x$ nicht zur Menge $M$ geh"ort. 
+\end{notes}
+Man kann demzufolge durch $\forall x\in M: A(x)$ bzw. $\exists x\in M: A(x)$ ausdr"ucken, dass eine Aussage $A(x)$ f"ur alle $x$ aus der Menge $M$ gelten soll bzw.
+das es ein $x$ aus $M$ geben soll, so dass $A(x)$ gilt.
+
+Definieren Sie einen neuen Ausdruck \[\exists !x\in M:A(x)\] daf"ur, dass \textit{genau ein} $x$ aus $M$ eine Aussage $A(x)$ erf"ullt!
+
+\end{document}

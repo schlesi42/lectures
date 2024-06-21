@@ -1,0 +1,122 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{4}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+\aufgabetitel{$8$}{Mengen}\\
+Es sei $A=\{1,2,3\}, B=\{1,b,c\}$. Bestimmen Sie:
+\begin{enumerate}[(i)]
+\item $A\cup B$
+\item $A\cap B$
+\item $A\backslash B$
+\item $A\times B$
+\item $(A\backslash B)\cup (B\backslash A)$
+\item $\mathscr{P}(A\backslash B)$
+\item $\mathscr{P}(\mathscr{P}(A\backslash B))$
+\item $\mathscr{P}(A\cap B\cup\{\emptyset\})$
+
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}[(i)]
+\item $A\cup B=\{1,2,3,b,c\}$
+\item $A\cap B=\{1\}$
+\item $A\backslash B=\{2,3\}$
+\item $A\times B=\{(1,1),(1,b),(1,c),(2,1),(2,b),(2,c),(3,1),(3,b),(3,c)\}$
+\item $(A\backslash B)\cup (B\backslash A)=\{2,3\}\cup\{b,c\}=\{2,3,b,c\}$
+\item $\mathscr{P}(A\backslash B)=\mathscr{P}(\{2,3\})=\{\emptyset,\{2\},\{3\},\{2,3\}\}$
+\item $\mathscr{P}(\mathscr{P}(A\backslash B))=\mathscr{P}(\{\emptyset,\{2\},\{3\},\{2,3\}\})\\
+=\{\emptyset,\{\emptyset\},\{\{2\}\},\{\{3\}\},\{\{2,3\}\},\{\emptyset,\{2\}\},\{\emptyset,\{3\}\},\{\emptyset,\{2,3\}\},\{\{2\},\{3\}\},\{\{2\},\{2,3\}\},\{\{3\},\{2,3\}\},\\
+\{\emptyset,\{2\},\{3\}\},\{\emptyset,\{3\},\{2,3\}\},\{\emptyset,\{2\},\{2,3\}\},\{\{2\},\{3\},\{2,3\}\},\{\emptyset,\{2\},\{3\},\{2,3\}\}\}$
+\item $\mathscr{P}(A\cap B\cup\{\emptyset\})=\mathscr{P}(\{1,\emptyset\})=\{\emptyset,\{1\},\{\emptyset\},\{1,\emptyset\}\}$
+
+\end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$11$}{Relationen}\\
+Es sei $R=\{(1,1),(2,2),(3,3),(4,4),(1,2),(3,2),(2,4)\}$ auf der Menge $M=\{1,2,3,4\}$.
+\begin{enumerate}[(i)]
+\item Stellen Sie die Relation als Adjazenzmatrix dar.
+\item Stellen Sie die Relation als Graph dar.
+\item Ist die Relation reflexiv, irreflexiv, symmetrisch, antisymmetrisch oder transitiv?
+\item Falls die Relation nicht transitiv ist, was m"usste man hinzuf"ugen, um sie mit m"oglichst wenigen zus"atzlichen Paaren / Pfeilen transitiv zu machen? Anders ausged"uckt - was ist die transitive H"ulle der Relation? (Allgemein ist die transitive H"ulle die kleinste $R$ enthaltende transitive Relation. \glqq Klein\grqq ist im Sinne der Inklusion (Teilmengenbeziehung) gemeint.)
+\item Man erh"alt die reflexiv-transitive H"ulle auch rechnerisch wenn man $R_{trans}=\bigcup_{n\in\mathbb{N}}R^n$ bildet mit $R^0=Id$, der Identit"at, die jedes Element von $M$ mit sich selbst in Relation setzt und $R^{n+1}=R^n\circ R$. Man berechnet also diese $R^n$ und jeder Schritt f"ugt der Vereinigung der bereits von $R^0$ bis $R^{n-1}$ berechneten Relationen ggf. weitere Paare / Pfeile hinzu bis die Vereinigung schlie\ss lich transitiv wird. In der Praxis, bei endlichen Mengen, h"ort man auf, weitere Relationen hinzuzuf"ugen sobald der Vorgang station"ar wird, also nichts mehr hinzugef"ugt wird. Berechnen Sie die reflexiv-transitive H"ulle von $R$ auf dem beschriebenen Weg.
+\item Ist $R_{trans}$ im vorliegenden Fall eine Ordnung?
+\item Stellen Sie das Hasse-Diagramm von $R_{trans}$ dar. 
+\end{enumerate}
+
+\begin{loesung}
+Die Matrix und den Graphen lass ich weg. Ist wirklich einfach.
+Die Relation ist reflexiv und antisymmetrisch.
+Um sie transitiv zu machen muss man die Paare $(1,4),(3,4)$ hinzuf"ugen.
+Es ist $R^0=\{(1,1),(2,2),(3,3),(4,4)\}$, $R^1=R=R^0\cup R^1$ ($R$ ist schon reflexiv). Und $R^2=\{(1,2),(2,4),(3,2),(3,4),(1,4)\}$ und damit $R^0\cup R^1\cup R^2=R\cup\{(1,4),(3,4)\}=R_{trans}$ (die anderen Paare waren schon in $R$ und bei $R^3$ wird nichts mehr hinzugef"ugt.)
+$R_{trans}$ ist eine Ordnung. Das Hasse-Diagramm lass ich weg. Im Diagramm ist unten die $1$ und die $3$, die eine Ebene weiter oben auf $2$ zeigen, die wiederum auf $4$ ganz oben zeigt.
+\end{loesung}
+
+\aufgabetitel{$5$}{Funktionen}\\
+Es sei $R=\{(1,2),(2,3),(3,1),(4,1)\}$ eine Relation auf $M=\{1,2,3,4,5\}$.
+\begin{enumerate}[(i)]
+    \item Ist $R$ eine Funktion?
+    \item Falls es keine Funktion ist, was k"onnte man tun, um das m"oglichst einfach zu beheben (Hinweis: Definitionsbereich einschr"anken)?
+    \item Ist $R$ injektiv? (Eine Funktion $f:M\to N$ ist injektiv, falls $\forall x,y\in M:f(y)=f(x)\Rightarrow x=y$).
+    \item Ist $R$ surjektiv? (Eine Funktion $f:M\to N$ ist surjektiv, falls $\forall y\in N\exists x\in M:y=f(x))$.
+    \item Was ist $R^{-1}(\{1\})$ (allgemein ist $f^{-1}(X)=\{x\in M:\exists y\in X:y=f(x)\}$)?
+\end{enumerate}
+
+\begin{loesung}
+$R$ ist fast eine Funktion. Jedem Element aus $M$ wird genau eines aus $M$ via $R$ zugeordnet. Es fehlt lediglich die $5$, die keinem Element zugeordnet wird. Wir verlangen aber, dass $\forall x\in M\exists y\in N:(x,y)\in R$.
+Wir k"onnen das beheben, indem wir $R$ auf $M'=M\backslash\{5\}$ einschr"anken. Wir erhalten also eine Funktion $R:M'\to M'$.
+Die Funktion ist nicht injektiv, weil sowohl $3$ als auch $4$ auf $1$ abgebildet werden. Sie ist auch nicht surjektiv, weil es kein Urbild f"ur $4$ gibt.
+Das Urbild von $\{1\}$, also $R^{-1}(\{1\})=\{3,4\}$.
+\end{loesung}
+
+\aufgabetitel{$3$}{Beweis der Ordnung}\\
+Beweisen Sie, dass die Teilmengenbeziehung auf einer Menge eine Ordnung ist. Etwas pr"aziser: Sei $R\subseteq \mathscr{P}(M)\times\mathscr{P}(M)$ die Relation auf einer Menge $M$ mit $(A,B)\in R\Leftrightarrow A\subseteq B$. Zeigen Sie, dass $R$ eine Ordnung ist.
+
+\begin{loesung}
+Reflexivit"at:\\
+Es ist $\forall A\subseteq M:A\subseteq A$, also ist $R$ reflexiv.\\
+Antisymmetrie:\\
+Falls $A\subseteq B$ und $B\subseteq A$, dann gilt nach Definition der Teilmenge $A=B$, also ist $R$ antisymmetrisch.\\
+Transitivit"at:\\
+Falls $A\subseteq B$ und $B\subseteq C$, dann folgt direkt nach Definition der Teilmenge auch $A\subseteq C$, also ist $R$ transitiv.\qed
+\end{loesung}
+
+\aufgabetitel{$3$}{Mengenbeweis}\\
+Zeigen Sie f"ur beliebige Mengen $A,B,C$, dass \[A\backslash(B\cup C)=(A\backslash B)\cap(A\backslash C)\]
+
+\begin{loesung}
+Sei $x\in A\backslash (B\cup C)$\\
+$\Leftrightarrow x\in A\wedge \neg (x\in B\cup C)$\\
+$\Leftrightarrow x\in A\wedge \neg x\in B \wedge \neg x\in C$ (Vereinigung und De Morgan)\\
+$\Leftrightarrow x\in A\wedge \neg x\in B\wedge x\in A\wedge \neg x\in C$ ($x\in A$ war schon Teil der Aussage; Konfunktion derselben Aussage "andert nichts an der Aussage)\\
+$\Leftrightarrow x\in (A\backslash B)\wedge x\in (A\backslash C)$\\
+$\Leftrightarrow x\in (A\backslash B)\cap (A\backslash C)$.\qed
+\end{loesung}
+
+\aufgabetitel{$2$}{Mengenaussage}\\
+Seien $A,B$ Mengen. "Uberlegen Sie, ob die folgende Aussage stimmt: 
+\[A\cap B=\emptyset\Rightarrow \neg (A\subseteq B)\]
+Falls sie stimmt, beweisen Sie sie. Falls nicht, geben Sie ein Gegenbeispiel an.
+
+\begin{loesung}
+Die Aussage stimmt nicht. Gegenbeispiel: $A=\emptyset$. Dann ist $A\cap B=\emptyset$, aber $A=\emptyset\subseteq B$.
+\end{loesung}
+\end{document}

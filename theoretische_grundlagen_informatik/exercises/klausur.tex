@@ -1,0 +1,98 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+
+\iforiginal{\input{include/kopf.tex}}
+\aufgabetitel{$4$}{Mengenoperationen}\\
+Gegeben seien die Mengen $A=\{1,2,3,4\}$ und $B=\{1,2,a,b\}$.
+\begin{enumerate}[(i)]
+    \item Bestimmen Sie $A\cap B$.
+    \item Bestimmen Sie $A\cup B$.
+    \item Bestimmen Sie $A\backslash B$.
+    \item Bestimmen Sie $\mathscr{P}(A\cap B)$
+    
+\end{enumerate}
+
+\aufgabetitel{$2$}{"Uberlegungen mit Mengen}\\
+Die beiden folgenden Aussagen gelten nicht allgemein f"ur alle Mengen $A,B,C$. Finden Sie Gegenbeispiele f"ur Mengen $A,B,C$ zu folgenden Aussagen:
+\begin{enumerate}[(i)]
+\item $A\cup B\subseteq A\cap B$
+\item $A\subseteq B\cup C\Rightarrow A\subseteq B\vee A\subseteq C$
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}
+\item $A=\emptyset, B=\{1\}$
+\item $A=\{1,2\},B=\{1\}, C=\{2\}$
+\end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$2$}{Mengenbeweis}\\
+Seien $M,N$ Mengen. Zeigen Sie, dass folgendes gilt:
+\[\mathscr{P}(M)\cup\mathscr{P}(N)\subseteq \mathscr{P}(M\cup N)\]
+
+
+\aufgabetitel{$14$}{Relationen}\\
+Gegeben seien die Relation $R\subseteq M\times M$ und $S\subseteq M\times M$ mit $M=\{1,2,3,4\}$, 
+
+$R=\{(1,1),(1,2),(1,4),(2,1),(2,3),(3,2),(4,3)\}$ und $S=\{(1,2),(2,2),(1,4)\}$.
+\begin{enumerate}[(i)]
+\item Stellen Sie $R$ und $S$ als Adjazenzmatrix und Graph dar.
+\item Sind $R$ oder $S$ Ordnungen? Begr"unden Sie Ihre Entscheidung.\\
+\textit{(Hinweis zur Erinnerung: Eine Ordnung ist eine Relation, die reflexiv, antisymmetrisch und transitiv ist. Sie muss nicht unbedingt total sein (Total w"urde bedeuten, dass jeweils zwei Elemente immer in Relation stehen - in der einen oder anderen Richtung, also $\forall x,y\in M:(x,y)\in M\vee (y.x)\in M$, was wir in der Vorlesung und auch hier nicht fordern.)).}
+\item Berechnen Sie $R\circ S$ und stellen Sie das Ergebnis als Adjazenzmatrix und Graph dar.\\
+\textit{(Hinweis zur Erinnerung: Es ist $R\circ S=\{(x,y)\in M\times M|\exists z\in M: (x,z)\in R\wedge (z,y)\in S\}$)}
+\item Wir bezeichnen im Folgenden $T=R\circ S$ ($T$ als Abk"urzung von $R\circ S$). Berechnen Sie $T\circ T$ und stellen Sie diese Relation als Adjazenzmatrix und Graph dar.
+\item Sei $Id=\{(1,1),(2,2),(3,3),(4,4)\}$ die Relation, die jedes Element von $M$ mit sich selbst in Beziehung setzt. Geben Sie die Adjazenzmatrix und den Graph der Relation $O=Id\cup T\cup T\circ T$ an.
+\item Begr"unden Sie, dass $O$ eine Ordnung ist.
+\item Stellen Sie $O$ als Hasse-Diagramm dar.
+
+\end{enumerate}
+
+\aufgabetitel{$5$}{Relationen und Eigenschaften}\\
+Entscheiden Sie f"ur jede Aussage, ob sie zutrifft, begr"unden Sie Ihre Entscheidung und geben Sie ggf. ein Beispiel an.
+
+Es gibt eine Relation $R\subseteq M\times M$ "uber einer Menge $M$, die 
+\begin{enumerate}[(i)]
+\item reflexiv und irreflexiv ist\\
+\textit{(Hinweis zur Erinnerung: $R$ ist reflexiv, wenn $\forall x\in M:(x,x)\in R$, irreflexiv, wenn $\forall x\in M:(x,x)\notin R$)}
+\item weder reflexiv noch irreflexiv ist
+\item symmetrisch und antisymmetrisch ist\\
+\textit{(Hinweis zur Erinnerung: $R$ ist symmetrisch, wenn $\forall x,y\in M:(x,y)\in R\Rightarrow (y,x)\in R$, \\antisymmetrisch, wenn $\forall x,y\in M:(x,y)\in R\wedge (y,x)\in R\Rightarrow x=y$)}
+\item antisymmetrisch und irreflexiv ist
+\item reflexiv, symmetrisch und transitiv ist\\
+\textit{(Hinweis zur Erinnerung: $R$ ist transitiv, wenn $\forall x,y,z\in M:(x,y)\in R\wedge (y,z)\in R\Rightarrow (x,z)\in R$)}
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}[(i)]
+\item geht nicht, weil sich die Bedingungen ausschlie"sen.
+\item $R=\{(1,1)\}$ auf $M=\{1,2\}$
+\item $R=\emptyset$
+\item $R=\emptyset$
+\item "Aquivalenzrelation
+\end{enumerate}
+\end{loesung}
+\aufgabetitel{$4$}{Beweis mit Relationen}\\
+Sei $R\subseteq M\times M$ auf einer Menge $M$. Zeigen Sie \[R\mbox{ transitiv }\Leftrightarrow R\circ R\subseteq R\]
+
+\aufgabetitel{$2$}{Funktionen}\\
+Geben Sie f"ur die folgenden Funktionen an, ob sie injektiv oder surjektiv sind und begr"unden Sie Ihre Entscheidung.\\
+\textit{(Hinweis zur Erinnerung:\\$f:M\to N$ ist injektiv, wenn $\forall x,y\in M:f(x)=f(y)\Rightarrow x=y$ und surjektiv, wenn $\forall y\in N\exists x\in M:y=f(x)$)}
+
+\begin{enumerate}[(i)]
+\item $f:\ZZ\to\NN, x\mapsto |x|$
+\item $f:\emptyset\to\{0\}$
+\end{enumerate}
+
+\end{document}

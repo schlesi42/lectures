@@ -1,0 +1,237 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{2}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+\aufgabetitel{$9$}{Mengen} \\
+Bestimmen Sie die folgenden Mengen:
+\begin{enumerate}[(i)]
+  \item $\{a,b,c\}\cup \{b,c,d\}$
+  \item $\{a,b,c\}\cap \{b,c,d\}$
+  \item $\{a,b,c\}\backslash \{b,c,d\}$
+  \item $\mathscr{P}(\{1,a\})$
+  \item $\mathscr{P}(\{1,\{1\}\})$
+  \item $\mathscr{P}(\{1,2,3\})\backslash\mathscr{P}(\{1,2\})$
+  \item $\bigcap_{i\in\{2,6\}}\{\frac{i}{2},i+1\}$ (Hinweis: $\bigcap_{i\in I}A_i=\{x|\forall i\in I:x\in A_i\}$ f"ur eine Indexmenge $I$)
+  \item $\bigcup_{n\in\mathbb{N}}\{n,n+1,2n\}$ (Hinweis: $\bigcup_{i\in I}A_i=\{x|\exists i\in I:x\in A_i\}$ f"ur eine Indexmenge $I$)
+  \item $\mathscr{P}(\mathscr{P}(\mathscr{P}(\emptyset)))$
+\end{enumerate}
+
+ \begin{loesung}
+\begin{enumerate}[(i)]
+\item $\{a,b,c\}\cup \{b,c,d\}=\{a,b,c,d\}$
+\item $\{a,b,c\}\cap \{b,c,d\}=\{b,c\}$
+\item $\{a,b,c\}\backslash \{b,c,d\}=\{a\}$
+\item $\mathscr{P}(\{1,a\})=\{\emptyset,\{1\},\{a\},\{1,a\}\}$
+\item $\mathscr{P}(\{1,\{1\}\})=\{\emptyset,\{1\},\{\{1\}\},\{1,\{1\}\}\}$
+\item $\mathscr{P}(\{1,2,3\})=\{\emptyset,\{1\},\{2\},\{3\},\{1,2\},\{1,3\},\{2,3\},\{1,2,3\}\}$, $\mathscr{P}(\{1,2\})=\{\emptyset,\{1\},\{2\},\{1,2\}\}$, also $\mathscr{P}(\{1,2,3\})\backslash\mathscr{P}(\{1.2\})=\{\{3\},\{1,3\},\{2,3\},\{1,2,3\}\}$
+\item $\bigcap_{i\in\{2,6\}}\{\frac{i}{2},i+1\}=\{\frac{2}{2},3\}\cap\{\frac{6}{2},7\}=\{3\}$
+\item $\bigcup_{n\in\mathbb{N}}\{n,n+1,2n\}=\mathbb{N}$
+\item $\mathscr{P}(\emptyset)=\{\emptyset\}$, $\mathscr{P}(\{\emptyset\})=\{\emptyset,\{\emptyset\}\}$, $\mathscr{P}(\{\emptyset,\{\emptyset\}\})=\{\emptyset,\{\emptyset\},\{\{\emptyset\}\}, \{\emptyset,\{\emptyset\}\}\}$
+\end{enumerate}
+ \end{loesung}
+% \aufgabetitel{$2$}{Mengenbeweis}\\
+% Seien $A,B,C$ Mengen. Beweisen Sie 
+% \[A\backslash(B\backslash C)=(A\backslash B)\cup (A\cap C)\]
+% \begin{loesung}
+% \textbf{Beweis:}\\
+% Sei $x\in A\backslash(B\backslash C)$
+
+% $\Leftrightarrow x\in A\wedge x\notin (B\backslash C)$
+
+% $\Leftrightarrow x\in A\wedge (x\notin B\vee x\in C)$ (In $B\backslash C$ sind die Elemente, die in $B$, aber nicht in $C$ sind. Ist nun $x\notin B\backslash C$, dann kann $x\notin B$ sein oder $x\in C$).
+
+% $\Leftrightarrow (x\in A\wedge x\notin B) \vee (x\in A\wedge x\in C)$ (Distributivit"atsgesetz)
+
+% $\Leftrightarrow x\in A\backslash B\vee x\in A\cap C$
+
+% $\Leftrightarrow x\in (A\backslash B)\cup (A\cap C)$
+% \qed
+
+% \end{loesung}
+
+
+\aufgabetitel{$4$}{Beweis}\\
+Seien $A$ und $B$ Mengen. Beweisen Sie:
+$A\subseteq B\Leftrightarrow A\cup B=B$
+
+\begin{loesung}
+\textbf{Beweis:}\\
+\glqq $\Rightarrow$\grqq :\\
+Gelte $A\subseteq B$. Wir zeigen $A\cup B=B$.
+
+Dazu zeigen wir erst $A\cup B\subseteq B$ und sp"ater $B\subseteq A\cup B$.
+
+\glqq $\subseteq$ \grqq:
+
+Sei $x\in A\cup B$
+
+$\Leftrightarrow x\in A\vee x\in B$
+
+$\Rightarrow x\in B$, weil $A\subseteq B (x\in A\Rightarrow x\in B$), was zu zeigen war.
+
+\glqq$\supseteq$\grqq:
+
+Nun zeigen wir noch $B\subseteq A\cup B$. 
+
+Sei dazu $x\in B$. Dann ist $x\in A\cup B$ (Vereinigung von $B$ mit irgendwas), was zu zeigen war.
+
+\glqq$\Leftarrow$\grqq:\\
+Gelte $A\cup B=B$. Wir zeigen $A\subseteq B$.
+
+Sei $x\in A$. Dann ist $x\in A\cup B$ (ich kann was Beliebiges dazu vereinigen). Wegen $A\cup B=B$ gilt insbesondere $A\cup B\subseteq B$, also $x\in A\cup B\Rightarrow x\in B$, was zu zeigen war.
+
+\qed
+
+\end{loesung}
+
+
+\aufgabetitel{$5$}{Beweis}\\
+Seien $A,B,C$ Mengen. Beweisen Sie \[(A\cap B)\cup C=A\cap (B\cup C)\Leftrightarrow C\subseteq A\]
+
+\begin{loesung}
+  \textbf{Beweis:}\\
+\glqq $\Rightarrow$\grqq: Gelte $(A\cap B)\cup C=A\cap(B\cup C)$. Wir zeigen $C\subseteq A$.
+
+Sei dazu $x\in C$. Dann ist $x\in (A\cap B)\cup C$ (Weil $x\in C$ kann ich was beliebiges dazu vereinigen) und nach Voraussetzung auch 
+$x\in A\cap (B\cup C)$. Damit insbesonder $x\in A$, was zu zeigen war.
+
+\glqq $\Leftarrow$\grqq:\\
+Gelte $C\subseteq A$. Wir zeigen $(A\cap B)\cup C=A\cap(B\cup C)$.
+
+Sei $x\in (A\cap B)\cup C$. Das ist "aquivalent zu $x\in (A\cap B)\vee x\in C$
+
+$\Leftrightarrow (x\in A\wedge x\in B)\vee x\in C$
+
+$\Leftrightarrow (x\in A\wedge x\in B)\vee (x\in A\wedge x\in C)$ (weil $C\subseteq A$ nach Voraussetzung ist $x\in C$ "aquivalent zu $x\in A\wedge x\in C$)
+
+$\Leftrightarrow x\in (A\cap B)\cup x\in (A\cap C)$
+
+$\leftrightarrow x\in A\cap(B\cup C)$ (Distributivgesetz), was zu zeigen war.
+
+\qed
+
+\end{loesung}
+
+\aufgabetitel{$4$}{Symmetrische Differenz}\\
+  Unter 
+  \[A\triangle B:=(A\backslash B)\cup (B\backslash A)\] versteht man die \textit{symmetrische Differenz} der Mengen $A$ und $B$.
+  \begin{enumerate}[(i)]
+    \item Machen Sie sich anhand eines Venn-Diagramms klar, was unter der symmetrischen Differenz anschaulich zu verstehen ist.
+    \item Beweisen Sie: $\forall A,B:A\triangle B=(A\cup B)\backslash(A\cap B)$.
+  \end{enumerate}
+
+\begin{loesung}
+Venn-Diagramm zeichne ich jetzt mal nicht. Bleibt als "Ubung.
+
+\textbf{Beweis:}\\
+Sei $x\in A\triangle B=(A\backslash B)\cup (B\backslash A)$
+
+$\Leftrightarrow (x\in A\wedge x\notin B)\vee (x\in B\wedge x\notin A)$
+
+$\Leftrightarrow (x\in A\vee x\in B)\wedge (x\in A\vee x\notin A)\wedge (x\notin B\vee x\in B)\wedge (x\notin B\vee x\notin A)$ (Distributivit"at)
+
+$\Leftrightarrow (x\in A\vee x\in B)\wedge (x\notin A\vee x\notin B)$ ($x\in A\vee x\notin A$ ist immer wahr, kann man also k"urzen)
+
+$\Leftrightarrow x\in (A\cup B)\wedge \neq (x\in A\wedge x\in B)$ (De Morgan)
+
+$\Leftrightarrow x\in(A\cup B)\backslash(A\cap B)$
+
+\qed
+\end{loesung}
+
+\aufgabetitel{$2$}{Beweisen oder Widerlegen} \\
+Beweisen oder widerlegen Sie:\\
+Aus $A_1\cap A_2\neq\emptyset, A_2\cap A_3\neq\emptyset$ und $A_1\cap A_3\neq\emptyset$ folgt $\bigcap_{i\in\{1.2.3\}}A_i\neq\emptyset$.
+
+\begin{loesung}
+  Sei $A_1=\{1,2\}, A_2=\{2,3\},A_3=\{1,3\}$. Dann ist $A_1\cap A_2\neq\emptyset, A_2\cap A_3\neq\emptyset$ und $A_1\cap A_2\neq \emptyset$. 
+  Aber $\bigcap_{i\in\{1,2,3\}}A_i=A_1\cap A_2\cap A_3=\emptyset$. 
+  
+  Die Behauptung ist also falsch.
+\end{loesung}
+
+\aufgabetitel{$5$}{Mengenbeweise} \\
+Beweisen Sie folgende Aussagen:
+\begin{enumerate}[(i)]
+  \item $A\subseteq B\cap C\Leftrightarrow A\subseteq B\wedge A\subseteq C$
+  \item $A\backslash(B\cup C)=(A\backslash B)\cap (A\backslash C)$
+  %\item $\bigcap_{n\in\mathbb{N}}\{m\in\mathbb{N}|m\geq n\}=\emptyset$
+  \item $(A\cup B)\times C=(A\times C)\cup (B\times C)$
+  \item $\left(\bigcup_{i\in I}D_i\right)\cap B=\bigcup_{i\in I}(D_i\cap B)$
+  \item $\bigcap_{\varepsilon\in\mathbb{R}\backslash\{0\}}\{x\in\mathbb{R}||x-\pi|\leq |\varepsilon|\}=\{\pi\}$
+\end{enumerate}
+
+\begin{loesung}
+  \textbf{Beweis (i):}
+  \glqq$\Rightarrow$\grqq:\\
+  Sei $A\subseteq B\cap C$. Wir zeigen $A\subseteq B\wedge A\subseteq C$.\\
+  Sei $x\in A$. Wir m"ussen zeigen, dass dann $x\in B$ und $x\in C$. Nach Voraussetzung ist $x\in B\cap C$, d.h. $x\in B\wedge x\in C$, was zu zeigen war. \\
+  \glqq$\Leftarrow$\grqq: analog
+  
+  \qed
+
+  \textbf{Beweis (ii):}\\
+  Sei $x\in A\backslash (B\cup C)$
+
+  $\Leftrightarrow x\in A\wedge x \notin (B\cup C)$
+  
+  $\Leftrightarrow x\in A\wedge x \notin B \wedge x\notin C$
+
+  $\Leftrightarrow x\in A\wedge x\notin B\wedge x\in A\wedge x\notin C$
+
+  $\Leftrightarrow x\in A\backslash B\wedge x\in A\backslash C$
+
+  $\Leftrightarrow x\in (A\backslash B)\cap (A\backslash C)$
+  
+  \qed
+
+  \textbf{Beweis (iii):}\\
+  Sei $x\in (A\cup B)\times C$
+
+  $\Leftrightarrow x\in A\times C\vee x\in B\times C$
+
+  $\Leftrightarrow x\in (A\times C)\cup (B\times C)$
+  
+  \qed
+
+  \textbf{Beweis (iv):}\\
+  Sei $x\in (\bigcup_{i\in I}D_i)\cap B$
+
+  $\Leftrightarrow x\in \{x|\exists i\in I:x\in D_i\}\cap B$
+
+  $\Leftrightarrow x\in (\bigcup_{i\in I}D_i\cap B)$
+  
+  \qed
+
+  \textbf{Beweis (v):}\\
+  \glqq $\subseteq$\grqq:\\
+  Annahme: $\exists x\in\bigcap_{\varepsilon\in\mathbb{R}\backslash\{0\}}\{x\in\mathbb{R}||x-\pi|\leq |\varepsilon|\}:x\neq\pi$
+
+  Wegen $x\neq\pi$ muss es ein $\varepsilon>0$ geben mit $|x-\pi|>\varepsilon$. Andererseits ist $x\in\bigcap_{\varepsilon>0}\{x\in\mathbb{R}||x-\pi|\leq \varepsilon\}=\{y|\forall\varepsilon>0:|y-\pi|\leq \varepsilon\}$, 
+  d.h. $\forall\varepsilon>0:|x-\pi|\leq\varepsilon$. Widerspruch! Also muss $x=\pi$ sein.
+
+  \glqq $\supseteq$\grqq:\\
+  Da $|\pi-\pi|=0\leq\varepsilon$ f"ur beliebige (also alle) $\varepsilon>0$ und $\pi\in\mathbb{R}$ folgt, dass $\pi\in\bigcap_{\varepsilon\in\mathbb{R}\backslash\{0\}}\{x\in\mathbb{R}||x-\pi|\leq |\varepsilon|\}$
+  
+  \qed
+\end{loesung}
+
+\end{document}

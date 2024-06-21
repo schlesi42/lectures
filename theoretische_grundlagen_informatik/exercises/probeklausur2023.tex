@@ -1,0 +1,64 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+
+\iforiginal{\input{include/kopf.tex}}
+\aufgabetitel{$5$}{Mengen und Funktionen}\\
+Gegeben seien die Mengen $A=\{1,2,3,4\}$, $B=\{2,4,6,8\}$ und $C=\{1,2\}$.
+\begin{enumerate}
+\item Geben Sie die Menge $A\cup B$ an
+\item Geben Sie die Menge $A\cap B$ an
+\item Geben Sie die Menge $A\setminus B$ an.
+\item Was ist $\mathscr{P}(C)$?
+\item Geben Sie eine bijektive Abbildung $f:A\to\mathscr{P}(C)$ an.
+
+\end{enumerate}
+
+\aufgabetitel{$10$}{Relationen}\\
+Gegeben seien die Relationen $R,S\subseteq\{1,2,3,4\}$ mit $R=\{(1,2),(3,1),(4,1)\}$ und $S=\{(1,2),(2,1),(1,3),(4,3)\}$.
+\begin{enumerate}[(i)]
+    \item Stellen Sie $R$ und $S$ als Graphen und Adjazenzmatrix dar.
+    \item Geben Sie die Relation $R\circ S$ an und stellen Sie sie auch als Graphen dar.
+    \item Geben Sie die Relation $S\circ R$ an und stellen Sie sie auch als Graphen dar.
+    \item Ist $R$ eine Äquivalenzrelation oder Ordnungsrelation? Begründen Sie Ihre Antwort.
+    \item Berechnen Sie die reflexiv-transitive Hülle von $R$.
+    \item Ist die reflexiv-transitive Hülle von $R$ eine Äquivalenzrelation oder Ordnungsrelation? Begründen Sie Ihre Antwort.
+
+\end{enumerate}
+
+\aufgabetitel{$5$}{"Aquivalenzrelation}\\
+Sei $x\sim y\Leftrightarrow x=y \vee x=-y$ eine Relation auf $\mathbb{Z}\times\mathbb{Z}$. 
+\begin{enumerate}[(i)]
+    \item Zeigen Sie, dass $\sim$ eine Äquivalenzrelation ist.
+    \item Bestimmen Sie die Quotientenmenge $\mathbb{Z}/\sim$.
+\end{enumerate}
+
+\aufgabetitel{$7$}{Ordnungen}\\
+Sei $\sim$ eine Relation auf $(\mathbb{N}\times\mathbb{N})\times(\mathbb{N}\times\mathbb{N})$. 
+%Wir definieren $((a,b),(c,d))\sim((e,f),(g,h))\Leftrightarrow a+b=c+d \wedge e+f=g+h$. Zeigen Sie, dass $\sim$ eine Äquivalenzrelation ist und bestimmen Sie die Quotientenmenge $(\mathbb{N}\times\mathbb{N})\times(\mathbb{N}\times\mathbb{N})/\sim$.
+Wir definieren $(a,b)\sim(c,d)\Leftrightarrow a\leq c \wedge b\leq d$. 
+\begin{enumerate}[(i)]
+\item Zeigen Sie, dass $\sim$ eine Ordnungsrelation ist.
+\item Zeichnen Sie das Hasse-Diagramm f"ur die Teilmenge $\{0,1,2\}\times\{0,1,2\}$.
+\item Was sind die gr"o"sten und kleinsten Elemente, maximalen und minimalen Elemente von $\{0,1,2\}\times\{0,1,2\}\backslash\{(2,2)\}$?
+\end{enumerate}
+
+\aufgabetitel{$6$}{Beweise}\\
+Zeigen Sie
+\begin{enumerate}[(i)]
+    \item $B\backslash (B\backslash A)=A\cap B$ f"ur Mengen $A,B$.
+    \item $f^{-1}(B_1\cap B_2)=f^{-1}(B_1)\cap f^{-1}(B_2)$ f"ur Abbildungen $f:A\to B$ und $B_1,B_2\subseteq B$. 
+    
+    (Hinweis: Es ist $f^{-1}(X)=\{a\in A\mid f(a)\in X\}$.)
+\end{enumerate}
+\end{document}
