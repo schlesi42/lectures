@@ -1,0 +1,118 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+
+\iforiginal{\input{include/kopf.tex}}
+\aufgabetitel{$6$}{Mengen und Funktionen}\\
+Gegeben seien die Mengen $A=\{1,2,3,\{4\}\}$, $B=\{2,4\}$ und $C=\{\emptyset,\{1\}\}$.
+\begin{enumerate}
+\item Geben Sie die Menge $A\cup B$ an
+\item Geben Sie die Menge $A\cap B$ an
+\item Geben Sie die Menge $A\setminus B$ an.
+\item Was ist $\mathscr{P}(C)$?
+\item Geben Sie eine bijektive Abbildung $f:A\to\mathscr{P}(C)$ an.
+
+\end{enumerate}
+
+\aufgabetitel{$12$}{Relationen}\\
+Gegeben seien die Relationen $R,S\subseteq\{1,2,3,4,5,6\}$ mit $R=\{(1,2),(2,3),(4,3),(5,4),(6,4)\}$\\und $S=\{(1,1),(1,2),(2,1)\}$.
+\begin{enumerate}[(i)]
+    \item Stellen Sie $R$ und $S$ als Graphen und Adjazenzmatrix dar.
+    \item Stellen Sie die Relation $R\circ S$ als Graphen dar.
+    \item Stellen Sie die Relation $S\circ R$ als Graphen dar.
+    \item $R$ ist nicht transitiv. Begründen Sie warum (Gegenbeispiel).
+    \item Ergänzen Sie den Graphen von $R$ zur reflexiv-transitiven Hülle $R_{trans}$ von $R$ (also nochmal neu zeichnen als reflexiv-transitive Hülle).
+    \item $R_{trans}$ ist eine Ordnungsrelation. Was sind die minimalen, maximalen, kleinsten, gr"o{\ss}ten Elemente (sofern existent) davon? Begründen Sie Ihre Antwort.
+
+\end{enumerate}
+
+
+\aufgabetitel{$6$}{"Aquivalenzrelationen und Partitionen}\\
+Sei $M=\{1,2,3,4,5\}$, $A=\{1,2,3\}$, also $A\subseteq M$ und die Partition $P$ auf $M$ mit $P=\{A, \{4\}, \{5\}\}$ gegeben.
+\begin{enumerate}[(i)]
+    \item Warum ist $P$ eine Partition auf $M$? 
+    \item Eine Partition induziert eine "Aquivalenzrelation. Definieren Sie die zu $P$ passend "Aquivalenzrelation.
+    \item Argumentieren Sie warum Ihre Relation eine "Aquivalenzrelation ist.
+    \item Geben Sie die "Aquivalenzklasse $[1]$ an.
+\end{enumerate}
+
+
+
+\aufgabetitel{$4$}{Indexmengen und Beweis}\\
+Es sei $A_i=\{n\in\mathbb{N}\mid n<i\}$.
+\begin{enumerate}[(i)]
+    \item Bestimmen Sie $A_4$.
+    \item Zeigen Sie, dass $\bigcap_{i\in\mathbb{N}}A_i=\emptyset$.
+\end{enumerate}
+
+\aufgabetitel{$5$}{Funktionen und Relationen}\\
+Sei $f:X\to Y$ eine Funktion und $\sim$ eine Relation "uber $X$ mit $x\sim y:\Leftrightarrow f(x)\leq f(y)$.
+\begin{enumerate}[(i)]
+    \item Stellen Sie die Funktion $f$ und die Relation $\sim$ f"ur $X=\{1,2,3,4,5\}$, $Y=\{1,2,3\}$, $1\mapsto 1, 2\mapsto 1, 3\mapsto 2, 4\mapsto 2, 5\mapsto 3$ dar.
+    \item Zeigen Sie: $\sim$ ist eine Ordnungsrelation genau dann, wenn $f$ injektiv ist.
+\end{enumerate}
+\hspace{5cm}
+\newpage
+\underline{\textbf{Formelsammlung}}\\
+Hier eine kleine Formelsammlung. Sie ist nicht vollständig, enthält aber alle wichtigen Statements / Definitionen, die man brauchen könnte.
+\begin{enumerate}
+\item Aussagen- und Pr"adikatenlogik
+\begin{enumerate}
+    \item Distributivgesetz: $A\wedge (B \vee C) \Leftrightarrow (A\wedge B) \vee (A\wedge C)$
+    \item Distributivgesetz: $A\vee (B \wedge C) \Leftrightarrow (A\vee B) \wedge (A\vee C)$
+    \item DeMorgan: $\neg(A\wedge B) \Leftrightarrow \neg A \vee \neg B$
+    \item DeMorgan: $\neg(A\vee B) \Leftrightarrow \neg A \wedge \neg B$
+    \item Idempotenz: $A\wedge A \Leftrightarrow A$
+    \item Idempotenz: $A\vee A \Leftrightarrow A$
+    \item $A\wedge \neg A \Leftrightarrow \bot$
+    \item $A\vee \neg A \Leftrightarrow \top$
+    \item $\neg\neg A \Leftrightarrow A$
+    \item $\neg\forall x\in M: A(x) \Leftrightarrow \exists x\in M: \neg A(x)$
+    \item $\neg\exists x\in M: A(x) \Leftrightarrow \forall x\in M: \neg A(x)$
+\end{enumerate}
+\item Mengen
+\begin{enumerate}
+    \item Teilmenge: $A\subseteq B \Leftrightarrow \forall x\in A: x\in B$
+    \item Potenzmenge: $\mathscr{P}(A) = \{B\mid B\subseteq A\}$
+    \item Vereinigung: $A\cup B = \{x\mid x\in A \vee x\in B\}$
+    \item Schnittmenge: $A\cap B = \{x\mid x\in A \wedge x\in B\}$
+    \item Differenzmenge: $A\setminus B = \{x\mid x\in A \wedge x\notin B\}$
+    \item Distributivgesetz: $A\cap (B \cup C) \Leftrightarrow (A\cap B) \cup (A\cap C)$
+    \item Distributivgesetz: $A\cup (B \cap C) \Leftrightarrow (A\cup B) \cap (A\cup C)$
+    \item DeMorgan: $A\setminus (B\cup C) \Leftrightarrow (A\setminus B) \cap (A\setminus C)$
+    \item DeMorgan: $A\setminus (B\cap C) \Leftrightarrow (A\setminus B) \cup (A\setminus C)$
+    \item Es ist $\bigcup_{i\in I}A_i = \{x\mid \exists i\in I: x\in A_i\}$. 
+    \item Es ist $\bigcap_{i\in I}A_i = \{x\mid\forall i\in I: x\in A_i\}$.
+\end{enumerate}
+\item Relationen
+\begin{enumerate}
+    \item F"ur Mengen $M,N$ ist $R\subseteq M\times N$ eine Relation von $M$ nach $N$.
+    \item $R\subseteq M\times M$ ist reflexiv, wenn $\forall x\in M: (x,x)\in R$.
+    \item $R\subseteq M\times M$ ist symmetrisch, wenn $\forall x,y\in M: (x,y)\in R \Rightarrow (y,x)\in R$.
+    \item $R\subseteq M\times M$ ist antisymmetrisch, wenn $\forall x,y\in M: (x,y)\in R \wedge (y,x)\in R \Rightarrow x=y$.
+    \item $R\subseteq M\times M$ ist transitiv, wenn $\forall x,y,z\in M: (x,y)\in R \wedge (y,z)\in R \Rightarrow (x,z)\in R$.
+    \item $R\subseteq M\times M$ ist eine "Aquivalenzrelation, wenn $R$ reflexiv, symmetrisch und transitiv ist.
+    \item $R\subseteq M\times M$ ist eine Ordnungsrelation, wenn $R$ reflexiv, antisymmetrisch und transitiv ist.
+    \item F"ur eine "Aquivalenzrelation $\sim$ auf $M$ ist $[x]=\{y\in M\mid x\sim y\}$ die "Aquivalenzklasse von $x$, $M/\sim = \{[x]\mid x\in M\}$ die Menge der "Aquivalenzklassen oder Quotientenmenge von $M$ modulo $\sim$. Die Menge der "Aquivalenzklassen ist eine Partition von $M$. Umgekehrt induziert jede Partition eine "Aquivalenzrelation.
+    \item F"ur eine Ordnungsrelation $\leq$ auf $M$ und $X\subseteq M$ ist $g$ ein kleinstes Element von $X$, wenn $\forall x\in X: g\leq x$, $g$ ein minimales Element von $X$, wenn $\forall g'\in X: g'\leq g\Rightarrow g=g'$, maximale und gr"o{\ss}te Elemente analog.
+\end{enumerate}
+\item Funktionen
+\begin{enumerate}
+    \item Eine Funktion $f:X\to Y$ ist eine Relation (also $f\subseteq X\times Y$), die jedem Element aus der Definitionsmenge $X$ genau ein Element aus der Zielmenge $Y$ zuordnet.
+    \item $f$ ist injektiv, wenn $\forall x_1,x_2\in X: f(x_1)=f(x_2) \Rightarrow x_1=x_2$.
+    \item $f$ ist surjektiv, wenn $\forall y\in Y: \exists x\in X: f(x)=y$.
+    \item $f$ ist bijektiv, wenn $f$ injektiv und surjektiv ist.
+    \item Die Umkehrfunktion $f^{-1}$ ist definiert $f^{-1}(Y)=\{x\in X\mid\exists y\in Y: y=f(x)\}$
+\end{enumerate}
+\end{enumerate}
+\end{document}

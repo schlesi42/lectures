@@ -1,0 +1,601 @@
+\documentclass{beamer}
+\usetheme{CambridgeUS}
+\usepackage{tikz}
+\usepackage[german]{babel}
+\usetikzlibrary{matrix,arrows,fit,positioning, mindmap, trees}
+
+\usepackage[latin1]{inputenc}
+\usefonttheme{professionalfonts}
+\usepackage{times}
+\usepackage{xmpmulti}
+\usepackage{animate}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{mathrsfs}
+
+%\usetheme{Boadilla}
+%\usecolortheme{crane}
+\title[Mathematik I]{Mathematik I: \\Theoretische Grundlagen der Informatik}
+
+
+\author{Prof.\ Dr.-Ing. Sebastian Schlesinger}
+%\institute{Berlin School of Economics and Law}
+\date{\today}
+\begin{document}
+ \begin{frame}
+\titlepage
+\end{frame}
+
+%\begin{frame}
+% \frametitle{Outline}
+% \tableofcontents
+% \end{frame}
+%\section{Notationen}
+%\subsection{Symmetric va. asymmetric ciphers}
+\section{Einf"uhrung}
+\begin{frame}{Warum Mathematik?}
+  \begin{itemize}
+    \item Mathematik ist die Sprache der Informatik
+    \item Informatik ist aus der Mathematik entstanden
+    \item Abstraktion ist eine Schl"usselkompetenz der Informatik
+    \item Grundlegende Datenstrukturen, Algorithmen und Konzepte sind mathematisch
+    \item Mathematik ist wie Programmiersprachen eindeutig und pr"azise
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Ziele}
+  \begin{itemize}
+    \item Einf"uhrung in die mathematische Denkweise
+    \item F"ahigkeit, mathematische Beweise zu verstehen und selbst zu f"uhren
+    \item Einf"uhrung in die Sprache der Mathematik: Aussagen- und Pr"adikatenlogik \pause
+    \item Grundlagen der diskreten Mathematik:
+    \begin{itemize}
+      \item Mengenlehre
+      \item Relationen
+      \item Funktionen
+      \item Verb"ande
+    \end{itemize}
+  \end{itemize}\pause
+  Out of scope: Theoretische Informatik (z.B. Berechenbarkeitstheorie, Komplexit"atstheorie)
+
+\end{frame}
+\begin{frame}{Agenda}
+  \tableofcontents
+  \end{frame}
+  
+\section{Aussagenlogik}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}
+\frametitle{Aussagen}
+
+Unter einer \textbf{Aussage} versteht man einen sprachlichen Ausdruck, dem man eindeutig einen der beiden Wahrheitswerte w (\glqq wahr\grqq) bzw. f (\glqq falsch\grqq) zuordnen kann. 
+
+Aussagen werden mit Gro\ss buchstaben bezeichnet, \[A:Beschreibung\]
+und k"onnen mit logischen Operationen verkn"upft werden. Grundlegende mathematische Aussagen, die nicht aus anderen Aussagen abgeleitet werden k"onnen, nennt man \textbf{Axiome}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Beispiele von Aussagen}
+  \begin{itemize}
+    \item Wahre Aussage A: Jede nat"urliche Zahl ist ein Produkt von Primzahlen.
+    \item Falsche Aussage B: Jede Primzahl ist ungerade
+    \item Unbewiesene Vermutung (wahr oder falsch, d.h. eine Aussage, bei der der Wahrheitswert noch nicht entschieden werden konnte) C: Es gibt unendlich viele Primzahlzwillinge.
+    \item Keine Aussage (Feststellung ohne Wahrheitswert) D: Freitag der dreizehnte ist ein Ungl"uckstag.
+  \end{itemize}
+      
+\end{frame}
+
+\begin{frame}
+  \frametitle{Logische Operationen}
+  Logische Aussagen k"onnen durch die in der folgenden Tabelle angegebenen Operationen verkn"upft werden.
+  
+  \begin{tabular}[h]{c|cc|c}
+   
+    Bezeichnung & Schreibweise & (Sprechweise) & wahr, gdw \\
+    \hline
+    Negation & $\neg A$ & (nicht A) & A falsch ist \\
+    Konjunktion & $A\wedge B$ & (A und B) & A und B wahr sind \\
+    Disjunktion & $A\vee B$ & (A oder B) & A oder B wahr ist \\
+    Implikation & $A\Rightarrow B$ & (wenn A dann B) & A falsch oder B wahr \\
+    "Aquivalenz & $A\Leftrightarrow B$ & (A "aquivalent B) & A und B "aquivalent 
+
+
+    \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bindungsst"arke}
+  Um in logischen Ausdr"ucken Klammern zu sparen, wird festgelegt, dass $\neg$ st"arker bindet als $\wedge$ sowie $\vee$ und diese wiederum st"arker als $\Rightarrow, \Leftrightarrow$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wahrheitstabelle}
+  In der folgenden Tabelle sind die Wahrheitswerte der vorgestellten Verkn"upfungen angegeben. Dabei steht w f"ur wahr und f f"ur falsch.
+  \begin{tabular}[h]{c|c|c|c|c|c|c}
+   
+    $A$ & $B$ & $\neg A$ & $A\wedge B$ & $A\vee B$ & $A\Rightarrow B$ & $A\Leftrightarrow B$ \\
+    \hline
+    w & w & f & w & w & w & w \\
+    w & f & f & f & w & f & f \\
+    f & w & w & f & w & w & f \\
+    f & f & w & f & f & w & w
+    
+  \end{tabular}
+  
+  \vspace{5mm}
+  \textbf{Hinweis:} Statt $w$ f"ur \textit{wahr} und $f$ f"ur \textit{falsch} werden auch die Symbole $\top$ und $\bot$ verwendet.
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gesetze f"ur logische Operationen}
+  F"ur logische Operationen gelten die folgenden Identit"aten. 
+  \begin{itemize}
+    \item Assoziativgesetze: \[(A\wedge B)\wedge C = A\wedge(B\wedge C)\] \[(A\vee B)\vee C = A\vee(B\vee C)\]
+    \item Kommutativgesetze: \[A\wedge B = B\wedge A\]\[A\vee B = B\vee A\]
+    \item Distributivgesetze: \[A \wedge (B\vee C) = (A\wedge B)\vee (A\wedge C)\] \[A\vee (B\wedge C) = (A\vee B)\wedge (A\vee C)\]
+  \end{itemize}
+   
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Gesetze f"ur logische Operationen}
+  F"ur logische Operationen gelten die folgenden Identit"aten. 
+  \begin{itemize}
+    \item De Morgansche Regeln: \[\neg(A\wedge B) = (\neg A)\vee(\neg B)\]\[\neg(A\vee B) = (\neg A)\wedge(\neg B)\]
+    \item Idempotenz: \[\neg(\neg A) = A\]\[A\vee A = A\]\[A\wedge A = A\]
+    \item K"urzungsregeln: \[A\vee\bot=A\]\[A\wedge\top=A\]
+  \end{itemize}
+   
+\end{frame}
+
+\section{Pr"adikatenlogik}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}{Quantoren}
+  Wir f"uhren nun Quantoren ein. Neben den atomaren Aussagen der Aussagenlogik m"ochte man in der Lage sein, Aussagen zu formulieren, die praktisch von Parametern abh"angen.
+  \begin{definition}[Quantoren]
+    Wir definieren folgende Notation:
+    \begin{itemize}
+      \item Mit $\forall x:A(x)$ definieren wir, dass eine Aussage $A$, die eine Variable $x$ beinhaltet, f"ur alle Werte von $x$ gelten soll ("ublicherweise wird dann auch eine Grundmenge, aus denen die $x$ stammen sollen, angegeben).
+      \item Mit $\exists x:A(x)$ dr"ucken wir aus, dass es ein $x$ geben soll, so dass $A(x)$ gilt.
+    \end{itemize}
+  \end{definition}
+
+  Die Aussagen $A(x)$ k"onnen komplexe Aussagen mit Verkn"upfungen sein und es lassen sich auch Quantoren kombinieren und man k"urzt oft ab.
+\end{frame}
+
+\begin{frame}{Beweismethoden}
+  Wie f"uhrt man nun einen Beweis? Es gibt verschiedene Beweismethoden. Die wichtigsten sind:
+  \begin{itemize}
+    \item Direkter Beweis: Man beweist direkt $A\Rightarrow B$, also dass $B$ aus der Annahme von $A$ folgt.
+    \item Man verwendet die Umkehrung von $A\Rightarrow B$, also $\neg B\Rightarrow\neg A$
+    \item Indirekter Beweis: Man nimmt an, $A$ gelte und folgert dann $B$, was aber im Widerspruch zu $A$ ist. Praktisch folgert man also $A\wedge\neq A$, was falsch sein muss. Also muss die Annahme falsch gewesen sein und da sie das Gegenteil von dem ist was man beweisen m"ochte, ist der Beweis komplett.
+  \end{itemize}
+  
+\end{frame}
+\section{Diskrete Mathematik}
+\subsection{Mengenlehre}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}
+  \frametitle{Mengendefinition}
+  \begin{definition}[Naive Mengendefinition]
+    Eine Menge ist die Zusammenfassung von bestimmten unterschiedlichen
+    Objekten (die Elemente der Menge) zu einem neuen Ganzen.
+    Wir schreiben $x\in M$, falls das Objekt $x$ zur Menge $M$ geh"ort.
+    Wir schreiben $x\notin M$, falls das Objekt $x$ nicht zur Menge $M$ geh"ort.
+    Falls $x\in M$ und $y\in M$ gilt, schreiben wir auch $x, y \in M$.
+    Eine Menge, welche nur aus endlich vielen Objekten besteht (eine endliche
+    Menge), kann durch explizite Auflistung dieser Elemente spezifiziert
+    werden.
+  \end{definition}
+    Beispiel: $M=\{2,3,5,7\}$.
+
+    Hierbei spielt die Reihenfolge der Auflistung keine Rolle:
+    \[\{2,3,5,7\}=\{7,5,3,2\}\]
+    Auch Mehrfachauflistungen spielen keine Rolle:
+    \[\{2,3,5,7\}=\{2,2,2,3,3,5,7\}\]
+  \end{frame}
+
+\begin{frame}{Mengennotation}
+Mengen k"onnen definiert werden durch
+\begin{itemize}
+  \item Aufz"ahlung der Elemente
+  \item Formulierung von Bedingungen in der Form $M:=\{x|p(x)\}$, wobei $p$ ein \textit{Pr"adikat}, also eine Aussage ist, die $x$ enth"alt, so dass man jeweils bei Einsetzen von $x$ entscheiden kann, ob sie wahr (und damit das Element zur Menge geh"ort) oder falsch ist (und damit das Element $x$ nicht zu $M$ geh"ort).
+\end{itemize}
+  Wir schreiben zur Abk"urzung auch $M:=\{x\in N|p(x)\}$ statt $M:=\{x|x\in N\wedge p(x)\}$.
+\end{frame}
+\begin{frame}
+  \frametitle{Besondere Mengen}
+  Eine besonders wichtige Menge ist die leere Menge $\emptyset = \{\}$, die keinerlei
+Elemente enth"alt.
+
+In der Mathematik hat man es h"aufig auch mit unendlichen Mengen zu
+tun (Mengen, die aus unendlich vielen Objekten bestehen).
+Solche Mengen k"onnen durch Angabe einer Eigenschaft, welche die
+Elemente der Menge auszeichnet, spezifiziert werden.
+
+Beispiele:
+\begin{itemize}
+  \item $\mathbb{N}=\{0,1,2,3,\dots\}$
+  \item $\mathbb{Z}=\{\dots,-2,-1,0,1,2,\dots\}$
+  \item $\mathbb{Q}=\{\frac{p}{q}|p,q\in\mathbb{Z}, q\neq 0\}$
+  
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Warum naive Mengenlehre?}
+  Die \glqq Definition\grqq der Menge ist anf"allig f"ur Widerspr"uche, z.B. die \textbf{Russelsche Antinomie}:
+
+  Man bilde die Menge aller Mengen, die sich nicht selbst als Element enthalten, in Formeln:
+  \[M:=\{N|N\notin N\}\]
+  Frage: Gilt $M\in M$? Das f"uhrt auf einen Widerspruch.
+  
+  Daher hat man die Mengenlehre mit dem \textbf{Zermelo-Fraenkelschen Axiomensystem} auf ein solides Fundament gehoben. Mehr dazu im optionalen Inhalt (ist zu kompliziert f"ur eine erste Einf"uhrung).
+\end{frame}
+
+\begin{frame}{Teilmengen}
+  \begin{definition}[Teilmenge]
+    Seien $A$ und $B$ Mengen. $A\subseteq B$ bedeutet $A$ ist \textit{Teilmenge} von $B$, genau dann, wenn 
+    \[\forall x:x\in A\Rightarrow x\in B\] oder "aquivalent dazu \[\forall x\in A:x\in B\]
+  \end{definition}
+  
+  \begin{lemma}[Gleichheit von Mengen]
+    Seien $A$ und $B$ Mengen. Es ist $A=B$ genau dann, wenn $\forall x:x\in A\Leftrightarrow x\in B$, was wiederum "aquivalent ist zu
+    \[A\subseteq B\wedge B\subseteq A\]  
+  \end{lemma}
+  Um also die Gleichheit von zwei Mengen zu zeigen beweist man "ublicherweise erst $A\subseteq B$ und dann $B\subseteq A$.
+\end{frame}
+
+\begin{frame}{Mengenoperationen}
+  \begin{definition}[Mengenoperationen]
+    Seien $A$ und $B$ Mengen. Wir definieren:
+    \begin{itemize}
+      \item $A\cap B:=\{x|x\in A\wedge x\in B\}$, den \textit{Schnitt} von $A$ und $B$
+      \item $A\cup B:=\{x|x\in A\vee x\in B\}$, die \textit{Vereinigung} von $A$ und $B$
+      \item $A\backslash B:=\{x\in A|x\notin B\}$, die \textit{Differenz} von $A$ und $B$
+    \end{itemize}
+  \end{definition}
+\end{frame}
+
+\begin{frame}{Venn-Diagramme}
+  Die Operationen lassen sich in \textbf{Venn-Diagrammen} visualisieren.
+  \begin{tikzpicture}
+ 
+    % Set A
+    \node [draw,
+        circle,
+        minimum size =3cm,
+        label={135:$A$}] (A) at (0,0){};
+     
+    % Set B
+    \node [draw,
+        circle,
+        minimum size =3cm,
+        label={45:$B$}] (B) at (1.8,0){};
+     
+    % Set intersection label
+    \node at (0.9,0) {$A\cap B$};
+     
+    \end{tikzpicture}
+    \begin{tikzpicture}
+ 
+      % Set A
+      \node [circle,
+          fill=orange,
+          minimum size =3cm,
+          label={135:$A$}] (A) at (0,0){};
+       
+      % Set B
+      \node [circle,
+          fill=orange,
+          minimum size =3cm,
+          label={45:$B$}] (B) at (1.8,0){};
+       
+      % Circles outline
+      \draw[white,thick] (0,0) circle(1.5cm);
+      \draw[white,thick] (1.8,0) circle(1.5cm);
+       
+      % Union text label
+      \node[orange!90!black] at (0.9,1.8) {$A\cup B$};
+       
+      \end{tikzpicture}
+    
+      \begin{tikzpicture}[thick,
+        set/.style = { circle, minimum size = 3cm}]
+     
+    % Set A
+    \node[set,fill=orange,label={135:$A$}] (A) at (0,0) {};
+     
+    % Set B
+    \node[set,fill=white,label={45:$B$}] (B) at (0:2) {};
+     
+    % Circles outline
+    \draw (0,0) circle(1.5cm);
+    \draw (2,0) circle(1.5cm);
+     
+    % Difference text label
+    \node[left,white] at (A.center){$A-B$};
+     
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Weitere Mengen und Eigenschaften}
+  \begin{definition}[Potenzmenge]
+    Mit \[\mathscr{P}(A):=2^A:=\{B|B\subseteq A\}\] bezeichnen wir die \textbf{Potenzmenge}, die Menge aller Teilmengen von $A$.
+
+  \end{definition}
+  \begin{definition}[Disjunktheit]
+    Zwei Mengen $A$ und $B$ sind \textit{disjunkt}, falls $A\cap B=\emptyset$ gilt.
+  \end{definition}
+\end{frame}
+
+\begin{frame}{Beispiele f"ur Mengenaussagen}
+Es gilt:
+\begin{itemize}
+  \item $\forall A:\emptyset\subseteq A$
+  \item $\forall A:A\subseteq A$
+  \item $\mathbb{N}\subseteq\mathbb{Z}\subseteq\mathbb{Q}\subseteq\mathbb{R}$
+  \item $\{1,2,3\}\cap\{4,5,6\}=\emptyset$
+  \item $\mathscr{P}(\{1,2\})=\{\emptyset,\{1\},\{2\},\{1.2\}\}$
+  \item $\mathscr{P}(\emptyset)=\{\emptyset\}$
+  \item $\forall A: A\cap\emptyset=\emptyset$
+  \item $\forall A:A\cup\emptyset=A$
+  \item $\forall A,B,C: A\cap(B\cup C)=(A\cap B)\cup (B\cap C)$
+  \item $\forall A,B,C: A\cup (B\cap C)=(A\cup B)\cap (A\cup C)$
+  \item $\forall A,B,C: A\backslash(B\cup C)=(A\backslash B)\cap (A\backslash C)$
+  \item $\forall A,B,C: A\backslash(B\cap C)=(A\backslash B)\cap (A\backslash C)$
+\end{itemize}
+
+\end{frame}
+\subsection{Relationen}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}{Kartesisches Produkt}
+  Zun"achst f"uhren wir Paare ein. Diese werden, im Gegensatz zu Mengen mit runden Klammern notiert, z.B.
+  $(1,2)$ das Paar, dessen erste Komponente die Zahl $1$ und zweite Komponente $2$ ist. Hier kommt es auf die Reihenfolge an, z.B. $(1,2)\neq(2,1)$, aber $\{1,2\}=\{2,1\}$, weil 
+  es bei Mengen nur auf die Elemente, nicht auf deren Reihenfolge ankommt.
+  
+  Es gilt insbesondere \[(a,b)=(c,d)\Leftrightarrow a=c\wedge b=d\]
+  \begin{definition}[Kartesisches Produkt]
+    Seien $M,N$ Mengen. Dann ist \[M\times N:=\{(x,y)|x\in M,y|in N\}\] das \textbf{kartesische Produkt} von $M$ und $N$.
+  \end{definition}
+  
+\end{frame}
+
+\begin{frame}{Relationen}
+ Relationen sind intuitiv Strukturen, um Beziehungen zwischen Objekten auszudr"ucken.
+ \begin{definition}[Relationen]
+  Seien $M$ und $N$ Mengen. Eine Teilmenge $R$ des kartesischen Produktes $M\times N$, also 
+  \[R\subseteq M\times N\] nennen wir \textbf{Relation} von $M$ auf $N$.
+ \end{definition}
+\end{frame}
+
+\begin{frame}{Beispiele von Relationen}  
+Ist $M$ die Menge der Menschen, dann ist $R\subseteq M\times M$ die Eltern-Kind-Beziehung ein Beispiel f"ur eine Relation.
+Also $(x,y)\in R\Leftrightarrow x$ ist Elternteil von $y$. 
+
+Ein anderes Beispiel ist die $\leq$ Relation auf $\mathbb{N}$, also $(x,y)\in R\subseteq \mathbb{Z}\times\mathbb{Z}\Leftrightarrow x\leq y$.
+
+Generell kann man eine Relation zwischen zwei Elementen auf zwei Arten notieren: auf die herk"ommliche Weise, also $(x,y)\in R$ oder mittels \textbf{Infixschreibweise} $xRy$.
+\end{frame}
+  
+
+\begin{frame}{Darstellung von Relationen}
+  Eine M"oglichkeit ist die Angabe als Menge, z.B. 
+  \[R=\{(A,B), (A,A), (B,C), (C,B)\}\]
+
+  Eine Alternative ist ein Graph.
+
+  \begin{tikzpicture}{center}
+    \node[shape=circle,draw=black] (A) at (2,2) {A};
+    \node[shape=circle,draw=black] (B) at (0,0) {B};
+    \node[shape=circle,draw=black] (C) at (3,0) {C};
+    
+
+    \path [->] (A) edge (B);
+    \path [->] (B) edge  (C);
+    \path [->] (C) edge  (B);
+    \path[<->] (A) edge [loop left]  (A);
+    
+    
+\end{tikzpicture}
+
+
+
+\end{frame}
+\begin{frame}{Darstellung von Relationen}
+  Eine andere ist die einer Matrix.
+  \[
+  \begin{pmatrix}
+    $1$ & $1$ & $0$ \\
+    $0$ & $0$ & $1$ \\
+    $0$ & $1$ & $0$
+  \end{pmatrix}
+  \]
+  Hier kann man sich die Zeilen und Spalten der Matrix annotiert mit den Elementen der Grundmengen denken.
+  Etwas formaler: Eine \textbf{Adjazenzmatrix} einer Relation $R\subseteq M\times N$ mit $M=\{x_1,...,x_m\}$ und $N=\{y_1,...,y_n\}$, also $m$ Elementen in $M$ und $n$ Elementen in $N$, die man sich geordnet vorstellen kann ("uber die Indizierung) ist eine Matrix $(a_{ij})$ mit $1\leq i\leq m, 1\leq j\leq n$ und f"ur die Eintr"age $a_{ij}$ in Zeile $i$ und Spalte $j$ gilt:
+  \[a_{ij}=1\Leftrightarrow (x_i,y_j)\in R, a_{ij}=0\Leftrightarrow (x_i,y_j)\notin R \]
+\end{frame}
+
+\begin{frame}{Eigenschaften von Relationen}
+Relationen sind in h"ochster Allgemeinheit definiert. Nun kann man bestimmte Eigenschaften untersuchen.
+\begin{definition}
+Sei $R\subseteq M\times M$ eine Relation "uber einer Menge $M$ (Man beachte, dass die Elemente nur aus einer Menge $M$ stammen). Dann ist $R$
+\begin{enumerate}
+\item \textbf{reflexiv}, wenn $\forall x\in M: (x,x)\in R$
+\item \textbf{irreflexiv}, wenn $\forall x\in M: (x,x)\notin R$
+\item \textbf{symmetrisch}, wenn $\forall x,y\in M: (x,y)\in R\Rightarrow (y,x)\in R$
+\item \textbf{antisymmetrisch}, wenn $\forall x,y\in M: (x,y)\in R\wedge (y,x)\in R\Rightarrow x=y$
+\item \textbf{asymmetrisch}, wenn $\forall x,y\in M: (x,y)\in R\Rightarrow (y,x)\notin R$
+\item \textbf{transitiv}, wenn $\forall x,y,z\in M: (x,y)\in R\wedge (y,z)\in R\Rightarrow (x,z)\in R$
+\end{enumerate}
+\end{definition}
+\end{frame}
+
+\begin{frame}{Komposition von Relationen}
+\begin{definition}[Komposition von Relationen]
+  Seien $R\subseteq M\times N, S\subseteq N\times P$. Wir definieren 
+  \[R\circ S=\{(x,z)\in M\times P|\exists y\in N:(x,y)\in R\wedge (y,z)\in S\}\]
+  als \textbf{Komposition} von $R$ und $S$.
+
+\end{definition}
+Die Komposition ist praktisch die \glqq Hintereinanderschaltung\grqq der Relationen $R$ und $S$.
+\end{frame}
+\subsection{Funktionen}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}{Funktionen}
+  Funktionen sind spezielle Relationen, die jedem Element im Urbildraum (der ersten Menge im kartesischen Produkt) genau ein ELement im Bildraum zuordnen.
+  \begin{definition}[Funktionen]
+    Eine Relation $f\subseteq M\times N$ hei"st \textbf{Funktion}, wenn \[\forall x\in M \exists y\in N: (x,y)\in f\wedge \forall y'\in N:(x,y')\in f\Rightarrow y=y'\]
+    Da somit das mit einem Element $x$ in Relation stehende Element $y$ eindeutig bestimmt ist, schreiben wir auch $y=f(x)$ und bezeichnen $y$ als \textbf{das Bild} von $x$.
+  \end{definition}
+  Wir notieren eine Relation $f\subseteq M\times N$, die eine Funktion ist auch mit $f:M\to N, x\mapsto f(x)$.
+\end{frame}
+
+\begin{frame}{Eigenschaften von Funktionen}
+\begin{definition}[Eigenschaften von Funktionen]
+  Eine Funktion $f:M\to N$ hei"st 
+  \begin{itemize}
+    \item \textbf{injektiv}, wenn $\forall x_1,x_2\in M:f(x_1)=f(x_2)\Rightarrow x_1=x_2$.
+    \item \textbf{surjektiv}, wenn $\forall y\in N\exists x\in M:y=f(x)$.
+    \item \textbf{bijektiv}, wenn $f$ injektiv und surjektiv ist.
+  \end{itemize}
+\end{definition}
+Intuitiv bedeutet \textit{injektiv}, dass ein Funktionswert h"ochstens einen Ursprungswert hat, oder anders: Jeder Wert im Zielraum wird h"ochstens einmal von $f$ \glqq getroffen\grqq. \textit{Surjektiv} bedeutet, dass jeder Wert von $f$ \glqq getroffen\grqq wird.
+\end{frame}
+  % \begin{block}{Cryptographic System}
+  %   An encryption is a function $enc:K\times P\to C$ from the cartesian product of the set of keys $K$ and the set of plaintexts $P$ to the set cyphertexts $C$. A decryption is a function $dec: K\times C\to P$. A suitable decryption has a key $k'$ such that \[\forall k\in K\forall x\in P: dec(k',enc(k,x))=x\]
+  %   Alternative notation for $enc(k,m)$ is $enc_k(m)$.
+  %   \end{block}
+% \tikzset{rechteck/.style={rectangle, minimum
+% width=20mm, minimum height=8mm,text centered, draw=black, fill=gray!15, line
+% width=0.8}}
+% \tikzset{rechteckfokus/.style={rectangle, minimum
+% width=20mm, minimum height=8mm,text centered, draw=black, fill=green!15, line
+% width=0.8}}
+% \tikzset{rechteckcategory/.style={rectangle, minimum
+% width=20mm, minimum height=8mm,text centered, draw=black, fill=gray!50, line
+% width=0.8}}
+% \begin{center}
+% \begin{tikzpicture}[node distance=2cm] 
+
+% \node (so) [rechteckcategory]{Security Objective};
+% \node (dummy) [right of=so]{};
+% \node (int) [rechteckfokus, right of=dummy]{Integrity};
+% \node (conf) [rechteckfokus, above of=int]{Confidentiality};
+% \node (ava) [rechteck, below of=int] {Availability};
+
+
+% \draw (so) -- (int);
+% \draw (so) -- (conf);
+% \draw (so) -- (ava);
+
+
+% \end{tikzpicture}
+% \end{center}
+
+% \begin{tikzpicture}[node distance=1.5cm] 
+
+
+% \node (target) [rechteckfokus] {Cryptography Target};
+% \node (dummy) [right of=target] {};
+% \node (dummy2) [right of=dummy] {};
+% \node (notarget) [rechteck, right of=dummy2] {No Cryptography Target};
+
+
+
+
+% \end{tikzpicture}
+
+% \tikzset{rechteck/.style={rectangle, minimum
+% width=20mm, minimum height=8mm,text centered, draw=black, fill=gray!15, line
+% width=0.8}}
+% \tikzset{rechteckfokus/.style={rectangle, minimum
+% width=20mm, minimum height=8mm,text centered, draw=black, fill=green!15, line
+% width=0.8}}
+% \tikzset{rechteckcategory/.style={rectangle, minimum
+% width=20mm, minimum height=8mm,text centered, draw=black, fill=gray!50, line
+% width=0.8}}
+% \begin{center}
+% \begin{tikzpicture}[node distance=4cm] 
+
+% \node(pt)[rechteck] {Plaintexts};
+% \node(dummy)[right of=pt] {};
+% \node(ct)[rechteck, right of=dummy] {Ciphertexts};
+
+% \draw[->] (pt) -- node [above] {$f$ easy to compute} (ct);
+% \draw[->] (ct) -- node [below] {$f^{-1}$ hard to compute} (pt);
+% \draw[->] (ct) edge[bend left] node [left, below] {$f^{-1}$ with trapdoor information easy to compute} (pt);
+
+% % \draw[->] (-5.5,0) -- (5.5,0) node [below] {$\mathbb{R}$}; \foreach \x in {-5,...,5}
+% % \draw (\x, 0.1) -- (\x, -0.1) node [below] {\x};
+
+
+% \end{tikzpicture}
+% \end{center}
+
+
+% \begin{center}
+% \begin{tikzpicture}[node distance=1cm]
+%  \node (1)                  {$1$};
+%  \node (5)  [above of=1]   {$5$};
+%  \node (3)  [left of=5]  {$3$};
+%  \node (2)  [left of=3]   {$2$};
+%  \node (cont1) [right of=5]  {...};
+%  \node (cont2)  [above of=5]  {...};
+%  \node (15) [left of=cont2]  {$15$};
+
+%  \node (6) [left of=15] {$6$};
+%  \node (17) [right of=cont1] {$17$};
+%  \node (cont3) [right of=17] {...};
+%  \node (cont4) [left of=6] {...};
+%  \node (cont5) [above of=15] {...};
+%  %\node (cont6) [above of =cont5] {...};
+%  \node (cont7) [above of =cont2] {...};
+%  \node (cont8) [above of =17] {...};
+%  \node (0)  [above of=cont7] {$0$};
+%  \node (90) [left of=cont5] {$90$};
+%   \node (30) [left of=90] {$30$};
+%  \draw (6) -- (90);
+%  \draw (15) -- (90);
+%  \draw (2) -- (30);
+%  \draw (15) -- (30);
+%  \draw (15) -- (cont5);
+%  \draw (1) -- (cont3);
+%  \draw (1) -- (17);
+%  \draw (2) -- (6);
+%  \draw (3) -- (6);
+%  \draw (1)   -- (5);
+%  \draw (1)   -- (2);
+%  \draw (1)   -- (3);
+%  \draw (1)  -- (cont1);
+%  \draw (cont1)  -- (cont2);
+
+%  \draw (cont7)  -- (0);
+%  \draw (3)   -- (15);
+%  \draw (5)   -- (15);
+ 
+% \end{tikzpicture}
+% \end{center}
+
+\end{document}
