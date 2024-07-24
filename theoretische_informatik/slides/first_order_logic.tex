@@ -19,7 +19,7 @@
 \usepackage{xcolor}
 \newcommand{\person}[1]{\textcolor{blue}{#1}}
 \newcommand{\highlight}[1]{\textcolor{red}{#1}}
-\newcommand{\example}[1]{\textcolor{blue}{#1}}
+% \newcommand{\example}[1]{\textcolor{blue}{#1}}
 \usetikzlibrary{shapes.geometric, positioning}
 \graphicspath{ {./images/} }
 %\usetheme{Boadilla}
@@ -58,6 +58,16 @@
 
 \begin{frame}{Propositional Logic}
   \person{Boole (1815--1864)} introduced propositional logic in the 19th century.
+\end{frame}
+
+\begin{frame}{Applications of Logic}
+\begin{itemize}
+  \item Electronic circuit design
+  \item Logic programming (e.g. Prolog)
+  \item Expert systems (form of AI)
+  \item Databases (e.g. SQL using first-order logic)
+  \item Formal verification of software
+  \end{itemize}
 \end{frame}
 \section{First-order logic}
 \begin{frame}{Language of first-order logic}
@@ -189,9 +199,178 @@
     We denote that a formula can be proved by a calculus by $\vdash\varphi$.
   \end{frame}
 
+
   \begin{frame}{Calculus of Natural Deduction}
-  
+    \begin{itemize}
+      \item inspired by the way humans reason
+      \item goal is to prove a conclusion from a set of premises
+      \item idea for a proof: start with the conclusion and work backwards
+    \end{itemize}
   \end{frame}
+
+  \begin{frame}{Rules of Calculus of Natural Deduction}
+     
+      \begin{prooftree}
+      \AxiomC{$A\hspace*{1cm}B$}
+       \RightLabel{$\wedge I$}
+       \UnaryInfC{$A\wedge B$}
+     \end{prooftree}
+     \begin{columns}
+      \column{0.5\textwidth}
+      \begin{prooftree}
+        \AxiomC{$A\wedge B$}
+        \RightLabel{$\wedge E_1$}
+        \UnaryInfC{$A$}
+        \end{prooftree}
+     \column{0.5\textwidth}
+      \begin{prooftree}
+        \AxiomC{$A\wedge B$}
+        \RightLabel{$\wedge E_2$}
+        \UnaryInfC{$B$}
+        \end{prooftree}
+    \end{columns}
+    \begin{columns}
+      \column{0.5\textwidth}
+      \begin{prooftree}
+        \AxiomC{$A$}
+        \RightLabel{$\vee I$}
+        \UnaryInfC{$A\vee B$}
+        \end{prooftree}
+     \column{0.5\textwidth}
+      \begin{prooftree}
+        \AxiomC{$A\vee B \hspace*{0.5cm}A\vdash C\hspace*{0.5cm}B\vdash C$}
+        \RightLabel{$\vee E$}
+        \UnaryInfC{$C$}
+        \end{prooftree}
+    \end{columns}
+    \begin{columns}
+      \column{0.5\textwidth}
+      \begin{prooftree}
+        \AxiomC{$A\vdash B$}
+        \RightLabel{$\rightarrow I$}
+        \UnaryInfC{$A\rightarrow B$}
+        \end{prooftree}
+     \column{0.5\textwidth}
+      \begin{prooftree}
+        \AxiomC{$A \hspace*{0.5cm}A\rightarrow B$}
+        \RightLabel{$\rightarrow E$}
+        \UnaryInfC{$B$}
+        \end{prooftree}
+    \end{columns}
+  \end{frame}
+
+
+  \begin{frame}{Rules of the Calculus of Natural Deduction}
+   
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{prooftree}
+      \AxiomC{$A\vdash B\hspace*{0.5cm} A\vdash\neg B$}
+      \RightLabel{$\neg I$}
+      \UnaryInfC{$\neg A$}
+    \end{prooftree}
+  \column{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{$A\hspace*{0.5cm}\neg A$}
+    \RightLabel{$\neg E$}
+    \UnaryInfC{$\bot$}
+  \end{prooftree}
+  \end{columns}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{prooftree}
+    \AxiomC{$\bot$}
+    \RightLabel{$\bot I$}
+    \UnaryInfC{$A$}
+  \end{prooftree}
+  \column{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{$A$}
+    \RightLabel{$\neg\neg I$ ($\neg\neg E$ analogously)}
+    \UnaryInfC{$\neg\neg A$}
+  \end{prooftree}
+  \end{columns}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{prooftree}
+    \AxiomC{$A[u/x]$ (for a variable $u\notin FV(A)$)}
+    \RightLabel{$\forall I$}
+    \UnaryInfC{$\forall x.A$}
+  \end{prooftree}
+  \column{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\forall x.A$}
+    \RightLabel{$\forall E$}
+    \UnaryInfC{$A(t)$ for a term $t$}
+  \end{prooftree}
+  \end{columns}
+
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{prooftree}
+    \AxiomC{$A[u/x]$ (for a variable $u\notin FV(A)$)}
+    \RightLabel{$\forall I$}
+    \UnaryInfC{$\forall x.A$}
+  \end{prooftree}
+  \column{0.5\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\forall x.A$}
+    \RightLabel{$\forall E$}
+    \UnaryInfC{$A(t)$ for a term $t$}
+  \end{prooftree}
+  \end{columns}
+
+  
+
+  \end{frame}
+
+
+  \begin{frame}{Rules of the Calculus of Natural Deduction}
+
+
+      \begin{prooftree}
+      \AxiomC{$A[t/x]$ (for a term $t$)}
+      \RightLabel{$\exists I$}
+      \UnaryInfC{$\exists x.A$}
+    \end{prooftree}
+
+    \begin{prooftree}
+      \AxiomC{$\exists x.A\hspace*{0.5cm} A(u)\vdash B$ where $u$ is a variable not in $B$}
+      \RightLabel{$\exists E$}
+      \UnaryInfC{$B$}
+    \end{prooftree}
+
+
+    \vspace{0.5cm}
+    Example: I know that there is a Norwegian logician. I was able to infer from 'Skolem was Scandinavian and Logician'. Hence, from 'there exists a Norwegian logician', I can infer 'there exists a Scandinavian logician'.
+
+  \end{frame}
+
+\begin{frame}{Example Proof via the Calculus of Natural Deduction}
+
+  
+  We want to show: $((p\wedge q)\rightarrow q)\rightarrow r\vdash (p\wedge q)\rightarrow r$
+
+  \begin{prooftree}
+    \AxiomC{$p\wedge q$}
+    \RightLabel{$\wedge E$}
+    \UnaryInfC{$q$}
+    \RightLabel{$\rightarrow I$}
+    \UnaryInfC{$(p\wedge q)\rightarrow q$}
+    
+    \AxiomC{$((p\wedge q)\rightarrow q)\rightarrow r$}
+    \RightLabel{$\rightarrow E$}
+    \BinaryInfC{$r$}
+    \RightLabel{$\rightarrow I$}
+    \UnaryInfC{$(p\wedge q)\rightarrow r$}
+  \end{prooftree}
+\end{frame}
+
+\begin{frame}{Issues with the Calculus of Natural Deduction}
+  \begin{itemize}
+    \item The 
+  \end{itemize}
+\end{frame}
 % ****************************
 
 
@@ -598,7 +777,6 @@
 
 
       \end{frame}
-
       \begin{frame}{Sequent Calculus Rules}
         \begin{columns}
     
