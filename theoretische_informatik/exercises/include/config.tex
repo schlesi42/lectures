@@ -1,0 +1,245 @@
+\documentclass[%
+  paper=a4,
+  fontsize=10pt,
+  ngerman
+  ]{scrartcl}
+
+% Basics für Codierung und Sprache
+% ===========================================================
+  \usepackage{scrtime}
+  \usepackage{etex}
+  \usepackage{shellesc}
+  \usepackage[final]{graphicx}
+  \usepackage[utf8]{inputenc}
+  \usepackage{babel}
+  \usepackage[german=quotes]{csquotes}
+  \usepackage{datetime2}
+  \usepackage{ifthen}
+  \usepackage{dingbat}
+% ===========================================================
+
+%% Fonts und Typographie
+%% ===========================================================
+  \usepackage{charter}
+  \usepackage{nimbusmononarrow}
+  \usepackage[babel=true,final,tracking=smallcaps]{microtype}
+  \DisableLigatures{encoding = T1, family = tt* }
+  \usepackage{ellipsis}
+% ===========================================================
+
+% Farben
+% ===========================================================
+  \usepackage[usenames,x11names,final,table]{xcolor}
+  \definecolor{fbblau}{HTML}{3078AB}
+  \definecolor{blackberry}{rgb}{0.53, 0.0, 0.25}
+% ===========================================================
+
+% Mathe-Pakete und -Einstellungen
+% ===========================================================
+  \usepackage{mathtools}
+  \usepackage{amssymb}
+  \usepackage[bigdelims]{newtxmath}
+  \allowdisplaybreaks
+  \usepackage{bm}
+  \usepackage{wasysym}
+% ===========================================================
+
+% TikZ
+% ===========================================================
+  \usepackage{tikz}
+  \usepackage{tikz-cd}
+  \usepackage{pgf}
+  \usetikzlibrary{matrix}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{arrows}
+  \usetikzlibrary{shapes}
+  \tikzset{>=Latex}
+  \usepackage[mode=image]{standalone}
+% ===========================================================
+
+% Seitenlayout, Kopf-/Fußzeile
+% ===========================================================
+  \usepackage{scrlayer-scrpage}
+  \usepackage[top=3cm, bottom=2.5cm, left=2.5cm, right=2cm]{geometry}  
+  \pagestyle{scrheadings}
+  \clearscrheadfoot 
+  \setheadsepline{0.4pt}
+  \setfootsepline{0.4pt}
+  \setkomafont{pagehead}{\normalfont\footnotesize}
+  \setkomafont{pagefoot}{\normalfont\footnotesize}
+  \lohead[]{Klausur zur Vorlesung \textit{Mathematik I - Theoretische Grundlagen der Informatik} -- Wintersemester 2022/2023}
+  \rohead[]{%
+    \ifthenelse{\boolean{loesungen}}{\textbf{Lösungen zu Blatt \blattnummer}}{Blatt \blattnummer}}
+  %\rofoot[Version: \DTMnow]{%
+  %  \ifthenelse{\boolean{loesungen}}{Version: \DTMnow}{}}
+  %\lofoot[\jobname.tex]{%
+  %  \ifthenelse{\boolean{loesungen}}{\jobname.tex}{}}
+  \cfoot[\thepage]{\thepage}
+  \raggedbottom
+  \usepackage{setspace}          
+  \linespread{1.2}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0.5\baselineskip}
+  \usepackage[all]{nowidow}
+  \usepackage{lscape}
+% ===========================================================
+
+% Hyperref
+% ===========================================================
+  \usepackage[%
+    hidelinks,
+    pdfpagelabels,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    linkcolor=black,
+    urlcolor=fbblau,
+    plainpages=false,
+    pagebackref,
+    citecolor=black,
+    hypertexnames=true,
+    pdfborderstyle={/S/U},
+    linkbordercolor=fbblau,
+    colorlinks=false,
+    backref=false]{hyperref}
+  \hypersetup{final}
+  \makeatletter
+  \g@addto@macro{\UrlBreaks}{\UrlOrds}
+  \makeatother
+% ===========================================================
+
+% Listen und Tabellen
+% ===========================================================
+  \usepackage{multicol}
+  \usepackage{multirow}
+  \usepackage[shortlabels]{enumitem}
+  \setlist[enumerate]{font=\bfseries,itemsep=0.25\baselineskip}
+  \setlist[itemize]{label=$\triangleright$,itemsep=-0.25\baselineskip}
+  \usepackage{tabularx}
+  \usepackage{array}
+  \usepackage{listings}
+  \lstset{breaklines=true,
+    basicstyle=\ttfamily,
+    frame=tblr,
+    language=c,
+    numbers=left}
+  \input{include/mipsconfig}
+  \newcommand{\qed}{\hfill \ensuremath{\Box}}
+  \newcommand{\cmd}[1]{\texttt{#1}}
+% ===========================================================
+
+% Sonstiges
+% ===========================================================
+  \usepackage[textsize=small,color=Red1!80!OrangeRed1!80]{todonotes}
+  \usepackage{lipsum}
+% ===========================================================
+
+% Shortcuts and Math Commands
+% ===========================================================
+  \newcommand{\BB}{\mathbb{B}}      % Bool
+  \newcommand{\CC}{\mathbb{C}}      % komplexe Zahlen
+  \newcommand{\NN}{\mathbb{N}}      % nat. Zahlen
+  \newcommand{\QQ}{\mathbb{Q}}      % rat. Zahlen
+  \newcommand{\RR}{\mathbb{R}}      % reelle Zahlen
+  \newcommand{\ZZ}{\mathbb{Z}}      % ganze Zahlen
+  \newcommand{\oh}{\mathcal{O}}      % Landau-O
+  \newcommand{\ol}[1]{\overline{#1}}    % überstreichen
+  \newcommand{\wt}[1]{\widetilde{#1}}    % überschlängeln
+  \newcommand{\wh}[1]{\widehat{#1}}    % überdachen
+  \newcommand{\entspricht}{\mathrel{\widehat{=}}}
+  
+  \DeclarePairedDelimiter{\absolut}{\lvert}{\rvert}    % Betrag
+  \DeclarePairedDelimiter{\ceiling}{\lceil}{\rceil}    % aufrunden
+  \DeclarePairedDelimiter{\Floor}{\lfloor}{\rfloor}    % aufrunden
+  \DeclarePairedDelimiter{\Norm}{\lVert}{\rVert}      % Norm
+  \DeclarePairedDelimiter{\sprod}{\langle}{\rangle}    % spitze Klammern
+  \DeclarePairedDelimiter{\enbrace}{(}{)}          % runde Klammern
+  \DeclarePairedDelimiter{\benbrace}{\lbrack}{\rbrack}  % eckige Klammern
+  \DeclarePairedDelimiter{\penbrace}{\{}{\}}        % geschweifte Klammern
+  \newcommand{\Underbrace}[2]{{\underbrace{#1}_{#2}}}   % bessere Unterklammerungen
+  
+  % Kurzschreibweisen für Faule und Code-Vervollständigung
+  \newcommand{\abs}[1]{\absolut*{#1}}
+  \newcommand{\ceil}[1]{\ceiling*{#1}}
+  \newcommand{\flo}[1]{\Floor*{#1}}
+  \newcommand{\no}[1]{\Norm*{#1}}
+  \newcommand{\sk}[1]{\sprod*{#1}}
+  \newcommand{\enb}[1]{\enbrace*{#1}}
+  \newcommand{\penb}[1]{\penbrace*{#1}}
+  \newcommand{\benb}[1]{\benbrace*{#1}}
+  \newcommand{\stack}[2]{\makebox[1cm][c]{$\stackrel{#1}{#2}$}}
+
+% Übungszettel-Krams
+% ===========================================================
+  \usepackage[tikz]{mdframed}
+  \newmdenv[%
+    backgroundcolor = gray!20,
+    linewidth=0pt,
+    skipabove = 0.5cm,
+    skipbelow = 0cm
+  ]{notes}
+  
+  % Lösungsausgabe
+  \newboolean{praesenzlsgn}
+  \setboolean{praesenzlsgn}{\printpraesenzlsg}
+  \newboolean{loesungen}
+  \setboolean{loesungen}{\printloesungen}
+  % Bewertungsschema-Ausgabe
+  \newboolean{bewertungen}
+  \setboolean{bewertungen}{\printbewertungen}
+
+  \newcommand{\iforiginal}[1]{\ifthenelse{\boolean{praesenzlsgn}}{}{#1}}
+  \newcommand{\ifpraesenzlsg}[1]{\ifthenelse{\boolean{praesenzlsgn}}{#1}{}}
+  \newcommand{\ifloesung}[1]{\ifthenelse{\boolean{loesungen}}{#1}{}}
+  \newcommand{\ifbewertung}[1]{\ifthenelse{\boolean{bewertungen}}{#1}{}}
+
+  \newcommand{\umbruchoriginal}{\iforiginal{\newpage}}        % Seitenumbruch nur im Original
+  \newcommand{\umbruchpraesenzlsg}{\ifpraesenzlsg{\newpage}}  % Seitenumbruch nur in Lösung d. Präsenzaufgabe
+  \newcommand{\umbruchlsg}{\ifloesung{\newpage}}              % Seitenumbruch nur in Lösung
+  \newcommand{\umbruchbewertung}{\ifbewertung{\newpage}}      % Seitenumbruch nur in Lösung mit Bewertungsschema
+  \newcommand{\umbruchnurpraesenz}{\ifthenelse{\boolean{loesungen}}{}{\umbruchpraesenzlsg}}
+  \newcommand{\umbruchnurlsg}{\ifthenelse{\boolean{bewertungen}}{}{\umbruchlsg}}
+
+  \usepackage{comment}
+  \newenvironment{praesenzlsg}%
+    {\ifthenelse{\boolean{praesenzlsgn}}{\textbf{--- Präsenzaufgabe Anfang ---} \mbox{} \newline}{}}%
+	{\ifthenelse{\boolean{praesenzlsgn}}{\mbox{} \newline \textbf{--- Präsenzaufgabe Ende ---}}{}}
+  \newenvironment{loesung}%
+    {\ifthenelse{\boolean{loesungen}}{\textbf{--- Lösung Anfang ---} \mbox{} \newline}{}}%
+    {\ifthenelse{\boolean{loesungen}}{\mbox{} \newline \textbf{--- Lösung Ende ---} \ifthenelse{\boolean{bewertungen}}{}{\umbruchlsg}}{}}
+  \newenvironment{bewertung}%
+    {\ifthenelse{\boolean{bewertungen}}{\textbf{--- Bewertungsschema Anfang ---} \mbox{} \newline}{}}%
+    {\ifthenelse{\boolean{bewertungen}}{\mbox{} \newline \textbf{--- Bewertungsschema Ende ---} \umbruchlsg}{}}
+
+  \ifthenelse{\boolean{praesenzlsgn}}{}{\excludecomment{praesenzlsg}}
+  \ifthenelse{\boolean{loesungen}}{}{\excludecomment{loesung}}
+  \ifthenelse{\boolean{bewertungen}}{}{\excludecomment{bewertung}}
+
+  % Aufgabennummerierung
+  \newcounter{aufgabennummer} 
+  \setcounter{aufgabennummer}{1}
+  \newcommand{\aufgabe}[1]{\textbf{Aufgabe \blattnummer.\theaufgabennummer} \stepcounter{aufgabennummer} \hfill (#1 Punkte)}
+  %\newcommand{\aufgabetitel}[2]{\iforiginal{\vspace{0.5cm}} \textbf{Aufgabe \blattnummer.\theaufgabennummer \ (#2)} \stepcounter{aufgabennummer} \hfill (#1 Punkte)}
+  \newcommand{\aufgabetitel}[2]{\iforiginal{\vspace{0.5cm}} \textbf{Aufgabe \theaufgabennummer \ (#2)} \stepcounter{aufgabennummer} \hfill (#1 Punkte)}
+  \newcommand{\praesenztitel}[1]{\iforiginal{\vspace{0.5cm}} \textbf{Aufgabe \blattnummer.\theaufgabennummer \ (#1)} \stepcounter{aufgabennummer} \hfill \smallpencil}
+
+\newcommand{\danger}{\raisebox{0.5mm}{\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax}}
+\newcommand{\ddanger}[1]{{\danger} \textbf{#1} {\danger}}
+
+% Rechnerstrukturen-Krams
+% ===========================================================
+  \newcommand{\Band}{\ensuremath{\mathbin{\texttt{AND}}}}
+  \newcommand{\Bor}{\ensuremath{\mathbin{\texttt{OR}}}}
+  \newcommand{\Bnot}{\ensuremath{\mathbin{\texttt{NOT}}}}
+  \newcommand{\Bnand}{\ensuremath{\mathbin{\texttt{NAND}}}}
+  \newcommand{\Bnor}{\ensuremath{\mathbin{\texttt{NOR}}}}
+  \newcommand{\Bxor}{\ensuremath{\mathbin{\texttt{XOR}}}}
+  \newcommand{\Bxnor}{\ensuremath{\mathbin{\texttt{XNOR}}}}
+  \newcommand{\Bone}{\ensuremath{\mathbin{\texttt{ONE}}}}
+  \newcommand{\Bzero}{\ensuremath{\mathbin{\texttt{ZERO}}}}
+  \newcommand{\Binary}[1]{\ensuremath{\texttt{#1}}\xspace}
+  \newcommand{\ieee}[3]{\fbox{\ensuremath{\texttt{#1}}}\fbox{\ensuremath{\texttt{#2}}}\fbox{\ensuremath{\texttt{#3}}}}
+  \DeclareMathOperator{\DNF}{DNF}
+  \DeclareMathOperator{\KNF}{KNF}
+  \DeclareMathOperator{\xor}{\oplus}
+  \newcommand{\dc}{\star} %don't-care-Wert
+ 
