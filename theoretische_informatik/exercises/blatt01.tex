@@ -1,0 +1,140 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+\aufgabetitel{$5$}{Beweis}\\
+Seien $A,B,C$ Mengen. Beweisen Sie \[(A\cap B)\cup C=A\cap (B\cup C)\Leftrightarrow C\subseteq A\]
+
+\begin{loesung}
+  \textbf{Beweis:}\\
+\glqq $\Rightarrow$\grqq: Gelte $(A\cap B)\cup C=A\cap(B\cup C)$. Wir zeigen $C\subseteq A$.
+
+Sei dazu $x\in C$. Dann ist $x\in (A\cap B)\cup C$ (Weil $x\in C$ kann ich was beliebiges dazu vereinigen) und nach Voraussetzung auch 
+$x\in A\cap (B\cup C)$. Damit insbesonder $x\in A$, was zu zeigen war.
+
+\glqq $\Leftarrow$\grqq:\\
+Gelte $C\subseteq A$. Wir zeigen $(A\cap B)\cup C=A\cap(B\cup C)$.
+
+Sei $x\in (A\cap B)\cup C$. Das ist "aquivalent zu $x\in (A\cap B)\vee x\in C$
+
+$\Leftrightarrow (x\in A\wedge x\in B)\vee x\in C$
+
+$\Leftrightarrow (x\in A\wedge x\in B)\vee (x\in A\wedge x\in C)$ (weil $C\subseteq A$ nach Voraussetzung ist $x\in C$ "aquivalent zu $x\in A\wedge x\in C$)
+
+$\Leftrightarrow x\in (A\cap B)\cup x\in (A\cap C)$
+
+$\leftrightarrow x\in A\cap(B\cup C)$ (Distributivgesetz), was zu zeigen war.
+
+\qed
+
+\end{loesung}
+
+\aufgabetitel{$4$}{Symmetrische Differenz}\\
+  Unter 
+  \[A\triangle B:=(A\backslash B)\cup (B\backslash A)\] versteht man die \textit{symmetrische Differenz} der Mengen $A$ und $B$.
+  \begin{enumerate}[(i)]
+    \item Machen Sie sich anhand eines Venn-Diagramms klar, was unter der symmetrischen Differenz anschaulich zu verstehen ist.
+    \item Beweisen Sie: $\forall A,B:A\triangle B=(A\cup B)\backslash(A\cap B)$.
+  \end{enumerate}
+
+\begin{loesung}
+Venn-Diagramm zeichne ich jetzt mal nicht. Bleibt als "Ubung.
+
+\textbf{Beweis:}\\
+Sei $x\in A\triangle B=(A\backslash B)\cup (B\backslash A)$
+
+$\Leftrightarrow (x\in A\wedge x\notin B)\vee (x\in B\wedge x\notin A)$
+
+$\Leftrightarrow (x\in A\vee x\in B)\wedge (x\in A\vee x\notin A)\wedge (x\notin B\vee x\in B)\wedge (x\notin B\vee x\notin A)$ (Distributivit"at)
+
+$\Leftrightarrow (x\in A\vee x\in B)\wedge (x\notin A\vee x\notin B)$ ($x\in A\vee x\notin A$ ist immer wahr, kann man also k"urzen)
+
+$\Leftrightarrow x\in (A\cup B)\wedge \neq (x\in A\wedge x\in B)$ (De Morgan)
+
+$\Leftrightarrow x\in(A\cup B)\backslash(A\cap B)$
+
+\qed
+\end{loesung}
+
+\aufgabetitel{$4$}{Mengenbeweis}\\
+Zeigen Sie für beliebige Mengen $A,B$:
+\[A\cap (B\cup A)=A\]
+
+\begin{loesung}
+\glqq$\subseteq$\grqq:
+
+Sei $x\in A\cap(B\cup A)$. Dann ist $x\in A$ (und irgendwas anderem), also $A\cap(B\cup A)\subseteq A$.
+
+\glqq$\supseteq$\grqq:
+
+Sei $x\in A$. Dann ist $x\in A\vee (x\in A\wedge x\in B)$.
+
+$\Leftrightarrow (x\in A\vee x\in A)\wedge (x\in A\vee x\in B)$ (Distributivit"at)
+
+$\Leftrightarrow x\in A\wedge (x\in A\vee x\in B)$
+
+$\Leftrightarrow x\in A\cap(A\cup B)$
+
+\qed
+\end{loesung}
+\aufgabetitel{$4$}{Potenzmengenbeweis}\\
+Zeigen Sie für beliebige Mengen $A,B$:
+\[\mathscr{P}(A\cap B)=\mathscr{P}(A)\cap\mathscr{P}(B)\]
+
+\begin{loesung}
+Sei $M\in\mathscr{P}(A\cap B)$
+
+$\Leftrightarrow M\subseteq A\cap B$
+
+$\Leftrightarrow \forall x\in M:x\in A\cap B$
+
+$\Leftrightarrow \forall x\in M: x\in A\wedge x\in B$
+
+$\Leftrightarrow M\subseteq A\wedge M\subseteq B$
+
+$\Leftrightarrow M\in\mathscr{P}(A)\wedge M\in\mathscr{P}(B)$
+
+$\Leftrightarrow M\in\mathscr{P}(A)\cap\mathscr{P}(B)$
+
+\qed
+\end{loesung}
+
+\aufgabetitel{$11$}{Relationen}\\
+Es sei $R=\{(1,1),(2,2),(3,3),(4,4),(1,2),(3,2),(2,4)\}$ auf der Menge $M=\{1,2,3,4\}$.
+\begin{enumerate}[(i)]
+\item Stellen Sie die Relation als Adjazenzmatrix dar.
+\item Stellen Sie die Relation als Graph dar.
+\item Ist die Relation reflexiv, irreflexiv, symmetrisch, antisymmetrisch oder transitiv?
+\item Falls die Relation nicht transitiv ist, was m"usste man hinzuf"ugen, um sie mit m"oglichst wenigen zus"atzlichen Paaren / Pfeilen transitiv zu machen? Anders ausged"uckt - was ist die transitive H"ulle der Relation? (Allgemein ist die transitive H"ulle die kleinste $R$ enthaltende transitive Relation. \glqq Klein\grqq ist im Sinne der Inklusion (Teilmengenbeziehung) gemeint.)
+\item Man erh"alt die reflexiv-transitive H"ulle auch rechnerisch wenn man $R_{trans}=\bigcup_{n\in\mathbb{N}}R^n$ bildet mit $R^0=Id$, der Identit"at, die jedes Element von $M$ mit sich selbst in Relation setzt und $R^{n+1}=R^n\circ R$. Man berechnet also diese $R^n$ und jeder Schritt f"ugt der Vereinigung der bereits von $R^0$ bis $R^{n-1}$ berechneten Relationen ggf. weitere Paare / Pfeile hinzu bis die Vereinigung schlie\ss lich transitiv wird. In der Praxis, bei endlichen Mengen, h"ort man auf, weitere Relationen hinzuzuf"ugen sobald der Vorgang station"ar wird, also nichts mehr hinzugef"ugt wird. Berechnen Sie die reflexiv-transitive H"ulle von $R$ auf dem beschriebenen Weg.
+\item Ist $R_{trans}$ im vorliegenden Fall eine Ordnung?
+\item Stellen Sie das Hasse-Diagramm von $R_{trans}$ dar. 
+\end{enumerate}
+
+\begin{loesung}
+Die Matrix und den Graphen lass ich weg. Ist wirklich einfach.
+Die Relation ist reflexiv und antisymmetrisch.
+Um sie transitiv zu machen muss man die Paare $(1,4),(3,4)$ hinzuf"ugen.
+Es ist $R^0=\{(1,1),(2,2),(3,3),(4,4)\}$, $R^1=R=R^0\cup R^1$ ($R$ ist schon reflexiv). Und $R^2=\{(1,2),(2,4),(3,2),(3,4),(1,4)\}$ und damit $R^0\cup R^1\cup R^2=R\cup\{(1,4),(3,4)\}=R_{trans}$ (die anderen Paare waren schon in $R$ und bei $R^3$ wird nichts mehr hinzugef"ugt.)
+$R_{trans}$ ist eine Ordnung. Das Hasse-Diagramm lass ich weg. Im Diagramm ist unten die $1$ und die $3$, die eine Ebene weiter oben auf $2$ zeigen, die wiederum auf $4$ ganz oben zeigt.
+\end{loesung}
+\end{document}
