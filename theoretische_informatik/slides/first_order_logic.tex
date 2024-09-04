@@ -197,6 +197,8 @@
     A rule of a calculus has the form $\frac{\varphi_1, \ldots, \varphi_n}{\psi}$, where $\varphi_1, \ldots, \varphi_n$ are premises and $\psi$ is the conclusion. The rule states that if $\varphi_1, \ldots, \varphi_n$ are derivable, then $\psi$ is derivable.
 
     We denote that a formula can be proved by a calculus by $\vdash\varphi$.
+
+    We can also denote that a formula $\varphi$ is derivable from a set of formulas (premises) $\Gamma$ by $\Gamma\vdash\varphi$.
   \end{frame}
 
 
@@ -204,8 +206,12 @@
     \begin{itemize}
       \item inspired by the way humans reason
       \item goal is to prove a conclusion from a set of premises
-      \item idea for a proof: start with the conclusion and work backwards
+      \item In a natural deduction proof the formula occurring at the root of the tree is called the conclusion, while the formulas at the leaves of the tree are its assumptions.
+      \item In a natural deduction proof the assumptions can be of two kinds: \textit{canceled} and \textit{uncanceled}.
+      \item When one starts building ones proof tree all assumptions are uncanceled, but in certain inferences one is allowed to cancel certain assumptions.
+  
     \end{itemize}
+    
   \end{frame}
 
   \begin{frame}{Rules of Calculus of Natural Deduction}
@@ -366,11 +372,7 @@
   \end{prooftree}
 \end{frame}
 
-\begin{frame}{Issues with the Calculus of Natural Deduction}
-  \begin{itemize}
-    \item The 
-  \end{itemize}
-\end{frame}
+
 % ****************************
 
 
@@ -601,12 +603,12 @@
 
 \begin{frame}{Sequent Calculus}
   
-
-  In sequent calculus, we have sequences $\Gamma\vdash\Delta$, where $\Gamma$ and $\Delta$ are sets of formulas.
-  \vspace*{1cm}
-
-  The interpretation is that if all formulas in $\Gamma$ are true, then at least one formula in $\Delta$ is true.
-  \end{frame}
+\begin{itemize}
+  \item In sequent calculus, we have sequences $\Gamma\vdash\Delta$, where $\Gamma$ and $\Delta$ are sets of formulas.
+  \item The interpretation is that if all formulas in $\Gamma$ are true, then at least one formula in $\Delta$ is true.
+  \item Proofs in sequent calculus are performed backwards: We start from the conclusion and apply rules to derive the premises.
+\end{itemize}  
+\end{frame}
   
   
     \begin{frame}{Sequent Calculus Rules}
@@ -1083,152 +1085,152 @@
         
           
         \end{frame}
-\section{Semantics of Programs}
+% \section{Semantics of Programs}
 
 
-\begin{frame}{Semantics of programs}
+% \begin{frame}{Semantics of programs}
 
-  There are three main types of semantics for programs:
-  \begin{itemize}
-  \item Operational semantics: Describes the execution of programs.
-  \item Denotational semantics: Describes the meaning of programs (as a mathematical mapping of states).
-  \item Axiomatic semantics: Describes properties of programs.
-  \end{itemize}
-  \end{frame}
-  \begin{frame}{The while language}
-    The while language is a simple imperative programming language with the following constructs:
-    \begin{itemize}
-      \item Arithmetic expressions: $E::=n\ |\ x\ |\ E+E\ |\ E-E\ |\ E*E\ |\ E/E$ (i.e., terms), where $n$ is a number and $x$ is a variable.
-      \item Boolean expressions: $B::=\text{true}\ |\ \text{false}\ |\ E=E\ |\ E<E\ |\ E\leq E\ |\ \text{not } B\ |\ B \text{ and } B\ |\ B\text{ or } B$.
-      \item Statements: $S::=\text{skip}\ |\ x:=E\ |\ S_1;S_2\ |\ \text{if }B\text{ then }S_1\text{ else }S_2 |\ \text{while }B\text{ do }S$.
-    \end{itemize}
+%   There are three main types of semantics for programs:
+%   \begin{itemize}
+%   \item Operational semantics: Describes the execution of programs.
+%   \item Denotational semantics: Describes the meaning of programs (as a mathematical mapping of states).
+%   \item Axiomatic semantics: Describes properties of programs.
+%   \end{itemize}
+%   \end{frame}
+%   \begin{frame}{The while language}
+%     The while language is a simple imperative programming language with the following constructs:
+%     \begin{itemize}
+%       \item Arithmetic expressions: $E::=n\ |\ x\ |\ E+E\ |\ E-E\ |\ E*E\ |\ E/E$ (i.e., terms), where $n$ is a number and $x$ is a variable.
+%       \item Boolean expressions: $B::=\text{true}\ |\ \text{false}\ |\ E=E\ |\ E<E\ |\ E\leq E\ |\ \text{not } B\ |\ B \text{ and } B\ |\ B\text{ or } B$.
+%       \item Statements: $S::=\text{skip}\ |\ x:=E\ |\ S_1;S_2\ |\ \text{if }B\text{ then }S_1\text{ else }S_2 |\ \text{while }B\text{ do }S$.
+%     \end{itemize}
     
-    \end{frame}
+%     \end{frame}
 
-    \begin{frame}{Semantics domains for while}
-      \begin{itemize}
-        \item Values: $V=\mathbb{Z}\cup\{\text{true},\text{false}\}$.
-        \item Interpretation for constants: $V\to\mathbb{Z}$
-        \item States: $\Sigma:\textbf{Var}\to V$, where $\textbf{Var}$ is the set of variables. We denote an update of a state by $\sigma'=\sigma[x\mapsto v]$, which means that $\sigma'(x)=v$ and $\sigma'(y)=\sigma(y)$ for $y\neq x$.
-        \item Expression interpretation: $E\to\Sigma\to\mathbb{Z}$. An application of an expression under a state is traditionally written as $val\llbracket E\rrbracket\sigma$.
-      \end{itemize}
-      The interpretation of an expression under a state is defined by induction on the structure of the expression.
-      \begin{itemize}
-        \item $val\llbracket n\rrbracket\sigma=n$
-        \item $val\llbracket x\rrbracket\sigma=\sigma(x)$
-        \item $val\llbracket E_1+E_2\rrbracket\sigma=val\llbracket E_1\rrbracket\sigma+val\llbracket E_2\rrbracket\sigma$
-        \item $val\llbracket\text{true}\rrbracket\sigma=\text{true}$
-        \item $val\llbracket E_1=E_2\rrbracket\sigma=\text{true}$ if $val\llbracket E_1\rrbracket\sigma=val\llbracket E_2\rrbracket\sigma$ and $\text{false}$ otherwise.
-        \item etc.
-      \end{itemize}
-    \end{frame}
+%     \begin{frame}{Semantics domains for while}
+%       \begin{itemize}
+%         \item Values: $V=\mathbb{Z}\cup\{\text{true},\text{false}\}$.
+%         \item Interpretation for constants: $V\to\mathbb{Z}$
+%         \item States: $\Sigma:\textbf{Var}\to V$, where $\textbf{Var}$ is the set of variables. We denote an update of a state by $\sigma'=\sigma[x\mapsto v]$, which means that $\sigma'(x)=v$ and $\sigma'(y)=\sigma(y)$ for $y\neq x$.
+%         \item Expression interpretation: $E\to\Sigma\to\mathbb{Z}$. An application of an expression under a state is traditionally written as $val\llbracket E\rrbracket\sigma$.
+%       \end{itemize}
+%       The interpretation of an expression under a state is defined by induction on the structure of the expression.
+%       \begin{itemize}
+%         \item $val\llbracket n\rrbracket\sigma=n$
+%         \item $val\llbracket x\rrbracket\sigma=\sigma(x)$
+%         \item $val\llbracket E_1+E_2\rrbracket\sigma=val\llbracket E_1\rrbracket\sigma+val\llbracket E_2\rrbracket\sigma$
+%         \item $val\llbracket\text{true}\rrbracket\sigma=\text{true}$
+%         \item $val\llbracket E_1=E_2\rrbracket\sigma=\text{true}$ if $val\llbracket E_1\rrbracket\sigma=val\llbracket E_2\rrbracket\sigma$ and $\text{false}$ otherwise.
+%         \item etc.
+%       \end{itemize}
+%     \end{frame}
 
-    \begin{frame}{Operational Semantics of while}
-      It describes how the execution of while programs is done operationally.
-      \vspace*{0.5cm}
-      A transition system is a triple $(\Gamma, T,\to)$ where
-      \begin{itemize}
-        \item $\Gamma$ is a set of configurations. A configuration is a pair $(c,\sigma)$, where $c$ is a command and $\sigma$ is a state.
-        \item $T$ is a set of terminal configurations.
-        \item $\to\subseteq\Gamma\times\Gamma$ is a transition relation ($\to^*$ is the reflexive transitive closure of $\to$, $\to^+$ is the transitive closure of $\to$).
-      \end{itemize}
-      \vspace*{0.5cm}
-      There are two types of operational semantics:
-      \begin{itemize}
-        \item Small-step semantics: Describes the execution of a program step by step.
-        \item Big-step semantics: Describes the execution of a program in one step.
-      \end{itemize} 
-      We'll focus on small-step semantics.
-      \end{frame}
+%     \begin{frame}{Operational Semantics of while}
+%       It describes how the execution of while programs is done operationally.
+%       \vspace*{0.5cm}
+%       A transition system is a triple $(\Gamma, T,\to)$ where
+%       \begin{itemize}
+%         \item $\Gamma$ is a set of configurations. A configuration is a pair $(c,\sigma)$, where $c$ is a command and $\sigma$ is a state.
+%         \item $T$ is a set of terminal configurations.
+%         \item $\to\subseteq\Gamma\times\Gamma$ is a transition relation ($\to^*$ is the reflexive transitive closure of $\to$, $\to^+$ is the transitive closure of $\to$).
+%       \end{itemize}
+%       \vspace*{0.5cm}
+%       There are two types of operational semantics:
+%       \begin{itemize}
+%         \item Small-step semantics: Describes the execution of a program step by step.
+%         \item Big-step semantics: Describes the execution of a program in one step.
+%       \end{itemize} 
+%       We'll focus on small-step semantics.
+%       \end{frame}
       
-      \begin{frame}{Operational Semantics of while}
+%       \begin{frame}{Operational Semantics of while}
         
-        \begin{prooftree}
-          \AxiomC{}
-          \RightLabel{Assign}
-          \UnaryInfC{$x:=E\to\sigma[x\mapsto val\llbracket E\rrbracket\sigma]$}
+%         \begin{prooftree}
+%           \AxiomC{}
+%           \RightLabel{Assign}
+%           \UnaryInfC{$x:=E\to\sigma[x\mapsto val\llbracket E\rrbracket\sigma]$}
         
-        \end{prooftree}
+%         \end{prooftree}
         
-        \begin{prooftree}
-          \AxiomC{}
-          \RightLabel{Skip}
-          \UnaryInfC{$(\text{skip},c)\to\sigma$}
-        \end{prooftree}
-        \begin{columns}
-          \column{0.5\textwidth}
-        \begin{prooftree}
-          \AxiomC{$(c_1,\sigma)\to\sigma'$}
-          \RightLabel{Seq1}
-          \UnaryInfC{$(c_1;c_2,\sigma)\to(c_2,\sigma')$}
-        \end{prooftree}
-        \column{0.5\textwidth}
-        \begin{prooftree}
-          \AxiomC{$(c_1,\sigma)\to(c_1',\sigma')$}
-          \RightLabel{Seq2}
-          \UnaryInfC{$(c_1;c_2,\sigma)\to(c_1';c_2,\sigma')$}
-        \end{prooftree}
-      \end{columns}
-      \begin{prooftree}
-        \AxiomC{}
-        \RightLabel{IF for $val\llbracket B\rrbracket\sigma=\text{true}$}
-        \UnaryInfC{$(\text{if }b\text{ then }c_1\text{ else }c_2,\sigma)\to(c_1,\sigma)$}
-      \end{prooftree}
-      \begin{prooftree}
-        \AxiomC{}
-        \RightLabel{IF for $val\llbracket B\rrbracket\sigma=\text{false}$}
-        \UnaryInfC{$(\text{if }b\text{ then }c_1\text{ else }c_2,\sigma)\to(c_2,\sigma)$}
-      \end{prooftree}
-      \begin{prooftree}
-        \AxiomC{}
-        \RightLabel{WHILE}
-        \UnaryInfC{$(\text{while }B\text{ do }c,\sigma)\to(\text{if }B\text{ then }c;\text{while }B\text{ do }c\text{ else skip},\sigma)$}
-      \end{prooftree}
-      \end{frame}
+%         \begin{prooftree}
+%           \AxiomC{}
+%           \RightLabel{Skip}
+%           \UnaryInfC{$(\text{skip},c)\to\sigma$}
+%         \end{prooftree}
+%         \begin{columns}
+%           \column{0.5\textwidth}
+%         \begin{prooftree}
+%           \AxiomC{$(c_1,\sigma)\to\sigma'$}
+%           \RightLabel{Seq1}
+%           \UnaryInfC{$(c_1;c_2,\sigma)\to(c_2,\sigma')$}
+%         \end{prooftree}
+%         \column{0.5\textwidth}
+%         \begin{prooftree}
+%           \AxiomC{$(c_1,\sigma)\to(c_1',\sigma')$}
+%           \RightLabel{Seq2}
+%           \UnaryInfC{$(c_1;c_2,\sigma)\to(c_1';c_2,\sigma')$}
+%         \end{prooftree}
+%       \end{columns}
+%       \begin{prooftree}
+%         \AxiomC{}
+%         \RightLabel{IF for $val\llbracket B\rrbracket\sigma=\text{true}$}
+%         \UnaryInfC{$(\text{if }b\text{ then }c_1\text{ else }c_2,\sigma)\to(c_1,\sigma)$}
+%       \end{prooftree}
+%       \begin{prooftree}
+%         \AxiomC{}
+%         \RightLabel{IF for $val\llbracket B\rrbracket\sigma=\text{false}$}
+%         \UnaryInfC{$(\text{if }b\text{ then }c_1\text{ else }c_2,\sigma)\to(c_2,\sigma)$}
+%       \end{prooftree}
+%       \begin{prooftree}
+%         \AxiomC{}
+%         \RightLabel{WHILE}
+%         \UnaryInfC{$(\text{while }B\text{ do }c,\sigma)\to(\text{if }B\text{ then }c;\text{while }B\text{ do }c\text{ else skip},\sigma)$}
+%       \end{prooftree}
+%       \end{frame}
 
-      \begin{frame}{Denotational semantics of while}
+%       \begin{frame}{Denotational semantics of while}
 
-        While the operational semantics describes the execution of programs in a step-by-step manner via relations, the denotational semantics describes the meaning of programs as a mathematical mapping of states.
+%         While the operational semantics describes the execution of programs in a step-by-step manner via relations, the denotational semantics describes the meaning of programs as a mathematical mapping of states.
 
-        We define $\llbracket\cdot\rrbracket:\Sigma\to\Sigma$ as the denotational semantics of the while language. The denotational semantics of the while language is defined by induction on the structure of the program.
-      \end{frame}
+%         We define $\llbracket\cdot\rrbracket:\Sigma\to\Sigma$ as the denotational semantics of the while language. The denotational semantics of the while language is defined by induction on the structure of the program.
+%       \end{frame}
 
-      \begin{frame}{Denotational semantics of while}
-        \[\llbracket\text{skip}\rrbracket(\sigma)=\sigma\]
-        \[\llbracket x:=E\rrbracket(\sigma)=\sigma[x\mapsto val\llbracket E\rrbracket\sigma]\]
-        \[\llbracket c_1;c_2\rrbracket=\llbracket c_2\rrbracket\circ\llbracket c_1\rrbracket\]
-        \[\llbracket \text{if }b\text{ then }c_1\text{ else }c_2\rrbracket=\llbracket c_1\rrbracket\text{ if }val\llbracket b\rrbracket\sigma=\text{true, otherwise} \llbracket c_2\rrbracket\]
-        \[\llbracket \text{while }B\text{ do }c\rrbracket=\llbracket\text{skip}\rrbracket\text{ if }val\llbracket b\rrbracket\sigma=\text{false, otherwise }\llbracket \text{while }B\text{ do }c\rrbracket\circ\llbracket c\rrbracket\]
-        \vspace*{0.5cm}
+%       \begin{frame}{Denotational semantics of while}
+%         \[\llbracket\text{skip}\rrbracket(\sigma)=\sigma\]
+%         \[\llbracket x:=E\rrbracket(\sigma)=\sigma[x\mapsto val\llbracket E\rrbracket\sigma]\]
+%         \[\llbracket c_1;c_2\rrbracket=\llbracket c_2\rrbracket\circ\llbracket c_1\rrbracket\]
+%         \[\llbracket \text{if }b\text{ then }c_1\text{ else }c_2\rrbracket=\llbracket c_1\rrbracket\text{ if }val\llbracket b\rrbracket\sigma=\text{true, otherwise} \llbracket c_2\rrbracket\]
+%         \[\llbracket \text{while }B\text{ do }c\rrbracket=\llbracket\text{skip}\rrbracket\text{ if }val\llbracket b\rrbracket\sigma=\text{false, otherwise }\llbracket \text{while }B\text{ do }c\rrbracket\circ\llbracket c\rrbracket\]
+%         \vspace*{0.5cm}
 
-        However, the last definition is not well-defined, as it is not guaranteed that the while loop will terminate. Therefore, we need to define a fixpoint semantics for the while language.
+%         However, the last definition is not well-defined, as it is not guaranteed that the while loop will terminate. Therefore, we need to define a fixpoint semantics for the while language.
   
-      \end{frame}
+%       \end{frame}
 
-      \begin{frame}{CPOs}
-        A complete partial order (CPO) is a partially ordered set $(M,\leq)$ where
-        \begin{itemize}
-          \item $M$ has a least element $\bot$.
-          \item Each chain $x_1\leq x_2\leq x_3\leq\ldots$ has a least upper bound $\bigsqcup x_i$ in $M$.
-          \end{itemize}
+%       \begin{frame}{CPOs}
+%         A complete partial order (CPO) is a partially ordered set $(M,\leq)$ where
+%         \begin{itemize}
+%           \item $M$ has a least element $\bot$.
+%           \item Each chain $x_1\leq x_2\leq x_3\leq\ldots$ has a least upper bound $\bigsqcup x_i$ in $M$.
+%           \end{itemize}
 
-        \end{frame}
+%         \end{frame}
 
-        \begin{frame}{Least Fixed Point}
-          If for a function $M\to M$ a fixed point, i.e., a point $x$ such that $f(x)=x$, exists, then we denote the least fixed point as $\mu_f$, i.e., $x=\mu_f$ if $x$ is a fixed point and $x\leq y$ for all fixed points $y$.
+%         \begin{frame}{Least Fixed Point}
+%           If for a function $M\to M$ a fixed point, i.e., a point $x$ such that $f(x)=x$, exists, then we denote the least fixed point as $\mu_f$, i.e., $x=\mu_f$ if $x$ is a fixed point and $x\leq y$ for all fixed points $y$.
      
-          \end{frame}
+%           \end{frame}
 
-          \begin{frame}{Knaster-Tarski Theorem}
-            For a cpo $(M,\leq)$ and a function $f:M\to M$, the least fixed point $\mu_f$ exists and the following holds:
-            \[\mu_f=\bigsqcup_{i\geq 0}f^{(i)}(\bot)\]
-          \end{frame}
+%           \begin{frame}{Knaster-Tarski Theorem}
+%             For a cpo $(M,\leq)$ and a function $f:M\to M$, the least fixed point $\mu_f$ exists and the following holds:
+%             \[\mu_f=\bigsqcup_{i\geq 0}f^{(i)}(\bot)\]
+%           \end{frame}
       
-          \begin{frame}{Denotational Semantics for while statement revised}
-            We now can define the semantics for $\text{while }B\text{ do }c$ as fixed point of a function $F:(\Sigma\to\Sigma)\to(\Sigma\to\Sigma)$ with 
-            \[F(f)(\sigma)=f(\llbracket c\rrbracket(\sigma))\text{ if }val\llbracket b\rrbracket\sigma=\text{true, otherwise }\sigma\]
+%           \begin{frame}{Denotational Semantics for while statement revised}
+%             We now can define the semantics for $\text{while }B\text{ do }c$ as fixed point of a function $F:(\Sigma\to\Sigma)\to(\Sigma\to\Sigma)$ with 
+%             \[F(f)(\sigma)=f(\llbracket c\rrbracket(\sigma))\text{ if }val\llbracket b\rrbracket\sigma=\text{true, otherwise }\sigma\]
 
-            \vspace*{0.5cm}
-            Note that in our definitions we did not consider the termination of the while loop. 
-          \end{frame}
+%             \vspace*{0.5cm}
+%             Note that in our definitions we did not consider the termination of the while loop. 
+%           \end{frame}
   \end{document}
