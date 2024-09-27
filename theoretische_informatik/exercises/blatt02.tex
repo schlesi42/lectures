@@ -1,0 +1,77 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{2}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+\aufgabetitel{$6$}{Verbände}\\
+Ein Verband ist eine Menge $V$ zusammen mit Operationen $\sqcap, \sqcup:V\times V\to V$, so dass gilt:
+\begin{itemize}
+  \item Assoziaivität: $a \sqcap (b \sqcap c) = (a \sqcap b) \sqcap c$ und $a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$ für alle $a,b,c \in V$.
+  \item Kommutativität: $a \sqcap b = b \sqcap a$ und $a \sqcup b = b \sqcup a$ für alle $a,b \in V$.
+  \item Verschmelzung: $a \sqcap (a \sqcup b) = a$ und $a \sqcup (a \sqcap b) = a$ für alle $a,b \in V$.
+\end{itemize}
+\begin{enumerate}[a)]
+  \item Zeigen Sie, dass die Potenzmenge einer Menge $M$ zusammen mit den Operationen $\sqcap = \cap$ und $\sqcup = \cup$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Potenzmenge der Menge $\{a,b,c\}$ und machen Sie sich die Operationen klar.
+  \item Zeigen Sie, dass die Menge der natürlichen Zahlen zusammen mit den Operationen $\sqcap = \min$ und $\sqcup = \max$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Menge $\{1,2,3\}$ und machen Sie sich die Operationen klar.
+  \item Zeigen Sie, dass die Menge der Teiler einer natürlichen Zahl $n$ zusammen mit den Operationen $\sqcap = \gcd$ und $\sqcup = lcm$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Menge der Teiler von $12$ und machen Sie sich die Operationen klar.
+\end{enumerate}
+
+\aufgabetitel{$3$}{Idempotenzgesetz}\\
+Zeigen Sie das Idempotenzgesetz für Verbände: $a \sqcap a = a$ und $a \sqcup a = a$ für alle $a \in V$.
+
+\aufgabetitel{$3$}{Beweis Zusammenhang inf und sup}\\
+Zeigen Sie $\forall u,v\in V: u\sqcap v = u \Leftrightarrow u\sqcup v = v$ in einem Verband $V$.
+
+\aufgabetitel{$10$}{Induzierter Verband}\\
+Sei $(V,\sqsubseteq)$ eine Ordnung, $W\subseteq V$. Macht Euch zunächst nochmal die folgenden Begriffe klar:
+\begin{itemize}
+  \item minimales Element, maximales Element von $W$
+  \item größtes Element, kleinstes Element von $W$
+  \item obere, untere Schranke von $W$
+  \item Supremum, Infimum von $W$
+\end{itemize}
+\begin{enumerate}[a)]
+  \item Zeigen Sie (bzw. macht Euch klar), dass für $w_1,...,w_n\in V$ gilt: $\inf(w_1,...,1_n)\sqsubseteq w_i$ für alle $i\in\{1,...,n\}$ und $w_i\sqsubseteq \sup(w_1,...,w_n)$ für alle $i\in\{1,...,n\}$.
+  \item Zeigen Sie, dass $(V,\sqcup,\sqcap)$ einen Verband bildet, wenn $\sqcup=\sup$ und $\sqcap=\inf$ gesetzt wird und je zwei Elemente ein Supremum und ein Infimum besitzen, also $\inf(u,v)=u\sqcap v$ und $\sup(u,v)=u\sqcup v$ für alle $u,v\in V$.
+\end{enumerate}
+
+\aufgabetitel{$5$}{Induzierte Ordnung}\\
+Sei $(V,\sqcap,\sqcup)$ ein Verband. Definiere eine Ordnung $\sqsubseteq$ auf $V$ durch $a\sqsubseteq b \Leftrightarrow a\sqcap b = a$. Zeigen Sie, dass $(V,\sqsubseteq)$ eine Ordnung ist.
+
+\aufgabetitel{$2$}{Homomorphismen von Verbänden}\\
+Geben Sie Beispiele für Homomorphismen von Verbänden an.
+
+\aufgabetitel{$8$}{Beweis im Kalkül des natürlichen Schließens}\\
+Beweisen Sie im Kalkül des natürlichen Schließens:
+\begin{enumerate}[a)]
+  \item $\vdash (A\to(B\to C))\to(A\wedge B\to C)$
+  \item $\vdash (A\to B)\to(\neg B\to \neg A)$
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+  \item $\forall x(\neg P(x)\to Q(x)),\neg Q(t)\vdash P(t)$
+\end{enumerate}
+
+\aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
+Beweisen Sie im Sequenzenkalkül:
+\begin{enumerate}[a)]
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+  \item $\vdash\forall x.P(x)\wedge\forall x.Q(x)\to\forall y.(P(y)\wedge Q(y))$
+\end{enumerate}
+\end{document}
