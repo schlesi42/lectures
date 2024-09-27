@@ -358,16 +358,17 @@
   We want to show: $((p\wedge q)\rightarrow q)\rightarrow r\vdash (p\wedge q)\rightarrow r$
 
   \begin{prooftree}
-    \AxiomC{$p\wedge q$}
+    \AxiomC{$[p\wedge q]^1$}
     \RightLabel{$\wedge E$}
     \UnaryInfC{$q$}
     \RightLabel{$\rightarrow I$}
     \UnaryInfC{$(p\wedge q)\rightarrow q$}
     
+    
     \AxiomC{$((p\wedge q)\rightarrow q)\rightarrow r$}
     \RightLabel{$\rightarrow E$}
     \BinaryInfC{$r$}
-    \RightLabel{$\rightarrow I$}
+    \RightLabel{$\rightarrow I_1$}
     \UnaryInfC{$(p\wedge q)\rightarrow r$}
   \end{prooftree}
 \end{frame}

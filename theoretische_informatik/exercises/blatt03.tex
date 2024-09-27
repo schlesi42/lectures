@@ -1,0 +1,60 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{3}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+\aufgabetitel{$8$}{Beweis im Kalkül des natürlichen Schließens}\\
+Beweise, die im Kalkül des natürlichen Schließens geführt werden, bestehen aus einer Folge von Zeilen, wobei jede Zeile entweder eine Voraussetzung (Axiom) ist oder durch Anwendung einer der Schlussregeln, die wir in der Vorlesung hatten.
+Die Beweise werden in dem Kalkül praktisch von oben nach unten durchgeführt. Also man versucht, die zu zeigende Aussage ganz unten zu erreichen und startet oben mit den Voraussetzungen. Teilweise erfordert es aber auch, neue Voraussetzungen einzuführen, die man letztlich mit den Pfeilregeln (also Implikationen) entlastet.\\
+In den Slides ist ein Beispiel.
+
+Beweisen Sie im Kalkül des natürlichen Schließens:
+\begin{enumerate}[a)]
+  \item $\vdash (A\to(B\to C))\to(A\wedge B\to C)$
+  \item $\vdash (A\to B)\to(\neg B\to \neg A)$
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+  \item $\forall x(\neg P(x)\to Q(x)),\neg Q(t)\vdash P(t)$
+\end{enumerate}
+
+\aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
+Der Sequenzenkalkül ist ein anderer Kalkül. In jeder Zeile stehen Sequenzen von Formeln (also Listen von Formeln), getrennt durch einen Doppelpfeil. Die Semantik ist, dass die Konjunktion der Formeln links vom Pfeil die Disjunktion der Formeln rechts vom Pfeil impliziert. Die Schlussregeln sind in den Slides.
+Anders als beim Kalkül des natürlichen Schließens startet man hier üblicherweise unten mit dem Ziel und arbeitet sich nach oben vor, bis man zu Axiomem gelangt.\\
+Beweisen Sie im Sequenzenkalkül:
+\begin{enumerate}[a)]
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+  \item $\vdash\forall x.P(x)\wedge\forall x.Q(x)\to\forall y.(P(y)\wedge Q(y))$
+\end{enumerate}
+
+\aufgabetitel{$4$}{Terminologien}\\
+Macht Euch nochmal folgende Statements klar:
+\begin{enumerate}[a)]
+  \item $M,\sigma\models\varphi$ für eine Struktur $M$, eine Variablenbelegung $\sigma$ und eine Formel $\varphi$
+  \item $M\models\varphi$ für eine Struktur $M$ und eine Formel $\varphi$
+  \item $M\vdash\varphi$ für eine Struktur $M$ und eine Formel $\varphi$
+  \item $T\models\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  \item $T\vdash\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  \item $T\vdash\varphi\Rightarrow T\models\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  \item $T\models\varphi\Rightarrow T\vdash\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  \item $Erf\hspace{0.1cm}T$ für eine Theorie $T$
+  \item $T\models\varphi\Leftrightarrow$ nicht $Erf\hspace{0.1cm} T\cup\{\neg\varphi\}$ für eine Theorie $T$ und eine Formel $\varphi$
+  
+\end{enumerate}
+\end{document}
