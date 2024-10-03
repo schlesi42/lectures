@@ -21,23 +21,58 @@
 % \end{notes}
 
 
-\aufgabetitel{$14$}{Wahrscheinlichkeitstheorie}\\
-Wiederholt und definiert die folgenden Begriffe:
+% \aufgabetitel{$14$}{Wahrscheinlichkeitstheorie}\\
+% Wiederholt und definiert die folgenden Begriffe:
+% \begin{enumerate}[a)]
+%   \item Ergebnisraum $\Omega$
+%   \item Elementarereignis 
+%   \item Ereignis
+%   \item mehrstufiges Zufallsexperiment 
+%   \item absolute Häufigkeit $h_n(A)$
+%   \item relative Häufigkeit $r_n(A)$
+%   \item Wahrscheinlichkeitsmaß $P$
+%   \item bedingte Wahrscheinlichkeit $P(A|B)$
+%   \item stochastische Unabhängigkeit 
+%   \item Zufallsvariable 
+%   \item Verteilungsfunktion 
+%   \item Erwartungswert 
+%   \item Varianz 
+%   \item Standardabweichung 
+% \end{enumerate}
+
+
+\aufgabetitel{$5$}{Erste Explorative Datenanalyse in Google Colab}\\
+Macht Euch mit Kaggle Datensätzen vertraut. Ihr findet eine Übersicht unter \url{https://www.kaggle.com/datasets}. 
+
+Ladet einen Datensatz Eurer Wahl in Google Colab und lasst Euch für eine Spalte Eurer Wahl (die quantitative Werte enthält) die deskriptive Statistik ausgeben.
+
+Lasst Euch für die Spalte auch den Boxplot ausgeben. Wie interpretiert ihr den?
+
+\aufgabetitel{$5$}{Lokale Ausführung Datenanalyse mit Jupyter Notebook}\\
+Installiert Python (wenn nicht vorhanden) und Jupyter Lab auf Eurem Rechner, startet Jupyter Lab und führt die gleiche Analyse wie in der vorherigen Aufgabe durch.
+
+\aufgabetitel{$5$}{Fortgeschritten: Erste Infos mit Pandas extrahieren}\\
+Ladet Euch den  Datensatz über die meist gestreamten Songs in Spotify herunter und analysiert ihn. Ihr findet ihn unter \url{https://www.kaggle.com/datasets/abdulszz/spotify-most-streamed-songs}.
+%\url{https://www.kaggle.com/uciml/iris}.
+
+Ladet als erstes den Datensatz in Google Colab hoch und versucht, folgende Dinge herauszufinden:
 \begin{enumerate}[a)]
-  \item Ergebnisraum $\Omega$
-  \item Elementarereignis 
-  \item Ereignis
-  \item mehrstufiges Zufallsexperiment 
-  \item absolute Häufigkeit $h_n(A)$
-  \item relative Häufigkeit $r_n(A)$
-  \item Wahrscheinlichkeitsmaß $P$
-  \item bedingte Wahrscheinlichkeit $P(A|B)$
-  \item stochastische Unabhängigkeit 
-  \item Zufallsvariable 
-  \item Verteilungsfunktion 
-  \item Erwartungswert 
-  \item Varianz 
-  \item Standardabweichung 
+  \item Wie viele Zeilen und Spalten hat der Datensatz?
+  \item Welche Spalten sind vorhanden?
+  \item Welche Wertetypen sind den jeweiligen Spalten enthalten?
+  \item Wie viele Streams hat der Song \texttt{Shape of You}?
+  \item Wie viele Streams haben die Songs von \texttt{Ed Sheeran} insgesamt?
 \end{enumerate}
 
+\aufgabetitel{$5$}{Fortgeschritten: Python}\\
+Installiert Python (wenn nicht vorhanden) und schreibt ein Programm, das folgendes Problem löst:
+Eine Funktion \begin{verbatim}two_sums\end{verbatim} erhält eine Liste von Zahlen (Integer) und ein Zahl (Integer) als Zielwert. Die Funktion soll durch die Liste gehen und die Indizes von zwei Zahlen der Liste zurückgeben, die die Summe des Zielwerts ergeben. 
+\textit{Hinweis:} Die Indizes in Listen starten bei 0.
+
+Beispiel:
+\begin{verbatim}
+two_sums([2,7,11,15],9)=[0,1],
+two_sums([3,2,4],6)=[1,2]
+\end{verbatim}
+  
 \end{document}
