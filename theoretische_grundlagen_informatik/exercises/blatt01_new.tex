@@ -1,0 +1,57 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+\aufgabetitel{$9$}{Mengen} \\
+Bestimmen Sie die folgenden Mengen:
+\begin{enumerate}[(i)]
+  \item $\{a,b,c\}\cup \{b,c,d\}$
+  \item $\{a,b,c\}\cap \{b,c,d\}$
+  \item $\{a,b,c\}\backslash \{b,c,d\}$
+  \item $\mathscr{P}(\{1,a\})$
+  \item $\mathscr{P}(\{1,\{1\}\})$
+  \item $\mathscr{P}(\{1,2,3\})\backslash\mathscr{P}(\{1,2\})$
+  \item $\bigcap_{i\in\{2,6\}}\{\frac{i}{2},i+1\}$ (Hinweis: $\bigcap_{i\in I}A_i=\{x|\forall i\in I:x\in A_i\}$ f"ur eine Indexmenge $I$)
+  \item $\bigcup_{n\in\mathbb{N}}\{n,n+1,2n\}$ (Hinweis: $\bigcup_{i\in I}A_i=\{x|\exists i\in I:x\in A_i\}$ f"ur eine Indexmenge $I$)
+  \item $\mathscr{P}(\mathscr{P}(\mathscr{P}(\emptyset)))$
+\end{enumerate}
+
+\aufgabetitel{$6$}{Prädikatenlogik} \\
+Gegeben seien folgende Prädikate: 
+\begin{enumerate}
+  \item $B(x,y): x$ besiegt $y$ 
+  \item $F(x): x$ ist Fußball-Nationalmannnschaft
+  \item $T(x,y): x$ ist Torwart von $y$
+\end{enumerate}
+und folgende Konstanten: 
+\begin{enumerate}
+  \item de: deutsche Nationalmannschaft
+  \item us: Nationalmannschaft der USA
+  \item br: brasilianische Nationalmannschaft
+\end{enumerate} 
+Drücken Sie folgende Aussagen in der Prädikatenlogik aus: 
+\begin{enumerate}
+  \item Jede Fußball-Nationalmannschaft hat einen Torwart.
+  \item Wenn de gegen us gewinnt, dann verliert de nicht jedes Spiel.
+  \item br schlägt jedes Team, gegen das de verliert, mit Ausnahme von sich selbst.
+\end{enumerate} 
+\end{document}
