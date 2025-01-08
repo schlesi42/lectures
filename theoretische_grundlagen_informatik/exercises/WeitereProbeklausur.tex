@@ -1,0 +1,65 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+
+\iforiginal{\input{include/kopf.tex}}
+\aufgabetitel{$4$}{Mengenoperationen}\\
+Gegeben seien die Mengen $A=\{(1,1),(2,2),(3,2)\}$ und $B=\{(1,1),2,a,b\}$.
+\begin{enumerate}[(i)]
+    \item Bestimmen Sie $A\cap B$.
+    \item Bestimmen Sie $A\cup B$.
+    \item Bestimmen Sie $A\backslash B$.
+    \item Bestimmen Sie $\mathscr{P}(A\cap B)$
+    
+\end{enumerate}
+
+\aufgabetitel{$2$}{Intervall als Mengendeklaration}\\
+Ein Intervall auf einer Grundmenge, z.B. $\mathbb{R}$ ist eine Menge von Zahlen, die zwischen zwei Grenzen liegen.
+Man schreibt dann z.B. $[a,b]$ für die Mengen der Zahlen, die zwischen $a$ und $b$ liegen, wobei $a$ und $b$ mit dazugehören.\\
+Definieren Sie das Intervall $[a,b]\subseteq\mathbb{R}$ als Mengendeklaration.
+
+\aufgabetitel{$10$}{Relationen und Funktionen}\\ 
+Sei $X=\{1,2,3,4,5,6,7,8\}$, $Y=\{a,b,c\}$ und $f\subseteq X\times Y$ mit 
+
+$f=\{(1,a),(2,a),(3,c),(4,b),(5,a),(6,b),(7,c),(8,a)\}$.
+\begin{enumerate}[(i)]
+    \item Ist $f$ eine Funktion? Begründen Sie Ihre Antwort.
+    \item Wir definieren eine neue Relation $R\subseteq X\times X$ mit $R=\{(x,y)\in X\times X\mid f(x)=f(y)\}$. Beweisen Sie, dass es eine Äquivalenzrelation ist.
+    \item Die Menge der Äquivalenzklassen von $R$ ist definiert als die Menge $X/R=\{[x]\mid x\in X\}$, wobei $[x]=\{y\in X\mid (x,y)\in R\}$ als \textit{Äquivalenzklasse} von $x$ bezeichnet wird (das sind wie definiert alle Elemente, die mit einem gegebenen $x\in M$ in Relation stehen). Bestimmen Sie $X/R$.
+\end{enumerate}
+
+\aufgabetitel{$8$}{Relationen}\\
+Beantworten Sie die folgenden Fragen.
+\begin{enumerate}[(i)]
+    \item Was ist eine Relation?
+    \item Was ist eine reflexive Relation?
+    \item Was ist eine symmetrische Relation?
+    \item Was ist eine antisymmetrische Relation?
+    \item Was ist eine transitive Relation?
+    \item Was ist eine Äquivalenzrelation?
+    \item Was ist eine Ordnungsrelation?
+    \item Was ist eine Funktion?
+\end{enumerate}
+
+\aufgabetitel{$9$}{Relationen}\\
+Sei $M=\{1,2,3\}$ und $R\subseteq M\times M$ mit $1R1, 1R2, 2R2, 2R3, 3R1$.
+\begin{enumerate}[(i)]
+    \item Ist $R$ symmetrisch? Begründen Sie Ihre Antwort.
+    \item Ist $R$ antisymmetrisch? Begründen Sie Ihre Antwort.
+    \item Ist $R$ transitiv? Begründen Sie Ihre Antwort.
+    \item Zeichnen Sie $R$ als Graphen.
+    \item Geben Sie $R$ als Adjazaenzmatrix an.
+    \item Berechnen Sie $R\circ R$ und geben Sie das Ergebnis als Adjazenzmatrix und Graphen an.
+    \item Sei $R^{-1}=\{(y,x)\mid (x,y)\in R\}$ die Relation, die faktisch $R$ umkehrt. Geben Sie $R^{-1}$ als Adjazenzmatrix und Graphen an.
+\end{enumerate}
+\end{document}

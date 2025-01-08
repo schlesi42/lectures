@@ -457,7 +457,106 @@ Sei $R\subseteq M\times M$ eine Relation "uber einer Menge $M$ (Man beachte, das
 \end{definition}
 Die Komposition ist praktisch die \glqq Hintereinanderschaltung\grqq der Relationen $R$ und $S$.
 \end{frame}
+
+
+\begin{frame}{Algorithmische Berechnung der Komposition (Matrixmultiplikation)}
+  
+  \begin{example}
+    Seien $R$ und $S$ zwei Relationen auf den Mengen $M$ und $N$ mit den Adjazenzmatrizen:
+    \[
+    R = \begin{pmatrix}
+      1 & 0 & 1 \\
+      0 & 1 & 0 \\
+      1 & 0 & 0
+    \end{pmatrix}
+    \quad \text{und} \quad
+    S = \begin{pmatrix}
+      0 & 1 & 0 \\
+      1 & 0 & 1 \\
+      0 & 1 & 0
+    \end{pmatrix}
+    \]
+    Sei $R=(\alpha_{i,j})_{1\leq i,j\leq n}$, $S=(\beta_{i,j})_{1\leq i,j\leq n}$
+    Um das $(i,j)$-te Element von $R\circ S$, $\gamma_{i,j}$ zu berechnen, definieren wir $\gamma_{i,j}=\bigvee_{\nu=1}^n \alpha_{i,\nu}\wedge\beta_{\nu,j}$.
+    Das bedeutet, dass wir das Element der Zielmatrix in Zeile $i$ und Spalte $j$ so erhalten, indem wir die $i-$te Zeile von $R$ und die $j-$te Spalte von $S$ durchgehen und suchen, ob $1$ auf $1$ trifft. Finden wir ein Paar, wird das Zielelement $1$, sonst $0$.
+    
+  \end{example}
+\end{frame}
+
+
+\begin{frame}{Ordnungen und "Aquivalenzrelationen}
+  \begin{definition}[Ordnung]
+    Eine Relation $R\subseteq M\times M$ hei"st \textbf{Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist.
+  \end{definition}
+  \begin{definition}["Aquivalenzrelation]
+    Eine Relation $R\subseteq M\times M$ hei"st \textbf{"Aquivalenzrelation}, wenn sie reflexiv, symmetrisch und transitiv ist.
+  \end{definition}
+\end{frame}
+
+
+  \begin{frame}{Hasse-Diagramme}
+    Hasse-Diagramme sind eine spezielle Art von Graphen, die Ordnungen visualisieren. Sie sind besonders n"utzlich, um die Struktur von Ordnungen zu verdeutlichen.
+
+    \begin{tikzpicture}
+      \node (b) at (0,0) {b};
+      \node (d) at (1,1) {d};
+      \node (c) at (2,0) {c};
+      \node (a) at (1,-1) {a};
+
+      \draw (a) -- (b);
+      \draw (a) -- (c);
+      \draw (b) -- (d);
+      \draw (c) -- (d);
+    \end{tikzpicture}
+
+    In dem Beispiel ist die Ordnung $\{(a,a),(a,b),(a,c),(a,d),(b,b),(b,d),(c,c),(c,d),(d,d)\}$ dargestellt.
+
+    Die Idee ist, die reflexiven und transitiven Beziehungen nicht darzustellen. Sie gelten implizit. Und gilt $aRb$ in der Ordnung $R$, dann wird $a$ unterhalb von $b$ angeordnet und beide werden mit einer Linie verbunden.
+    
+  \end{frame}
+  \begin{frame}{Partitionen}
+    \begin{definition}[Partition]
+      Eine Partition einer Menge $M$ ist eine Menge von nicht-leeren Teilmengen $\{A_i\}_{i\in I}$, so dass
+      \begin{itemize}
+        \item $\bigcup_{i\in I} A_i = M$ (die Vereinigung aller Teilmengen ergibt die Menge $M$)
+        \item $A_i \cap A_j = \emptyset$ f"ur alle $i \neq j$ (die Teilmengen sind paarweise disjunkt)
+      \end{itemize}
+    \end{definition}
+    \begin{example}
+      Sei $M = \{1, 2, 3, 4\}$. Eine m"ogliche Partition von $M$ ist $\{\{1, 2\}, \{3, 4\}\}$.
+    \end{example}
+  \end{frame}
+\begin{frame}{Zusammenhang von Partitionen und "Aquivalenzrelationen}
+  \begin{itemize}
+    \item Jede "Aquivalenzrelation auf einer Menge $M$ definiert eine Partition von $M$.
+    \item Umgekehrt definiert jede Partition einer Menge $M$ eine "Aquivalenzrelation auf $M$.
+  \end{itemize}
+  \begin{example}
+    Sei $M = \{1, 2, 3, 4\}$ und die Partition $\{\{1, 2\}, \{3, 4\}\}$. Die entsprechende "Aquivalenzrelation ist:
+    \[
+    R = \{(1, 1), (1, 2), (2, 1), (2, 2), (3, 3), (3, 4), (4, 3), (4, 4)\}
+    \]
+  \end{example}
+\end{frame}
+\begin{frame}{Zusammenhang von Partitionen und "Aquivalenzrelationen}
+
+  \begin{definition}[Menge der "Aquivalenzklassen]
+    Sei $R$ eine "Aquivalenzrelation auf einer Menge $M$. Die Menge der "Aquivalenzklassen von $M$ bzgl. $R$ (auch bezeichnet als Quotienten- oder Faktormenge) ist definiert als:
+    \[M/R := \{[x]_R \mid x \in M\}\]
+    wobei $[x]_R := \{y \in M \mid (x, y) \in R\}$ die "Aquivalenzklasse von $x$ bzgl. $R$ ist.
+  \end{definition}
+  Es gilt, dass zu jeder "Aquivalenzrelation $R\subseteq M\times M$ die Menge der "Aquivalenzklassen $M/R$ eine Partition bildet. Umgekehrt gibt es zu jeder Partition $P\subseteq\mathscr{P}(M)$ eine passende "Aquivalenzrelation $R\subseteq M\times M$, so dass also $M/R=P$.
+\end{frame}
+
+\begin{frame}{Reflexiv-transitive H"ulle}
+Zu jeder Relation $R\subseteq M\times M$ l"asst sich die reflexiv-transitive H"ulle $R^*$ bilden. Das ist die kleinste (im Sinne $\subseteq$) $R$ enthaltende Relation, die reflexiv und transitiv ist.
+
+Es gilt $R^*=\bigcup_{n=0}^\infty R^n$ mit $R^0=Id$, $R^{n+1}=R^n\circ R$. Dabei ist $Id=\{(x,x)|x\in M\}$ die Relation, die jedes Element und nur diese mit sich selbst in Beziehung setzen. 
+
+Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"ugt bis $\bigcup{i=0}^n R^i$ station"ar wird.
+\end{frame}
 \subsection{Funktionen}
+
 \begin{frame}{Agenda}
    
     
@@ -472,6 +571,15 @@ Die Komposition ist praktisch die \glqq Hintereinanderschaltung\grqq der Relatio
   Wir notieren eine Relation $f\subseteq M\times N$, die eine Funktion ist auch mit $f:M\to N, x\mapsto f(x)$.
 \end{frame}
 
+
+  \begin{frame}{Ordnungen und "Aquivalenzrelationen}
+    \begin{definition}[Ordnungen]
+      Eine Relation $R\subseteq M\times M$ hei"st \textbf{Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist.
+    \end{definition}
+    \begin{definition}["Aquivalenzrelationen]
+      Eine Relation $R\subseteq M\times M$ hei"st \textbf{"Aquivalenzrelation}, wenn sie reflexiv, symmetrisch und transitiv ist.
+    \end{definition}
+  \end{frame}
 \begin{frame}{Eigenschaften von Funktionen}
 \begin{definition}[Eigenschaften von Funktionen]
   Eine Funktion $f:M\to N$ hei"st 
