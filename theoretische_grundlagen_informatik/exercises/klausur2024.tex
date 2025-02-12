@@ -1,0 +1,125 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+
+\iforiginal{\input{include/kopf.tex}}
+\aufgabetitel{$4$}{Mengen und Funktionen}\\
+Gegeben seien die Mengen $A=\{a,\{a,b\},c\}$ und $B=\{\{c\},a\}$.
+\begin{enumerate}[(a)]
+\item Geben Sie die Menge $A\cup B$ an.
+\item Geben Sie die Menge $A\cap B$ an.
+\item Geben Sie die Menge $A\setminus B$ an.
+\item Geben Sie $\mathscr{P}(B)$ an.
+
+\end{enumerate}
+
+\aufgabetitel{$10$}{Aussagen zu Mengen}\\
+Gegeben sei die Menge $A=\{1,2,\{1\},\{1,2\}\}$, $\mathscr{P}(A)$ die Potenzmenge von $A$. Bewerten Sie die folgenden Aussagen (jeweils ja oder nein angeben).
+\begin{enumerate}[(a)]
+\item $1\in A$
+\item $\{1\}\in A$
+\item $\{1\}\subseteq A$
+\item $\{\{1\}\}\in A$
+\item $\{\{1\}\}\subseteq A$
+\item $\{1\}\in\mathscr{P}(A)$
+\item $\emptyset\in A$
+\item $\emptyset\in\mathscr{P}(A)$
+\item $\{\emptyset\}\in\mathscr{P}(A)$
+\item $1\in\mathscr{P}(A)$
+\end{enumerate}
+
+\aufgabetitel{$6$}{Relationen}\\
+Gegeben seien die Relationen $R,S\subseteq\{a,b,c,d\}\times\{a,b,c,d\}$ mit $R=\{(a,b),(b,a),(b,b),(b,c),(d,b)\}$\\und $S=\{(a,c),(a,d),(b,a),(c,b),(d,c)\}$.
+\begin{enumerate}[(a)]
+    \item Stellen Sie $R$ und $S$ als Graphen und Adjazenzmatrix dar.
+    \item Stellen Sie die Relation $R\circ S$ als Graphen dar.
+    \item Stellen Sie die Relation $S\circ R$ als Graphen dar.
+    \item Zeichnen Sie jeweils f"ur $(R\circ S)^*$ und $(S\circ R)^*$ die Hasse-Diagramme, sofern es Ordnungen sind.\\
+    Hinweis: $R^*$ bezeichnet die reflexiv-transitive H"ulle einer Relation $R$.
+
+\end{enumerate}
+
+\aufgabetitel{$8$}{Mengen und Relationen}\\
+F"ur die Menge $M=\{1,2,3\}$ seien folgende Relationen $R_1,R_2,R_3$ auf der Potenzmenge von $M$ definiert (also $R_i\subseteq \mathscr{P}(M)\times\mathscr{P}(M)$ f"ur $1\leq i\leq 3$).
+\begin{enumerate}
+\item $R_1$: \glqq hat die gleiche Anzahl von Elementen wie\grqq
+\item $R_2$: \glqq hat weniger Elemente als\grqq
+\item $R_3$: \glqq hat kein Element gemeinsam mit\grqq
+\end{enumerate}
+\begin{enumerate}[(a)]
+\item Stellen Sie die Relationen $R_1,R_2$ und $R_3$ dar (Format Ihrer Wahl).
+\item Entscheiden Sie, welche Eigenschaften sie haben (einfach nennen, wenn es zutrifft): reflexiv, irreflexiv, symmetrisch, asymmetrisch, antisymmetrisch, transitiv.
+\item Falls es Ordnungen sind, geben Sie die Relation an und zeichnen Sie die jeweiligen Hasse-Diagramme.
+\item Falls es "Aquivalenzrelationen sind, geben Sie die Relation an und geben f"ur die Relation ein Beispiel f"ur zwei "aquivalente, also in Relation stehende Elemente an.
+\end{enumerate}
+
+\aufgabetitel{$5$}{Mengenbeweis}\\
+Zeigen Sie, dass f"ur beliebige Mengen $A,B,X$ gilt: \[X\backslash (A\cap B)=X\backslash A\cup X\backslash B\]
+
+
+\hspace{5cm}
+\newpage
+\underline{\textbf{Formelsammlung}}\\
+Hier eine kleine Formelsammlung. Sie ist nicht vollständig, enthält aber alle wichtigen Statements / Definitionen, die man brauchen könnte.
+\begin{enumerate}
+\item Aussagen- und Pr"adikatenlogik
+\begin{enumerate}
+    \item Distributivgesetz: $A\wedge (B \vee C) \Leftrightarrow (A\wedge B) \vee (A\wedge C)$
+    \item Distributivgesetz: $A\vee (B \wedge C) \Leftrightarrow (A\vee B) \wedge (A\vee C)$
+    \item DeMorgan: $\neg(A\wedge B) \Leftrightarrow \neg A \vee \neg B$
+    \item DeMorgan: $\neg(A\vee B) \Leftrightarrow \neg A \wedge \neg B$
+    \item Idempotenz: $A\wedge A \Leftrightarrow A$
+    \item Idempotenz: $A\vee A \Leftrightarrow A$
+    \item $A\wedge \neg A \Leftrightarrow \bot$
+    \item $A\vee \neg A \Leftrightarrow \top$
+    \item $\neg\neg A \Leftrightarrow A$
+    \item $\neg\forall x\in M: A(x) \Leftrightarrow \exists x\in M: \neg A(x)$
+    \item $\neg\exists x\in M: A(x) \Leftrightarrow \forall x\in M: \neg A(x)$
+\end{enumerate}
+\item Mengen
+\begin{enumerate}
+    \item Teilmenge: $A\subseteq B \Leftrightarrow \forall x\in A: x\in B$
+    \item Potenzmenge: $\mathscr{P}(A) = \{B\mid B\subseteq A\}$
+    \item Vereinigung: $A\cup B = \{x\mid x\in A \vee x\in B\}$
+    \item Schnittmenge: $A\cap B = \{x\mid x\in A \wedge x\in B\}$
+    \item Differenzmenge: $A\setminus B = \{x\mid x\in A \wedge x\notin B\}$
+    \item Distributivgesetz: $A\cap (B \cup C) \Leftrightarrow (A\cap B) \cup (A\cap C)$
+    \item Distributivgesetz: $A\cup (B \cap C) \Leftrightarrow (A\cup B) \cap (A\cup C)$
+    \item DeMorgan: $A\setminus (B\cup C) \Leftrightarrow (A\setminus B) \cap (A\setminus C)$
+    \item DeMorgan: $A\setminus (B\cap C) \Leftrightarrow (A\setminus B) \cup (A\setminus C)$
+    \item Es ist $\bigcup_{i\in I}A_i = \{x\mid \exists i\in I: x\in A_i\}$. 
+    \item Es ist $\bigcap_{i\in I}A_i = \{x\mid\forall i\in I: x\in A_i\}$.
+\end{enumerate}
+\item Relationen
+\begin{enumerate}
+    \item F"ur Mengen $M,N$ ist $R\subseteq M\times N$ eine Relation von $M$ nach $N$.
+    \item $R\subseteq M\times M$ ist reflexiv, wenn $\forall x\in M: (x,x)\in R$.
+    \item $R\subseteq M\times M$ ist symmetrisch, wenn $\forall x,y\in M: (x,y)\in R \Rightarrow (y,x)\in R$.
+    \item $R\subseteq M\times M$ ist antisymmetrisch, wenn $\forall x,y\in M: (x,y)\in R \wedge (y,x)\in R \Rightarrow x=y$.
+    \item $R\subseteq M\times M$ ist transitiv, wenn $\forall x,y,z\in M: (x,y)\in R \wedge (y,z)\in R \Rightarrow (x,z)\in R$.
+    \item $R\subseteq M\times M$ ist eine "Aquivalenzrelation, wenn $R$ reflexiv, symmetrisch und transitiv ist.
+    \item $R\subseteq M\times M$ ist eine Ordnungsrelation, wenn $R$ reflexiv, antisymmetrisch und transitiv ist.
+    \item F"ur eine "Aquivalenzrelation $\sim$ auf $M$ ist $[x]=\{y\in M\mid x\sim y\}$ die "Aquivalenzklasse von $x$, $M/\sim = \{[x]\mid x\in M\}$ die Menge der "Aquivalenzklassen oder Quotientenmenge von $M$ modulo $\sim$. Die Menge der "Aquivalenzklassen ist eine Partition von $M$. Umgekehrt induziert jede Partition eine "Aquivalenzrelation.
+    \item F"ur eine Ordnungsrelation $\leq$ auf $M$ und $X\subseteq M$ ist $g$ ein kleinstes Element von $X$, wenn $\forall x\in X: g\leq x$, $g$ ein minimales Element von $X$, wenn $\forall g'\in X: g'\leq g\Rightarrow g=g'$, maximale und gr"o{\ss}te Elemente analog.
+    \item Es ist $R^*$ die reflexiv-transitive H"ulle f"ur eine Relation $R$.
+\end{enumerate}
+\item Funktionen
+\begin{enumerate}
+    \item Eine Funktion $f:X\to Y$ ist eine Relation (also $f\subseteq X\times Y$), die jedem Element aus der Definitionsmenge $X$ genau ein Element aus der Zielmenge $Y$ zuordnet.
+    \item $f$ ist injektiv, wenn $\forall x_1,x_2\in X: f(x_1)=f(x_2) \Rightarrow x_1=x_2$.
+    \item $f$ ist surjektiv, wenn $\forall y\in Y: \exists x\in X: f(x)=y$.
+    \item $f$ ist bijektiv, wenn $f$ injektiv und surjektiv ist.
+    \item Die Umkehrfunktion $f^{-1}$ ist definiert $f^{-1}(Y)=\{x\in X\mid\exists y\in Y: y=f(x)\}$
+\end{enumerate}
+\end{enumerate}
+\end{document}
