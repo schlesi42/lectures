@@ -519,6 +519,23 @@ Es gilt $R^*=\bigcup_{n=0}^\infty R^n$ mit $R^0=Id$, $R^{n+1}=R^n\circ R$. Dabei
 
 Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"ugt bis $\bigcup{i=0}^n R^i$ station"ar wird.
 \end{frame}
+
+\begin{frame}{Ausgezeichnete Elemente in Ordnungen}
+  \begin{itemize}
+    \item Ein Element $G$ hei\"st \textbf{gr\"o\"stes Element} von $B$, wenn es f"ur alle $b\in B$ gilt, dass $b\leq G$.
+    \item Ein Element $K$ hei"st \textbf{kleinstes Element} von $B$, wenn es f"ur alle $b\in B$ gilt, dass $K\leq b$.
+    \item Ein Element $M$ hei\"st \textbf{maximales Element} von $B$, wenn es kein $a \in B$ gibt mit $M < a$ bzw. pr\"aziser wenn f\"ur alle Elemente $a\in V$ mit $M\leq a$ folgt, dass $a=M$. 
+    \item Ein Element $m \in V$ hei\"st \textbf{minimales Element} von $B$, wenn es kein $b \in B$ gibt mit $b < m$ bzw. pr\"aziser wenn f\"ur alle Elemente $b\in V$ mit $b\leq m$ folgt, dass $b=m$.
+    \item Sei $B \subseteq V$ eine nicht-leere Menge. Dann hei\"st ein Element $x \in B$ \textbf{obere Schranke} von $B$, wenn $\forall y \in B: y \leq x$. 
+    \item Ein Element $z \in B$ hei\"st \textbf{untere Schranke} von $B$, wenn $\forall y \in B: z \leq y$.
+    \item Das Supremum ist - wenn existent - die kleinste obere Schranke von $B$.
+    \item Das Infimum ist - wenn existent - die gr\"o\"ste untere Schranke von $B$.
+  \end{itemize}
+  
+ 
+
+
+\end{frame}
 \subsection{Funktionen}
 
 \begin{frame}{Agenda}
@@ -536,14 +553,7 @@ Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"u
 \end{frame}
 
 
-  \begin{frame}{Ordnungen und "Aquivalenzrelationen}
-    \begin{definition}[Ordnungen]
-      Eine Relation $R\subseteq M\times M$ hei"st \textbf{Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist.
-    \end{definition}
-    \begin{definition}["Aquivalenzrelationen]
-      Eine Relation $R\subseteq M\times M$ hei"st \textbf{"Aquivalenzrelation}, wenn sie reflexiv, symmetrisch und transitiv ist.
-    \end{definition}
-  \end{frame}
+  
 \begin{frame}{Eigenschaften von Funktionen}
 \begin{definition}[Eigenschaften von Funktionen]
   Eine Funktion $f:M\to N$ hei"st 
@@ -585,4 +595,67 @@ Sei $X = \{1,2,3,4,5,6,7,8\}, Y=\{a,b,c\}$, und $f:X\to Y$ definiert durch: $f(1
   \end{enumerate}
 \end{frame}
 
-  \end{document}
+\subsection{Algebraische Strukturen}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+  
+\begin{frame}{Gruppen}
+Eine Gruppe $(G, \cdot)$ ist eine Menge $G$ zusammen mit einer Verknüpfung $\cdot : G \times G \to G$, die folgende Eigenschaften erfüllt:
+\begin{itemize}
+  \item \textbf{Assoziativität:} $\forall a,b,c \in G: (a \cdot b) \cdot c = a \cdot (b \cdot c)$.
+  \item \textbf{Neutrales Element:} Es gibt ein $e \in G$, so dass $\forall a \in G: e \cdot a = a \cdot e = a$.
+  \item \textbf{Inverses Element:} Zu jedem $a \in G$ gibt es ein $b \in G$, so dass $a \cdot b = b \cdot a = e$.
+\end{itemize}
+Eine \textit{Halbgruppe} ist eine Menge mit lediglich assoziativer Verknüpfung. 
+Ein \textit{Monoid} ist eine Gruppe, in der das inverses Element nicht erforderlich ist. Bspl.: Funktionen mit Komposition oder Listen mit Konkatenation.
+Eine \textit{abelsche Gruppe} ist eine Gruppe, in der die Verknüpfung kommutativ ist, also $\forall a,b \in G: a \cdot b = b \cdot a$.
+
+
+\end{frame}
+
+\begin{frame}{Ringe}
+ Ein Ring $(R, +, \cdot)$ ist eine Menge $R$ zusammen mit zwei Verknüpfungen $+$ und $\cdot$, so dass:
+ \begin{itemize}
+   \item $(R, +)$ ist eine abelsche Gruppe.
+   \item $(R, \cdot)$ ist eine Halbgruppe.
+   \item Distributivgesetz: $\forall a,b,c \in R: a \cdot (b + c) = a \cdot b + a \cdot c$ und $(a + b) \cdot c = a \cdot c + b \cdot c$.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Körper}
+ Ein Körper $(K, +, \cdot)$ ist ein Ring, in dem jedes Element $a \in K \setminus \{0\}$ ein multiplikatives Inverses $b \in K$ hat, so dass $a \cdot b = 1$.
+\end{frame}
+
+\subsection{Verb\"ande}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+
+\begin{frame}{Verb\"ande}
+ Ein Verband $(V,\sqcup,\sqcap)$ ist eine Menge $V$ mit zwei Verknüpfungen $\sqcup$ (Supremum) und $\sqcap$ (Infimum), so dass:
+ \begin{itemize}
+  \item Abgeschlossenheit: $\forall a,b \in V: a \sqcup b \in V$ und $a \sqcap b \in V$.
+  \item Assoziativit\"at: $\forall a,b,c \in V: a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$ und $a \sqcap (b \sqcap c) = (a \sqcap b) \sqcap c$.
+  \item Kommutativit\"at: $\forall a,b \in V: a \sqcup b = b \sqcup a$ und $a \sqcap b = b \sqcap a$.
+  \item Absorptionsgesetz: $\forall a,b \in V: a \sqcup (a \sqcap b) = a$ und $a \sqcap (a \sqcup b) = a$.
+ \end{itemize}
+ Daraus folgt dann auch die \textit{Idempotenz}: $\forall a,b \in V: a \sqcup a = a$ und $a \sqcap a = a$.
+\end{frame}
+\begin{frame}{Verb\"ande und Ordnungen}
+  Verb\"ande k\"onnen auch \"uber Ordnungen definiert werden. Sei $(V, \leq)$ eine partielle Ordnung. Dann definieren wir:
+  \begin{itemize}
+    \item Das Supremum: $a \sqcup b = \sup\{a,b\}$, falls es existiert.
+    \item Das Infimum: $a \sqcap b = \inf\{a,b\}$, falls es existiert.
+  \end{itemize}
+  Umgekehrt induziert ein Verband auch eine Ordnung durch
+     \[ \item $a \leq b \Leftrightarrow a \sqcap b = a$\]
+
+\end{frame}
+
+
+\end{document}
