@@ -1,0 +1,588 @@
+\documentclass{beamer}
+\usetheme{CambridgeUS}
+\usepackage{tikz}
+\usepackage[german]{babel}
+\usetikzlibrary{matrix,arrows,fit,positioning, mindmap, trees}
+
+\usepackage[latin1]{inputenc}
+\usefonttheme{professionalfonts}
+\usepackage{times}
+
+\usepackage{xmpmulti}
+\usepackage{animate}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{mathrsfs}  
+\usepackage{bussproofs}
+\usepackage{tikz}
+\usepackage{stmaryrd}
+\usepackage{xcolor}
+\newcommand{\person}[1]{\textcolor{blue}{#1}}
+\newcommand{\highlight}[1]{\textcolor{red}{#1}}
+% \newcommand{\example}[1]{\textcolor{blue}{#1}}
+\usetikzlibrary{shapes.geometric, positioning}
+\graphicspath{ {./images/} }
+%\usetheme{Boadilla}
+%\usecolortheme{crane}
+\title[Diskrete Mathematik]{Wiederholung Diskrete Mathematik (aus Vorlesung Semester 1, Theoretische Grundlagen der Informatik)}
+
+\author[Sebastian Schlesinger]{Prof. Dr.-Ing. Sebastian Schlesinger}
+\institute[HWR Berlin]{Berlin School for Economics and Law}
+\date{\today}
+\begin{document}
+ \begin{frame}
+\titlepage
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+\section{Aussagenlogik}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}
+\frametitle{Aussagen}
+
+Unter einer \textbf{Aussage} versteht man einen sprachlichen Ausdruck, dem man eindeutig einen der beiden Wahrheitswerte w (\glqq wahr\grqq) bzw. f (\glqq falsch\grqq) zuordnen kann. 
+
+Aussagen werden mit Gro\ss buchstaben bezeichnet, \[A:Beschreibung\]
+und k"onnen mit logischen Operationen verkn"upft werden. Grundlegende mathematische Aussagen, die nicht aus anderen Aussagen abgeleitet werden k"onnen, nennt man \textbf{Axiome}.
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Logische Operationen}
+  Logische Aussagen k"onnen durch die in der folgenden Tabelle angegebenen Operationen verkn"upft werden.
+  
+  \begin{tabular}[h]{c|c|c}
+   
+    Bezeichnung & Formelzeichen & Semantik (Aussage wahr gdw) \\
+    \hline
+    Negation & $\neg A$ &  A falsch ist \\
+    Konjunktion & $A\wedge B$ &  A und B wahr sind \\
+    Disjunktion & $A\vee B$ &  A oder B wahr ist \\
+    Implikation & $A\Rightarrow B$ &  A falsch oder B wahr \\
+    "Aquivalenz & $A\Leftrightarrow B$ & A und B "aquivalent 
+
+
+    \end{tabular}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Wahrheitstabelle}
+  In der folgenden Tabelle sind die Wahrheitswerte der vorgestellten Verkn"upfungen angegeben. Dabei steht w f"ur wahr und f f"ur falsch.
+  \begin{tabular}[h]{c|c|c|c|c|c|c}
+   
+    $A$ & $B$ & $\neg A$ & $A\wedge B$ & $A\vee B$ & $A\Rightarrow B$ & $A\Leftrightarrow B$ \\
+    \hline
+    w & w & f & w & w & w & w \\
+    w & f & f & f & w & f & f \\
+    f & w & w & f & w & w & f \\
+    f & f & w & f & f & w & w
+    
+  \end{tabular}
+  
+  \vspace{5mm}
+  \textbf{Hinweis:} Statt $w$ f"ur \textit{wahr} und $f$ f"ur \textit{falsch} werden auch die Symbole $\top$ und $\bot$ verwendet.
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gesetze f"ur logische Operationen}
+  F"ur logische Operationen gelten die folgenden Identit"aten. 
+  \begin{itemize}
+    \item Assoziativgesetze: \[(A\wedge B)\wedge C = A\wedge(B\wedge C)\] \[(A\vee B)\vee C = A\vee(B\vee C)\]
+    \item Kommutativgesetze: \[A\wedge B = B\wedge A\]\[A\vee B = B\vee A\]
+    \item Distributivgesetze: \[A \wedge (B\vee C) = (A\wedge B)\vee (A\wedge C)\] \[A\vee (B\wedge C) = (A\vee B)\wedge (A\vee C)\]
+  \end{itemize}
+   
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Gesetze f"ur logische Operationen}
+  F"ur logische Operationen gelten die folgenden Identit"aten. 
+  \begin{itemize}
+    \item De Morgansche Regeln: \[\neg(A\wedge B) = (\neg A)\vee(\neg B)\]\[\neg(A\vee B) = (\neg A)\wedge(\neg B)\]
+    \item Idempotenz: \[\neg(\neg A) = A\]\[A\vee A = A\]\[A\wedge A = A\]
+    \item K"urzungsregeln: \[A\vee\bot=A\]\[A\wedge\top=A\]
+  \end{itemize}
+   
+\end{frame}
+
+\section{Pr"adikatenlogik}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}{Quantoren}
+ 
+  \begin{definition}[Quantoren]
+    Wir definieren folgende Notation:
+    \begin{itemize}
+      \item Mit $\forall x:A(x)$ definieren wir, dass eine Aussage $A$, die eine Variable $x$ beinhaltet, f"ur alle Werte von $x$ gelten soll ("ublicherweise wird dann auch eine Grundmenge, aus denen die $x$ stammen sollen, angegeben).
+      \item Mit $\exists x:A(x)$ dr"ucken wir aus, dass es ein $x$ geben soll, so dass $A(x)$ gilt.
+    \end{itemize}
+  \end{definition}
+
+ 
+\end{frame}
+
+\begin{frame}{Beispiele pr\"adikatenlogischer Formeln}
+  Sei $f:D\to \mathbb{R}$ mit $D\subseteq\mathbb{R}$ eine Funktion. Dann ist $f$ in $x_0\in D$ \textbf{stetig}, wenn \[\forall\varepsilon>0\exists\delta>0\forall x\in D:|x-x_0|<\delta\Rightarrow |f(x)-f(x_0)|<\varepsilon\]
+
+  Um auszudr"ucken, dass genau ein Element in einer Menge existiert, kann man das wie folgt formulieren: \[\exists! x\in M: A(x):\Leftrightarrow \exists x\in M: A(x) \wedge \forall y\in M: A(y)\Rightarrow y=x\]
+
+\end{frame}
+
+\section{Diskrete Mathematik}
+\subsection{Mengenlehre}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}
+  \frametitle{Mengendefinition}
+  \begin{definition}[Naive Mengendefinition]
+    Eine Menge ist die Zusammenfassung von bestimmten unterschiedlichen
+    Objekten (die Elemente der Menge) zu einem neuen Ganzen.
+    Wir schreiben $x\in M$, falls das Objekt $x$ zur Menge $M$ geh"ort.
+    Wir schreiben $x\notin M$, falls das Objekt $x$ nicht zur Menge $M$ geh"ort.
+    Falls $x\in M$ und $y\in M$ gilt, schreiben wir auch $x, y \in M$.
+    Eine Menge, welche nur aus endlich vielen Objekten besteht (eine endliche
+    Menge), kann durch explizite Auflistung dieser Elemente spezifiziert
+    werden.
+  \end{definition}
+    Beispiel: $M=\{2,3,5,7\}$.
+
+    Hierbei spielt die Reihenfolge der Auflistung keine Rolle:
+    \[\{2,3,5,7\}=\{7,5,3,2\}\]
+    Auch Mehrfachauflistungen spielen keine Rolle:
+    \[\{2,3,5,7\}=\{2,2,2,3,3,5,7\}\]
+  \end{frame}
+
+\begin{frame}{Mengennotation}
+Mengen k"onnen definiert werden durch
+\begin{itemize}
+  \item Aufz"ahlung der Elemente
+  \item Formulierung von Bedingungen in der Form $M:=\{x|p(x)\}$, wobei $p$ ein \textit{Pr"adikat}, also eine Aussage ist, die $x$ enth"alt, so dass man jeweils bei Einsetzen von $x$ entscheiden kann, ob sie wahr (und damit das Element zur Menge geh"ort) oder falsch ist (und damit das Element $x$ nicht zu $M$ geh"ort).
+\end{itemize}
+  Wir schreiben zur Abk"urzung auch $M:=\{x\in N|p(x)\}$ statt $M:=\{x|x\in N\wedge p(x)\}$.
+\end{frame}
+\begin{frame}
+  \frametitle{Besondere Mengen}
+  Eine besonders wichtige Menge ist die leere Menge $\emptyset = \{\}$, die keinerlei
+Elemente enth"alt.
+
+In der Mathematik hat man es h"aufig auch mit unendlichen Mengen zu
+tun (Mengen, die aus unendlich vielen Objekten bestehen).
+Solche Mengen k"onnen durch Angabe einer Eigenschaft, welche die
+Elemente der Menge auszeichnet, spezifiziert werden.
+
+Beispiele:
+\begin{itemize}
+  \item $\mathbb{N}=\{0,1,2,3,\dots\}$
+  \item $\mathbb{Z}=\{\dots,-2,-1,0,1,2,\dots\}$
+  \item $\mathbb{Q}=\{\frac{p}{q}|p,q\in\mathbb{Z}, q\neq 0\}$
+  
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Warum naive Mengenlehre?}
+  Die \glqq Definition\grqq der Menge ist anf"allig f"ur Widerspr"uche, z.B. die \textbf{Russelsche Antinomie}:
+
+  Man bilde die Menge aller Mengen, die sich nicht selbst als Element enthalten, in Formeln:
+  \[M:=\{N|N\notin N\}\]
+  Frage: Gilt $M\in M$? Das f"uhrt auf einen Widerspruch.
+  
+  Daher hat man die Mengenlehre mit dem \textbf{Zermelo-Fraenkelschen Axiomensystem} auf ein solides Fundament gehoben. Mehr dazu im optionalen Inhalt (ist zu kompliziert f"ur eine erste Einf"uhrung).
+\end{frame}
+
+\begin{frame}{Teilmengen}
+  \begin{definition}[Teilmenge]
+    Seien $A$ und $B$ Mengen. $A\subseteq B$ bedeutet $A$ ist \textit{Teilmenge} von $B$, genau dann, wenn 
+    \[\forall x:x\in A\Rightarrow x\in B\] oder "aquivalent dazu \[\forall x\in A:x\in B\]
+  \end{definition}
+  
+  \begin{lemma}[Gleichheit von Mengen]
+    Seien $A$ und $B$ Mengen. Es ist $A=B$ genau dann, wenn $\forall x:x\in A\Leftrightarrow x\in B$, was wiederum "aquivalent ist zu
+    \[A\subseteq B\wedge B\subseteq A\]  
+  \end{lemma}
+  Um also die Gleichheit von zwei Mengen zu zeigen beweist man "ublicherweise erst $A\subseteq B$ und dann $B\subseteq A$.
+\end{frame}
+
+\begin{frame}{Mengenoperationen}
+  \begin{definition}[Mengenoperationen]
+    Seien $A$ und $B$ Mengen. Wir definieren:
+    \begin{itemize}
+      \item $A\cap B:=\{x|x\in A\wedge x\in B\}$, den \textit{Schnitt} von $A$ und $B$
+      \item $A\cup B:=\{x|x\in A\vee x\in B\}$, die \textit{Vereinigung} von $A$ und $B$
+      \item $A\backslash B:=\{x\in A|x\notin B\}$, die \textit{Differenz} von $A$ und $B$
+    \end{itemize}
+  \end{definition}
+\end{frame}
+
+\begin{frame}{Venn-Diagramme}
+  Die Operationen lassen sich in \textbf{Venn-Diagrammen} visualisieren.
+  \begin{tikzpicture}
+ 
+    % Set A
+    \node [draw,
+        circle,
+        minimum size =3cm,
+        label={135:$A$}] (A) at (0,0){};
+     
+    % Set B
+    \node [draw,
+        circle,
+        minimum size =3cm,
+        label={45:$B$}] (B) at (1.8,0){};
+     
+    % Set intersection label
+    \node at (0.9,0) {$A\cap B$};
+     
+    \end{tikzpicture}
+    \begin{tikzpicture}
+ 
+      % Set A
+      \node [circle,
+          fill=orange,
+          minimum size =3cm,
+          label={135:$A$}] (A) at (0,0){};
+       
+      % Set B
+      \node [circle,
+          fill=orange,
+          minimum size =3cm,
+          label={45:$B$}] (B) at (1.8,0){};
+       
+      % Circles outline
+      \draw[white,thick] (0,0) circle(1.5cm);
+      \draw[white,thick] (1.8,0) circle(1.5cm);
+       
+      % Union text label
+      \node[orange!90!black] at (0.9,1.8) {$A\cup B$};
+       
+      \end{tikzpicture}
+    
+      \begin{tikzpicture}[thick,
+        set/.style = { circle, minimum size = 3cm}]
+     
+    % Set A
+    \node[set,fill=orange,label={135:$A$}] (A) at (0,0) {};
+     
+    % Set B
+    \node[set,fill=white,label={45:$B$}] (B) at (0:2) {};
+     
+    % Circles outline
+    \draw (0,0) circle(1.5cm);
+    \draw (2,0) circle(1.5cm);
+     
+    % Difference text label
+    \node[left,white] at (A.center){$A-B$};
+     
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Weitere Mengen und Eigenschaften}
+  \begin{definition}[Potenzmenge]
+    Mit \[\mathscr{P}(A):=2^A:=\{B|B\subseteq A\}\] bezeichnen wir die \textbf{Potenzmenge}, die Menge aller Teilmengen von $A$.
+
+  \end{definition}
+  \begin{definition}[Disjunktheit]
+    Zwei Mengen $A$ und $B$ sind \textit{disjunkt}, falls $A\cap B=\emptyset$ gilt.
+  \end{definition}
+\end{frame}
+
+\begin{frame}{Beispiele f"ur Mengenaussagen}
+Es gilt:
+\begin{itemize}
+  \item $\forall A:\emptyset\subseteq A$
+  \item $\forall A:A\subseteq A$
+  \item $\mathbb{N}\subseteq\mathbb{Z}\subseteq\mathbb{Q}\subseteq\mathbb{R}$
+  \item $\{1,2,3\}\cap\{4,5,6\}=\emptyset$
+  \item $\mathscr{P}(\{1,2\})=\{\emptyset,\{1\},\{2\},\{1.2\}\}$
+  \item $\mathscr{P}(\emptyset)=\{\emptyset\}$
+  \item $\forall A: A\cap\emptyset=\emptyset$
+  \item $\forall A:A\cup\emptyset=A$
+  \item $\forall A,B,C: A\cap(B\cup C)=(A\cap B)\cup (B\cap C)$
+  \item $\forall A,B,C: A\cup (B\cap C)=(A\cup B)\cap (A\cup C)$
+  \item $\forall A,B,C: A\backslash(B\cup C)=(A\backslash B)\cap (A\backslash C)$
+  \item $\forall A,B,C: A\backslash(B\cap C)=(A\backslash B)\cap (A\backslash C)$
+\end{itemize}
+
+\end{frame}
+\subsection{Relationen}
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}{Kartesisches Produkt}
+  Zun"achst f"uhren wir Paare ein. Diese werden, im Gegensatz zu Mengen mit runden Klammern notiert, z.B.
+  $(1,2)$ das Paar, dessen erste Komponente die Zahl $1$ und zweite Komponente $2$ ist. Hier kommt es auf die Reihenfolge an, z.B. $(1,2)\neq(2,1)$, aber $\{1,2\}=\{2,1\}$, weil 
+  es bei Mengen nur auf die Elemente, nicht auf deren Reihenfolge ankommt.
+  
+  Es gilt insbesondere \[(a,b)=(c,d)\Leftrightarrow a=c\wedge b=d\]
+  \begin{definition}[Kartesisches Produkt]
+    Seien $M,N$ Mengen. Dann ist \[M\times N:=\{(x,y)|x\in M,y|in N\}\] das \textbf{kartesische Produkt} von $M$ und $N$.
+  \end{definition}
+  
+\end{frame}
+
+\begin{frame}{Relationen}
+ Relationen sind intuitiv Strukturen, um Beziehungen zwischen Objekten auszudr"ucken.
+ \begin{definition}[Relationen]
+  Seien $M$ und $N$ Mengen. Eine Teilmenge $R$ des kartesischen Produktes $M\times N$, also 
+  \[R\subseteq M\times N\] nennen wir \textbf{Relation} von $M$ auf $N$.
+ \end{definition}
+\end{frame}
+
+\begin{frame}{Beispiele von Relationen}  
+Ist $M$ die Menge der Menschen, dann ist $R\subseteq M\times M$ die Eltern-Kind-Beziehung ein Beispiel f"ur eine Relation.
+Also $(x,y)\in R\Leftrightarrow x$ ist Elternteil von $y$. 
+
+Ein anderes Beispiel ist die $\leq$ Relation auf $\mathbb{N}$, also $(x,y)\in R\subseteq \mathbb{Z}\times\mathbb{Z}\Leftrightarrow x\leq y$.
+
+Generell kann man eine Relation zwischen zwei Elementen auf zwei Arten notieren: auf die herk"ommliche Weise, also $(x,y)\in R$ oder mittels \textbf{Infixschreibweise} $xRy$.
+\end{frame}
+  
+
+\begin{frame}{Darstellung von Relationen}
+  Eine M"oglichkeit ist die Angabe als Menge, z.B. 
+  \[R=\{(A,B), (A,A), (B,C), (C,B)\}\]
+
+  Eine Alternative ist ein Graph.
+
+  \begin{tikzpicture}{center}
+    \node[shape=circle,draw=black] (A) at (2,2) {A};
+    \node[shape=circle,draw=black] (B) at (0,0) {B};
+    \node[shape=circle,draw=black] (C) at (3,0) {C};
+    
+
+    \path [->] (A) edge (B);
+    \path [->] (B) edge  (C);
+    \path [->] (C) edge  (B);
+    \path[<->] (A) edge [loop left]  (A);
+    
+    
+\end{tikzpicture}
+
+
+
+\end{frame}
+\begin{frame}{Darstellung von Relationen}
+  Eine andere ist die einer Matrix.
+  \[
+  \begin{pmatrix}
+    $1$ & $1$ & $0$ \\
+    $0$ & $0$ & $1$ \\
+    $0$ & $1$ & $0$
+  \end{pmatrix}
+  \]
+  Hier kann man sich die Zeilen und Spalten der Matrix annotiert mit den Elementen der Grundmengen denken.
+  Etwas formaler: Eine \textbf{Adjazenzmatrix} einer Relation $R\subseteq M\times N$ mit $M=\{x_1,...,x_m\}$ und $N=\{y_1,...,y_n\}$, also $m$ Elementen in $M$ und $n$ Elementen in $N$, die man sich geordnet vorstellen kann ("uber die Indizierung) ist eine Matrix $(a_{ij})$ mit $1\leq i\leq m, 1\leq j\leq n$ und f"ur die Eintr"age $a_{ij}$ in Zeile $i$ und Spalte $j$ gilt:
+  \[a_{ij}=1\Leftrightarrow (x_i,y_j)\in R, a_{ij}=0\Leftrightarrow (x_i,y_j)\notin R \]
+\end{frame}
+
+\begin{frame}{Eigenschaften von Relationen}
+Relationen sind in h"ochster Allgemeinheit definiert. Nun kann man bestimmte Eigenschaften untersuchen.
+\begin{definition}
+Sei $R\subseteq M\times M$ eine Relation "uber einer Menge $M$ (Man beachte, dass die Elemente nur aus einer Menge $M$ stammen). Dann ist $R$
+\begin{enumerate}
+\item \textbf{reflexiv}, wenn $\forall x\in M: (x,x)\in R$
+\item \textbf{irreflexiv}, wenn $\forall x\in M: (x,x)\notin R$
+\item \textbf{symmetrisch}, wenn $\forall x,y\in M: (x,y)\in R\Rightarrow (y,x)\in R$
+\item \textbf{antisymmetrisch}, wenn $\forall x,y\in M: (x,y)\in R\wedge (y,x)\in R\Rightarrow x=y$
+\item \textbf{asymmetrisch}, wenn $\forall x,y\in M: (x,y)\in R\Rightarrow (y,x)\notin R$
+\item \textbf{transitiv}, wenn $\forall x,y,z\in M: (x,y)\in R\wedge (y,z)\in R\Rightarrow (x,z)\in R$
+\end{enumerate}
+\end{definition}
+\end{frame}
+
+\begin{frame}{Komposition von Relationen}
+\begin{definition}[Komposition von Relationen]
+  Seien $R\subseteq M\times N, S\subseteq N\times P$. Wir definieren 
+  \[R\circ S=\{(x,z)\in M\times P|\exists y\in N:(x,y)\in R\wedge (y,z)\in S\}\]
+  als \textbf{Komposition} von $R$ und $S$.
+
+\end{definition}
+Die Komposition ist praktisch die \glqq Hintereinanderschaltung\grqq der Relationen $R$ und $S$.
+\end{frame}
+
+
+\begin{frame}{Algorithmische Berechnung der Komposition (Matrixmultiplikation)}
+  
+  \begin{example}
+    Seien $R$ und $S$ zwei Relationen auf den Mengen $M$ und $N$ mit den Adjazenzmatrizen:
+    \[
+    R = \begin{pmatrix}
+      1 & 0 & 1 \\
+      0 & 1 & 0 \\
+      1 & 0 & 0
+    \end{pmatrix}
+    \quad \text{und} \quad
+    S = \begin{pmatrix}
+      0 & 1 & 0 \\
+      1 & 0 & 1 \\
+      0 & 1 & 0
+    \end{pmatrix}
+    \]
+    Sei $R=(\alpha_{i,j})_{1\leq i,j\leq n}$, $S=(\beta_{i,j})_{1\leq i,j\leq n}$
+    Um das $(i,j)$-te Element von $R\circ S$, $\gamma_{i,j}$ zu berechnen, definieren wir $\gamma_{i,j}=\bigvee_{\nu=1}^n \alpha_{i,\nu}\wedge\beta_{\nu,j}$.
+    Das bedeutet, dass wir das Element der Zielmatrix in Zeile $i$ und Spalte $j$ so erhalten, indem wir die $i-$te Zeile von $R$ und die $j-$te Spalte von $S$ durchgehen und suchen, ob $1$ auf $1$ trifft. Finden wir ein Paar, wird das Zielelement $1$, sonst $0$.
+    
+  \end{example}
+\end{frame}
+
+
+\begin{frame}{Ordnungen und "Aquivalenzrelationen}
+  \begin{definition}[Ordnung]
+    Eine Relation $R\subseteq M\times M$ hei"st \textbf{Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist.
+  \end{definition}
+  \begin{definition}["Aquivalenzrelation]
+    Eine Relation $R\subseteq M\times M$ hei"st \textbf{"Aquivalenzrelation}, wenn sie reflexiv, symmetrisch und transitiv ist.
+  \end{definition}
+\end{frame}
+
+
+  \begin{frame}{Hasse-Diagramme}
+    Hasse-Diagramme sind eine spezielle Art von Graphen, die Ordnungen visualisieren. Sie sind besonders n"utzlich, um die Struktur von Ordnungen zu verdeutlichen.
+
+    \begin{tikzpicture}
+      \node (b) at (0,0) {b};
+      \node (d) at (1,1) {d};
+      \node (c) at (2,0) {c};
+      \node (a) at (1,-1) {a};
+
+      \draw (a) -- (b);
+      \draw (a) -- (c);
+      \draw (b) -- (d);
+      \draw (c) -- (d);
+    \end{tikzpicture}
+
+    In dem Beispiel ist die Ordnung $\{(a,a),(a,b),(a,c),(a,d),(b,b),(b,d),(c,c),(c,d),(d,d)\}$ dargestellt.
+
+    Die Idee ist, die reflexiven und transitiven Beziehungen nicht darzustellen. Sie gelten implizit. Und gilt $aRb$ in der Ordnung $R$, dann wird $a$ unterhalb von $b$ angeordnet und beide werden mit einer Linie verbunden.
+    
+  \end{frame}
+  \begin{frame}{Partitionen}
+    \begin{definition}[Partition]
+      Eine Partition einer Menge $M$ ist eine Menge von nicht-leeren Teilmengen $\{A_i\}_{i\in I}$, so dass
+      \begin{itemize}
+        \item $\bigcup_{i\in I} A_i = M$ (die Vereinigung aller Teilmengen ergibt die Menge $M$)
+        \item $A_i \cap A_j = \emptyset$ f"ur alle $i \neq j$ (die Teilmengen sind paarweise disjunkt)
+      \end{itemize}
+    \end{definition}
+    \begin{example}
+      Sei $M = \{1, 2, 3, 4\}$. Eine m"ogliche Partition von $M$ ist $\{\{1, 2\}, \{3, 4\}\}$.
+    \end{example}
+  \end{frame}
+\begin{frame}{Zusammenhang von Partitionen und "Aquivalenzrelationen}
+  \begin{itemize}
+    \item Jede "Aquivalenzrelation auf einer Menge $M$ definiert eine Partition von $M$.
+    \item Umgekehrt definiert jede Partition einer Menge $M$ eine "Aquivalenzrelation auf $M$.
+  \end{itemize}
+  \begin{example}
+    Sei $M = \{1, 2, 3, 4\}$ und die Partition $\{\{1, 2\}, \{3, 4\}\}$. Die entsprechende "Aquivalenzrelation ist:
+    \[
+    R = \{(1, 1), (1, 2), (2, 1), (2, 2), (3, 3), (3, 4), (4, 3), (4, 4)\}
+    \]
+  \end{example}
+\end{frame}
+\begin{frame}{Zusammenhang von Partitionen und "Aquivalenzrelationen}
+
+  \begin{definition}[Menge der "Aquivalenzklassen]
+    Sei $R$ eine "Aquivalenzrelation auf einer Menge $M$. Die Menge der "Aquivalenzklassen von $M$ bzgl. $R$ (auch bezeichnet als Quotienten- oder Faktormenge) ist definiert als:
+    \[M/R := \{[x]_R \mid x \in M\}\]
+    wobei $[x]_R := \{y \in M \mid (x, y) \in R\}$ die "Aquivalenzklasse von $x$ bzgl. $R$ ist.
+  \end{definition}
+  Es gilt, dass zu jeder "Aquivalenzrelation $R\subseteq M\times M$ die Menge der "Aquivalenzklassen $M/R$ eine Partition bildet. Umgekehrt gibt es zu jeder Partition $P\subseteq\mathscr{P}(M)$ eine passende "Aquivalenzrelation $R\subseteq M\times M$, so dass also $M/R=P$.
+\end{frame}
+
+\begin{frame}{Reflexiv-transitive H"ulle}
+Zu jeder Relation $R\subseteq M\times M$ l"asst sich die reflexiv-transitive H"ulle $R^*$ bilden. Das ist die kleinste (im Sinne $\subseteq$) $R$ enthaltende Relation, die reflexiv und transitiv ist.
+
+Es gilt $R^*=\bigcup_{n=0}^\infty R^n$ mit $R^0=Id$, $R^{n+1}=R^n\circ R$. Dabei ist $Id=\{(x,x)|x\in M\}$ die Relation, die jedes Element und nur diese mit sich selbst in Beziehung setzen. 
+
+Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"ugt bis $\bigcup{i=0}^n R^i$ station"ar wird.
+\end{frame}
+\subsection{Funktionen}
+
+\begin{frame}{Agenda}
+   
+    
+  \tableofcontents[currentsection]
+  \end{frame}
+\begin{frame}{Funktionen}
+  Funktionen sind spezielle Relationen, die jedem Element im Urbildraum (der ersten Menge im kartesischen Produkt) genau ein ELement im Bildraum zuordnen.
+  \begin{definition}[Funktionen]
+    Eine Relation $f\subseteq M\times N$ hei"st \textbf{Funktion}, wenn \[\forall x\in M \exists y\in N: (x,y)\in f\wedge \forall y'\in N:(x,y')\in f\Rightarrow y=y'\]
+    Da somit das mit einem Element $x$ in Relation stehende Element $y$ eindeutig bestimmt ist, schreiben wir auch $y=f(x)$ und bezeichnen $y$ als \textbf{das Bild} von $x$.
+  \end{definition}
+  Wir notieren eine Relation $f\subseteq M\times N$, die eine Funktion ist auch mit $f:M\to N, x\mapsto f(x)$.
+\end{frame}
+
+
+  \begin{frame}{Ordnungen und "Aquivalenzrelationen}
+    \begin{definition}[Ordnungen]
+      Eine Relation $R\subseteq M\times M$ hei"st \textbf{Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist.
+    \end{definition}
+    \begin{definition}["Aquivalenzrelationen]
+      Eine Relation $R\subseteq M\times M$ hei"st \textbf{"Aquivalenzrelation}, wenn sie reflexiv, symmetrisch und transitiv ist.
+    \end{definition}
+  \end{frame}
+\begin{frame}{Eigenschaften von Funktionen}
+\begin{definition}[Eigenschaften von Funktionen]
+  Eine Funktion $f:M\to N$ hei"st 
+  \begin{itemize}
+    \item \textbf{injektiv}, wenn $\forall x_1,x_2\in M:f(x_1)=f(x_2)\Rightarrow x_1=x_2$.
+    \item \textbf{surjektiv}, wenn $\forall y\in N\exists x\in M:y=f(x)$.
+    \item \textbf{bijektiv}, wenn $f$ injektiv und surjektiv ist.
+  \end{itemize}
+\end{definition}
+Intuitiv bedeutet \textit{injektiv}, dass ein Funktionswert h"ochstens einen Ursprungswert hat, oder anders: Jeder Wert im Zielraum wird h"ochstens einmal von $f$ \glqq getroffen\grqq. \textit{Surjektiv} bedeutet, dass jeder Wert von $f$ \glqq getroffen\grqq wird.
+\end{frame}
+\begin{frame}{Urbilder von Funktionen}
+  \begin{definition}[Urbild]
+    Sei $f:M\to N$ eine Funktion und $B\subseteq N$. Dann hei"st \[f^{-1}(B):=\{x\in M|f(x)\in B\}\] das \textbf{Urbild} von $B$ unter $f$.
+  \end{definition}
+  Beachte, dass $f^{-1}$ hier nicht die Umkehrfunktion bezeichnet, sondern nur das Urbild. Das Urbild ist immer wohldefiniert, auch wenn $f$ nicht bijektiv ist.
+  \end{frame}
+
+\begin{frame}{Bemerkungen zu Funktionen und Bild der Funktion}
+Beachte, dass $f:X\to Y$ immer eine \textit{totale} Funktion ist, also jedes Element in $X$ ein Bild in $Y$ hat. Hat nicht jedes Element von $X$ ein Bild, so muss man die Definition entsprechend einschränken. Manche Autoren lassen aber auch partielle Funktionen zu, also solche, die nicht jedes Element in $X$ abbilden. Wir erwähnen das, falls notwendig.
+
+\begin{definition}{Bild einer Funktion}
+  Sei $f:X\to Y$ eine Funktion. Dann hei"st \[Im(f):=f(X)=\{y\in Y|\exists x\in X:y=f(x)\}\] das \textbf{Bild} von $X$ unter $f$.
+\end{definition}
+\end{frame}
+\begin{frame}{Kanonische Faktorisierung einer Abbildung}
+  Sei $f:X\to Y$ eine Funktion. Wir definieren die Relation $R\subseteq X\times X$ durch \[(x_1,x_2)\in R\Leftrightarrow f(x_1)=f(x_2).\] Dann ist $R$ eine \"Aquivalenzrelation, und wir k"onnen die kanonische Faktorisierung von $f$ betrachten. Diese ist gegeben durch die Abbildung \[\bar{f}:X/R\to Im(f), [x]\mapsto f(x).\] Dabei ist $[x]$ die \"Aquivalenzklasse von $x$ unter $R$.
+  \textit{Kanonische Faktorisierung} bedeutet, dass f\"ur die Projektion \[\pi:X\to X/R, x\mapsto[x]\] gilt: \[f=\bar{f}\circ\pi.\]
+\end{frame}
+
+\begin{frame}{Beispiel f"ur kanonische Faktorisierung}
+Sei $X = \{1,2,3,4,5,6,7,8\}, Y=\{a,b,c\}$, und $f:X\to Y$ definiert durch: $f(1) = a$, $f(2) = a$, $f(3) = c$, $f(4) = b$, $f(5) = a$, $f(6) = b$, $f(7) = c$, $f(8) = a$. 
+  \begin{enumerate}[(i)]
+    \item Was ist $f^{-1}(\{a\})$, $f^{-1}(\{b\})$, $f^{-1}(\{c\})$? Das ergibt eine Partition von $X$.
+    \item Definiere $x_1\sim x_2$ falls $f(x_1) = f(x_2)$. Was sind die \"Aquivalenzklassen? 
+    \item Beschreibe $\pi : X\to X/\sim$. 
+    \item Nun widmen wir uns $\bar{f} : X/\sim\to Y$, definiert durch $\bar{f}([x]) = f(x)$. Macht euch klar, dass es eine Bijektion ist. 
+   \item Macht Euch klar, dass $f = \bar{f}\circ\pi$ gilt
+  \end{enumerate}
+\end{frame}
+
+  \end{document}
