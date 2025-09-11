@@ -1,0 +1,89 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{2}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+\aufgabetitel{$4$}{Schaltjahre} \\
+Schreiben Sie eine Funktion, die ein Jahr erh"alt und zur"uckgibt, ob es ein Schaltjahr ist.
+
+Die Regeln f"ur Schaltjahre sind: 
+
+Ein Jahr ist ein Schaltjahr, wenn
+\begin{itemize}
+  \item es durch $4$ teilbar ist, au"sser
+  \begin{itemize}
+    \item wenn es durch $100$ teilbar ist (dann ist es keines), es sei denn 
+    \begin{itemize}
+      \item es ist durch $400$ teilbar (dann ist es doch wieder eines).
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+Zum Beispiel ist 1997 kein Schaltjahr, aber 1996 ist eines. 1900 ist keines, aber 2000 ist eines.
+
+\aufgabetitel{$4$}{Element in Liste finden}\\
+Schreiben Sie ein Programm, das f"ur eine gegebene Liste von Integern pr"uft, ob eine gegebene Zahl in der Liste enthalten ist.
+\begin{notes}
+  Es gibt eine \texttt{Prelude}-Funktion \texttt{elem}, die genau das tut. Verwenden Sie die nicht, sondern programmieren Sie die Aufgabe selbst.
+\end{notes}
+  
+
+\aufgabetitel{$4$}{Summe von Elementen einer Liste}\\
+Schreiben Sie ein Programm, das die Summe der Elemente einer gegebenen Liste aus Integern bildet.
+\begin{notes}
+  Es gibt eine \texttt{Prelude}-Funktion \texttt{sum}, die genau das tut. Verwenden Sie die nicht, sondern programmieren Sie die Aufgabe selbst.
+\end{notes}
+
+
+\aufgabetitel{$4$}{Take $n$}\\
+Schreiben Sie ein Programm, das aus einer gegebenen Liste von beliebigen Elementen eine gegebene Anzahl entnimmt.
+
+Zum Beispiel soll wenn die Liste \texttt{[1,2,3,4,5,6,7,8]} gegeben ist und die Zahl $5$, die Liste \texttt{[1,2,3,4,5]} zur"uckgegeben werden.
+
+\aufgabetitel{$3$}{Typen}\\
+Was sind die Typen der folgenden Datenstrukturen?
+\begin{itemize}[(i)]
+  \item \texttt{(True, 'c')}
+  \item \texttt{[(True, 'c'),(False,'d')]}
+  \item \texttt{([True,False],['c','d'])}
+\end{itemize}
+
+\aufgabetitel{$2$}{Potenz}\\
+Definieren Sie eine Funktion \texttt{power :: Int -> Int -> Int}, die zwei Integer $x$ und $y$ erh"alt und $x^y$ zur"uckgibt.
+
+\aufgabetitel{$2$}{Rekursion auf Listen}\\
+Definieren Sie eine Funktion \texttt{ascending :: Ord a => [a] -> Bool}, die eine Liste von Elementen eines beliebigen geordneten Typs erh"alt und zur"uckgibt, ob die Elemente in aufsteigender Reihenfolge angeordnet sind.
+
+\aufgabetitel{$2$}{Higher-Order-Funktion}\\
+Definieren Sie eine Funktion \texttt{takeWhile' :: (a -> Bool) -> [a] -> [a]}, die eine Liste von Elementen eines beliebigen Typs und eine Pr"adikatsfunktion erh"alt und die Elemente der Liste solange zur"uckgibt, wie das Pr"adikat erf"ullt ist.
+
+\aufgabetitel{$5$}{Binärbäume}\\
+Definieren Sie einen Datentyp für binäre Bäume mit Zahlen als Elemente in Haskell und implementieren Sie Funktionen zum Einfügen und Suchen eines Elementes sowie zum Summieren aller Elemente in einem Baum.
+
+\aufgabetitel{$4$}{Abstrakter Datentyp}\\
+Wir hatten in der Vorlesung den abstrakten Datentypen für natürliche Zahlen definiert.
+Implementieren Sie in Haskell die Funktionen \texttt{natLength :: [a] -> Nat} und \texttt{natDrop :: Nat -> [a] -> [a]}.
+\begin{notes}
+  \texttt{natLength} soll die Länge einer Liste als natürliche Zahl zurückgeben. \\
+  \texttt{natDrop n xs} soll die Liste \texttt{xs} um die ersten \texttt{n} Elemente kürzen.
+\end{notes}
+\end{document}
+
+
