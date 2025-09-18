@@ -20,41 +20,66 @@
 % 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
 % \end{notes}
 
-
-\aufgabetitel{$8$}{Beweis im Kalkül des natürlichen Schließens}\\
-Beweise, die im Kalkül des natürlichen Schließens geführt werden, bestehen aus einer Folge von Zeilen, wobei jede Zeile entweder eine Voraussetzung (Axiom) ist oder durch Anwendung einer der Schlussregeln, die wir in der Vorlesung hatten.
-Die Beweise werden in dem Kalkül praktisch von oben nach unten durchgeführt. Also man versucht, die zu zeigende Aussage ganz unten zu erreichen und startet oben mit den Voraussetzungen. Teilweise erfordert es aber auch, neue Voraussetzungen einzuführen, die man letztlich mit den Pfeilregeln (also Implikationen) entlastet.\\
-In den Slides ist ein Beispiel.
-
-Beweisen Sie im Kalkül des natürlichen Schließens:
-\begin{enumerate}[a)]
-  \item $\vdash (A\to(B\to C))\to(A\wedge B\to C)$
-  \item $\vdash (A\to B)\to(\neg B\to \neg A)$
-  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
-  \item $\forall x(\neg P(x)\to Q(x)),\neg Q(t)\vdash P(t)$
-\end{enumerate}
-
-\aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
-Der Sequenzenkalkül ist ein anderer Kalkül. In jeder Zeile stehen Sequenzen von Formeln (also Listen von Formeln), getrennt durch einen Doppelpfeil. Die Semantik ist, dass die Konjunktion der Formeln links vom Pfeil die Disjunktion der Formeln rechts vom Pfeil impliziert. Die Schlussregeln sind in den Slides.
-Anders als beim Kalkül des natürlichen Schließens startet man hier üblicherweise unten mit dem Ziel und arbeitet sich nach oben vor, bis man zu Axiomem gelangt.\\
-Beweisen Sie im Sequenzenkalkül:
-\begin{enumerate}[a)]
-  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
-  \item $\vdash\forall x.P(x)\wedge\forall x.Q(x)\to\forall y.(P(y)\wedge Q(y))$
-\end{enumerate}
-
-\aufgabetitel{$4$}{Terminologien}\\
+\aufgabetitel{$2$}{Definitionen}\\
 Macht Euch nochmal folgende Statements klar:
 \begin{enumerate}[a)]
   \item $M,\sigma\models\varphi$ für eine Struktur $M$, eine Variablenbelegung $\sigma$ und eine Formel $\varphi$
   \item $M\models\varphi$ für eine Struktur $M$ und eine Formel $\varphi$
-  \item $M\vdash\varphi$ für eine Struktur $M$ und eine Formel $\varphi$
-  \item $T\models\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
-  \item $T\vdash\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
-  \item $T\vdash\varphi\Rightarrow T\models\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
-  \item $T\models\varphi\Rightarrow T\vdash\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
-  \item $Erf\hspace{0.1cm}T$ für eine Theorie $T$
-  \item $T\models\varphi\Leftrightarrow$ nicht $Erf\hspace{0.1cm} T\cup\{\neg\varphi\}$ für eine Theorie $T$ und eine Formel $\varphi$
+  % \item $M\vdash\varphi$ für eine Struktur $M$ und eine Formel $\varphi$
+  % \item $T\models\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  % \item $T\vdash\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  % \item $T\vdash\varphi\Rightarrow T\models\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  % \item $T\models\varphi\Rightarrow T\vdash\varphi$ für eine Theorie $T$ und eine Formel $\varphi$
+  % \item $Erf\hspace{0.1cm}T$ für eine Theorie $T$
+  % \item $T\models\varphi\Leftrightarrow$ nicht $Erf\hspace{0.1cm} T\cup\{\neg\varphi\}$ für eine Theorie $T$ und eine Formel $\varphi$
   
 \end{enumerate}
+
+\aufgabetitel{$7$}{Strukturen}\\
+Gegeben sei die Sprache mit Symbolen $S=\{c,f,p\}$ mit
+\begin{itemize}
+  \item $c$ eine Konstante,
+  \item $f$ ein zweistelliges Funktionssymbol,
+  \item $p$ ein zweistelliges Prädikatensymbol.
+  \item Die Struktur $\mathcal{M}$ mit
+  \item Trägermenge $D=\mathbb{N}$,
+  \item $c^\mathcal{M}=42$,
+  \item $f^\mathcal{M}:\mathbb{N}\times\mathbb{N}\to\mathbb{N}, (a,b)\mapsto a+b$,
+  \item $p^\mathcal{M}$ mit $(a,b)\in p^\mathcal{M} \Leftrightarrow a<b$.
+\end{itemize}
+\begin{enumerate}[a)]
+  \item Sei $\sigma$ eine Variablenbelegung mit $\sigma(x)=7$ und $\sigma(y)=42$. Berechnet die Werte der Terme $f(c,x)$ und $f(x,f(c,y))$ unter der Belegung $\sigma$, also $\llbracket f(c,x) \rrbracket^\mathcal{M}_\sigma$ und $\llbracket f(x,f(c,y)) \rrbracket^\mathcal{M}_\sigma$.
+  \item Berechnet $\llbracket f(c,x) \rrbracket^\mathcal{M}_{\sigma[2/x]}$ und $\llbracket f(x,f(c,y)) \rrbracket^\mathcal{M}_{\sigma[3/x,2/y]}$.
+  \item Beurteilt, ob die folgenden Formeln unter der Belegung $\sigma$ in der Struktur $M$ erfüllt sind:
+  \begin{itemize}
+    \item $\mathcal{M},\sigma\models P(c,x)$
+    \item $\mathcal{M},\sigma\models\forall y(P(x,y)\to P(c,y))$
+    \item $\mathcal{M},\sigma\models\exists y(P(x,y)\wedge P(y,c))$
+  \end{itemize}
+\end{enumerate} 
+
+\aufgabetitel{$18$}{Beweis im Kalkül des natürlichen Schließens}\\
+Beweise, die im Kalkül des natürlichen Schließens geführt werden, bestehen aus einer Folge von Zeilen, wobei jede Zeile entweder eine Voraussetzung (Axiom) ist oder durch Anwendung einer der Schlussregeln, die wir in der Vorlesung hatten.
+Die Beweise werden in dem Kalkül praktisch von oben nach unten durchgeführt. Also man versucht, die zu zeigende Aussage ganz unten zu erreichen und startet oben mit den Voraussetzungen. Teilweise erfordert es aber auch, neue Voraussetzungen einzuführen, die man letztlich mit den Pfeilregeln (also Implikationen) entlastet.
+
+Beweisen Sie im Kalkül des natürlichen Schließens:
+\begin{enumerate}[a)]
+  \item $\vdash (A\to(B\to C))\to(A\wedge B\to C)$
+  \item $\vdash ((A\to B)\wedge (B\to C))\to(A\to C)$
+  \item $\vdash (A\to B)\to(\neg B\to \neg A)$
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+  \item $\forall x(\neg P(x)\to Q(x)),\neg Q(t)\vdash P(t)$
+  \item $\forall x(P(x)\to Q(x)), \forall x P(x)\vdash \forall x Q(x)$
+\end{enumerate}
+
+% \aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
+% Der Sequenzenkalkül ist ein anderer Kalkül. In jeder Zeile stehen Sequenzen von Formeln (also Listen von Formeln), getrennt durch einen Doppelpfeil. Die Semantik ist, dass die Konjunktion der Formeln links vom Pfeil die Disjunktion der Formeln rechts vom Pfeil impliziert. Die Schlussregeln sind in den Slides.
+% Anders als beim Kalkül des natürlichen Schließens startet man hier üblicherweise unten mit dem Ziel und arbeitet sich nach oben vor, bis man zu Axiomem gelangt.\\
+% Beweisen Sie im Sequenzenkalkül:
+% \begin{enumerate}[a)]
+%   \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+%   \item $\vdash\forall x.P(x)\wedge\forall x.Q(x)\to\forall y.(P(y)\wedge Q(y))$
+% \end{enumerate}
+
+
 \end{document}
