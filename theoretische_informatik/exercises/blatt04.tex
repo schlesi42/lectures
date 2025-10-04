@@ -1,0 +1,85 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{4}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage{bussproofs}
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+
+\aufgabetitel{$8$}{Beweise in Kalkülen}\\
+
+Beweisen Sie im Kalkül des natürlichen Schließens und im Sequenzenkalkül:
+\begin{enumerate}[a)]
+  \item $\vdash X\vee(Y\wedge Z)\to(X\vee Y)\wedge(X\vee Z)$
+  \item $A\vee\neg A, \neg A\to B\vdash A\vee B$
+  \item $\neg (A\wedge B), A\vdash\neg B$
+  \item $(A\vee B),\neg A\vdash B$
+\end{enumerate}
+
+\aufgabetitel{$6$}{Korrektheit Kalküle}\\
+Machen Sie sich die Korrektheit der folgenden Regeln klar:
+\begin{enumerate}[a)]
+  \item \begin{prooftree}
+        \AxiomC{$A\vdash B$}
+        \RightLabel{$\rightarrow I$}
+        \UnaryInfC{$A\rightarrow B$}
+        \end{prooftree}
+        im Kalkül des natürlichen Schließens
+  \item \begin{prooftree}
+        \AxiomC{$A \hspace*{0.5cm}A\rightarrow B$}
+        \RightLabel{$\rightarrow E$}
+        \UnaryInfC{$B$}
+        \end{prooftree}
+        im Kalkül des natürlichen Schließens
+  \item  \begin{prooftree}
+              \AxiomC{$\Gamma\Rightarrow\Delta,\varphi\hspace*{0.5cm}\psi,\Pi\Rightarrow\Lambda$}
+              \RightLabel{$\to\Rightarrow$}
+              \UnaryInfC{$\varphi\to\psi,\Gamma,\Pi\Rightarrow \Delta,\Lambda$}
+            \end{prooftree}
+        im Sequenzenkalkül
+  
+  
+\end{enumerate}
+
+\aufgabetitel{$11$}{Terminologien}\\
+Machen Sie sich die folgenden Sachverhalte klar:
+\begin{enumerate}[a)]
+  \item $T\vdash \varphi$
+  \item $T\models \varphi$
+  \item Korrektheit eines Kalküls
+  \item Vollständigkeit eines Kalküls
+  \item $Erf(T)$
+  \item $Wf(T)$ bzw. Konsistenz
+  \item $Wv(T)$ jede Formel ist aus $T$ herleitbar
+  \item $Wf(T)$ gdw. es gibt keine Formel $\varphi$ mit $T\vdash \varphi$ und $T\vdash \neg\varphi$
+  \item $Wf(T)$ gdw. es gibt eine Formel $\varphi$ mit $T\nvdash \varphi$
+  \item Jede konsistente Theorie hat ein Modell
+  \item Für alle $T,\varphi$ gilt: $T\models \varphi$ gdw. nicht $Erf(T\cup\{\neg\varphi\})$
+\end{enumerate}
+% \aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
+% Der Sequenzenkalkül ist ein anderer Kalkül. In jeder Zeile stehen Sequenzen von Formeln (also Listen von Formeln), getrennt durch einen Doppelpfeil. Die Semantik ist, dass die Konjunktion der Formeln links vom Pfeil die Disjunktion der Formeln rechts vom Pfeil impliziert. Die Schlussregeln sind in den Slides.
+% Anders als beim Kalkül des natürlichen Schließens startet man hier üblicherweise unten mit dem Ziel und arbeitet sich nach oben vor, bis man zu Axiomem gelangt.\\
+% Beweisen Sie im Sequenzenkalkül:
+% \begin{enumerate}[a)]
+%   \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+%   \item $\vdash\forall x.P(x)\wedge\forall x.Q(x)\to\forall y.(P(y)\wedge Q(y))$
+% \end{enumerate}
+
+
+\end{document}
