@@ -1,0 +1,104 @@
+\documentclass{beamer}
+\usetheme{CambridgeUS}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows,fit,positioning, mindmap, trees, automata}
+
+\usepackage[latin1]{inputenc}
+\usefonttheme{professionalfonts}
+\usepackage{times}
+\usepackage{xmpmulti}
+\usepackage{animate}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{mathrsfs}  
+\usepackage{bussproofs}
+
+\usepackage{stmaryrd}
+\usepackage{xcolor}
+
+\newcommand{\person}[1]{\textcolor{blue}{#1}}
+\newcommand{\highlight}[1]{\textcolor{red}{#1}}
+% \newcommand{\example}[1]{\textcolor{blue}{#1}}
+\usetikzlibrary{shapes.geometric, positioning}
+\graphicspath{ {./images/} }
+%\usetheme{Boadilla}
+%\usecolortheme{crane}
+\title[Computational Theory and Complexity Theory]{Computational Theory and Complexity Theory}
+%\subtitle{I Am Curious}
+\author[Sebastian Schlesinger]{Prof. Dr.-Ing. Sebastian Schlesinger}
+\institute[HWR Berlin]{Berlin School for Economics and Law}
+\date{\today}
+\begin{document}
+ \begin{frame}
+\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Word Problem}
+\begin{itemize}
+    \item Given a formal language $L$ over an alphabet $\Sigma$ and a word $w \in \Sigma^*$
+    \item Decide whether $w \in L$
+    \item Example: $L = \{a^n b^n | n \geq 0\}$, $w = aaabbb$
+    \item $w \in L$?
+\end{itemize}
+\end{frame} 
+
+\begin{frame}{Decidability and Semidecidability}
+\begin{itemize}
+    \item A language $L$ is \textbf{decidable} if there exists a Turing machine that halts on every input and accepts exactly the words in $L$
+    \item A language $L$ is \textbf{semidecidable} if there exists a Turing machine that accepts exactly the words in $L$ and may either reject or run forever on words not in $L$
+    \item Every decidable language is also semidecidable
+    \item Example: The Halting Problem is semidecidable but not decidable
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Computability}
+\begin{itemize}
+    \item A function $f: \Sigma^* \rightarrow \Sigma^*$ is \textbf{computable} if there exists a Turing machine that, given any input $w \in \Sigma^*$, halts and outputs $f(w)$
+    \item Example: The function that maps a binary number to its successor is computable
+    \item Not all functions are computable (e.g., the Halting Problem)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Completeness and Decidability}
+ The propositional logic is decidable. However, first-order logic is not decidable, but semi-decidable.
+ However, first-order logic is complete, i.e., every valid formula can be proven.
+ Hence, although there must be a proof for every valid formula, there is no algorithm that can find it for every formula in finite time.
+\end{frame}
+
+\begin{frame}{Computability vs. Complexity}
+\begin{itemize}
+    \item \textbf{Computability} is concerned with what can be computed (i.e., the existence of an algorithm).
+    \item \textbf{Complexity} is concerned with how efficiently a problem can be solved (i.e., the resources required).
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Complexity Classes}
+\begin{itemize}
+    \item \textbf{P}: Class of decision problems solvable by a deterministic Turing machine in polynomial time.
+    \item \textbf{NP}: Class of decision problems solvable by a nondeterministic Turing machine in polynomial time. Equivalently, problems for which a given solution can be verified in polynomial time.
+    \item \textbf{PSPACE}: Class of decision problems solvable by a Turing machine using polynomial space.
+    \item \textbf{EXPTIME}: Class of decision problems solvable by a deterministic Turing machine in exponential time.
+\end{itemize}
+\end{frame} 
+\begin{frame}{P vs NP Problem}
+\begin{itemize}
+    \item One of the most important open problems in computer science.
+    \item Question: Is P equal to NP?
+    \item If P = NP, then every problem for which a solution can be verified quickly can also be solved quickly.
+    \item Most experts believe that P $\neq$ NP, but it remains unproven.
+\end{itemize}
+\end{frame} 
+\begin{frame}{NP-Hard and NP-Complete}
+\begin{itemize}
+    \item A problem is \textbf{NP-hard} if every problem in NP can be reduced to it in polynomial time.
+    \item A problem is \textbf{NP-complete} if it is both in NP and NP-hard.
+    \item If any NP-complete problem can be solved in polynomial time, then P = NP.
+    \item Examples of NP-complete problems: Traveling Salesman Problem, Boolean Satisfiability Problem (SAT), Knapsack Problem
+\end{itemize}
+\end{frame}
+\end{document}
