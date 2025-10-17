@@ -1,7 +1,7 @@
 \documentclass{beamer}
 \usetheme{CambridgeUS}
 \usepackage{tikz}
-\usetikzlibrary{matrix,arrows,fit,positioning, mindmap, trees}
+\usetikzlibrary{matrix,arrows,fit,positioning, mindmap, trees, automata}
 
 \usepackage[latin1]{inputenc}
 \usefonttheme{professionalfonts}
@@ -14,9 +14,10 @@
 \usepackage{xcolor}
 \usepackage{mathrsfs}  
 \usepackage{bussproofs}
-\usepackage{tikz}
+
 \usepackage{stmaryrd}
 \usepackage{xcolor}
+
 \newcommand{\person}[1]{\textcolor{blue}{#1}}
 \newcommand{\highlight}[1]{\textcolor{red}{#1}}
 % \newcommand{\example}[1]{\textcolor{blue}{#1}}
@@ -87,7 +88,7 @@ Let $\Sigma$ be an alphabet. A \textit{formal language} over $\Sigma$ is a subse
 
 \begin{frame}{Chomsky Hierarchy}
     \begin{itemize}
-        \item Type 0: Recursively enumerable languages - every language without 
+        \item Type 0: Recursively enumerable languages - every language without restrictions on the production rules.
         \item Type 1: Context-sensitive languages: if for all productions $w_1\to w_2$ it holds $|w_1|\leq |w_2|$.
         \item Type 2: Context-free languages: if for all productions $w_1\to w_2$ it holds $w_1\in V$ (meaning it is just a variable on the left side).
         \item Type 3: Regular languages: if for all productions $w_1\to w_2$ it holds $w_1\in V$ and $w_2\in \Sigma\cup \Sigma V$, i.e., the right sides are either terminals or a terminal followed by a variable.
@@ -110,8 +111,8 @@ Languages of types 1,2,3 are decidable, i.e., there exists an algorithm that dec
     The word problem is the problem of deciding whether a given word $w\in\Sigma^*$ is in a given language, i.e. $w\in L(G)$ or $w\notin L(G)$. For regular languages, this is decidable. For context-free languages, this is also decidable. For context-sensitive languages, this is also decidable. For recursively enumerable languages, this is semi-decidable.
 \end{frame}
 
-\begin{frame}{Finite Automata}
-    A finite automaton is a 5-tuple $M=(Q,\Sigma,\delta,q_0,F)$ where
+\begin{frame}{Deterministic Finite Automata}
+    A deterministic finite automaton (DFA) is a 5-tuple $M=(Q,\Sigma,\delta,q_0,F)$ where
     \begin{itemize}
         \item $Q$ is a finite set of states.
         \item $\Sigma$ is the input alphabet. It holds $Q\cap \Sigma=\emptyset$.
@@ -123,14 +124,221 @@ Languages of types 1,2,3 are decidable, i.e., there exists an algorithm that dec
 
 \end{frame}
 
-
-\begin{frame}{Example}
-$Q=\{q_0,q_1,q_2,q_3\},\Sigma=\{a,b\},F=\{q_3\}$, $q_0$ is the start state. $delta(q_0,a)=q_1$, $delta(q_1,b)=q_2$, $delta(q_2,a)=q_3$. This automaton accepts the language $\{ab^na\mid n\geq 0\}$.
+\begin{frame}{DFA as Graph}
+    \begin{itemize}
+        \item Each state $q\in Q$ is represented as a node.
+        \item The start state $q_0$ has an incoming arrow from nowhere.
+        \item Each accepting state $q\in F$ is represented as a double circle.
+        \item For each transition $\delta(q,a)=p$, there is a directed edge from node $q$ to node $p$ labeled with the symbol $a$.
+    \end{itemize}
+    Note that $\delta$ is a total function, i.e., for each state $q\in Q$ and each symbol $a\in \Sigma$, there is exactly one transition defined.
 \end{frame}
+
+% \begin{frame}{DFA Example}
+%     \begin{figure}
+%         \centering
+%         \begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto]
+%            \node[state,initial] (q_0)   {$q_0$}; 
+%            \node[state] (q_1) [right=of q_0] {$q_1$}; 
+%            \node[state,accepting] (q_2) [right=of q_1] {$q_2$}; 
+%             \path[->] 
+%             (q_0) edge  node {a} (q_1)
+%             (q_1) edge  node {b} (q_2)
+%             (q_2) edge [loop above] node {a,b} ();
+%         \end{tikzpicture}
+%         \caption{A simple DFA}
+%     \end{figure}
+% \end{frame}
+
+\begin{frame}{Non-deterministic Finite Automata}
+    A non-deterministic finite automaton (NFA) is a 5-tuple $M=(Q,\Sigma,\delta,S_0,F)$ where
+    \begin{itemize}
+        \item $Q$ is a finite set of states.
+        \item $\Sigma$ is the input alphabet. It holds $Q\cap \Sigma=\emptyset$.
+        \item $\delta:Q\times (\Sigma\cup\{\varepsilon\})\to 2^Q$ is the transition function.
+        \item $S_0\subseteq Q$ is the set of start states.
+        \item $F\subseteq   Q$ is the set of accepting states.
+    \end{itemize}
+    An NFA can also be drawn as a graph, similar to a DFA. Since $\delta$ a function to sets of states, there may be multiple transitions for the same state and input symbol and there may also be no transition for a given state and input symbol.
+\end{frame}
+
+
 
 \begin{frame}{Accepted Languages}
-For a finite automaton $M=(Q,\Sigma,\delta,q_0,F)$,
+For a DFA $M=(Q,\Sigma,\delta,q_0,F)$, we define $\hat{\delta}:Q\times \Sigma^*\to Q$ as follows:
+\begin{itemize}
+    \item $\hat{\delta}(q,\varepsilon)=q$ for all $q\in Q$.
+    \item $\hat{\delta}(q,xa)=\delta(\hat{\delta}(q,x),a)$ for all $q\in Q$, $x\in \Sigma^*$, $a\in \Sigma$.
+\end{itemize}
+The language accepted by $M$ is $T(M)=\{w\in \Sigma^*\mid \hat{\delta}(q_0,w)\in F\}$.
+Similarly, for an NFA $M=(Q,\Sigma,\delta,q_0,F)$, we define $\hat{\delta}:Q\times \Sigma^*\to 2^Q$ as follows:
+\begin{itemize}
+    \item $\hat{\delta}(q,\varepsilon)=\{q\}$ for all $q\in Q$.
+    \item   $\hat{\delta}(q,xa)=\bigcup_{p\in \hat{\delta}(q,x)}\delta(p,a)$ for all $q\in Q$, $x\in \Sigma^*$, $a\in \Sigma$.
+    
+\end{itemize}
+The language accepted by $M$ is $T(M)=\{w\in \Sigma^*\mid q_0\in S_0,\hat{\delta}(q_0,w)\cap F\neq \emptyset\}$.
 \end{frame}
+
+\begin{frame}{NFA to DFA}
+    For every NFA $M=(Q,\Sigma,\delta,S_0,F)$, there exists a DFA $M'=(Q',\Sigma,\delta',q_0',F')$ such that $T(M)=T(M')$. The construction is as follows:
+    \begin{itemize}
+        \item $Q'=2^Q$
+        \item $q_0'=S_0$
+        \item $\delta':Q'\times \Sigma\to Q'$ defined as $\delta'(S,a)=\bigcup_{q\in S}\delta(q,a)$ for all $S\in Q'$, $a\in \Sigma$.
+        \item $F'=\{S\in Q' \mid S\cap F\neq \emptyset\}$
+    \end{itemize}
+\end{frame}
+
+% \begin{frame}{Example for NFA to DFA}
+%     Consider the following NFA:
+% \begin{tikzpicture}[node distance=2.2cm, on grid, auto]
+%   % States
+%   \node[state, initial]           (q0) {$q_0$};
+%   \node[state]                    (q1) [above right=of q0] {$q_1$};
+%   \node[state]                    (q2) [below right=of q0] {$q_2$};
+%   \node[state, accepting]         (q3) [right=4.5cm of q0] {$q_3$};
+%   \node[state]                    (q4) [right=of q2] {$q_4$};
+
+%   % Transitions
+%   \path[->]
+%     (q0) edge node {$\varepsilon$} (q1)
+%     (q0) edge node [swap] {$\varepsilon$} (q2)
+%     (q1) edge node {$a$} (q3)
+%     (q2) edge node {$a$} (q4)
+%     (q4) edge node {$b$} (q3);
+% \end{tikzpicture}
+% \end{frame}
+
+% \begin{frame}{Example for NFA to DFA (cont.)}
+%     The equivalent DFA is:
+% \begin{tikzpicture}[node distance=2.6cm, on grid, auto]
+%   % DFA states (sets)
+%   \node[state, initial]                   (S0) {$\{q_0,q_1,q_2\}$};
+%   \node[state, accepting]                 (S1) [right=of S0] {$\{q_3,q_4\}$};
+%   \node[state, accepting]                 (S2) [right=of S1] {$\{q_3\}$};
+%   \node[state]                            (Sd) [below=of S1] {$\emptyset$};
+
+%   % Transitions
+%   \path[->]
+%     (S0) edge node {$a$} (S1)
+%     (S0) edge node [swap] {$b$} (Sd)
+
+%     (S1) edge node {$b$} (S2)
+%     (S1) edge[bend left] node {$a$} (Sd)
+
+%     (S2) edge[bend left] node {$a$} (Sd)
+%     (S2) edge[bend left] node {$b$} (Sd)
+
+%     (Sd) edge[loop below] node {$a,b$} (Sd);
+% \end{tikzpicture}
+% \end{frame}
+
+\begin{frame}{Minimize a DFA}
+    For every DFA $M=(Q,\Sigma,\delta,q_0,F)$, there exists a unique (up to isomorphism) minimal DFA $M'=(Q',\Sigma,\delta',q_0',F')$ such that $T(M)=T(M')$ and $|Q'|\leq |Q|$. The construction is as follows:
+    \begin{itemize}
+        \item Remove unreachable states from $Q$.
+        \item Define an equivalence relation $\sim$ on $Q$ such that $p\sim q$ if for all $w\in \Sigma^*$, $\hat{\delta}(p,w)\in F$ if and only if $\hat{\delta}(q,w)\in F$.
+        \item The states of $M'$ are the equivalence classes of $\sim$.
+        \item The start state of $M'$ is the equivalence class of $q_0$.
+        \item The accepting states of $M'$ are the equivalence classes that contain at least one accepting state of $M$.
+        \item The transition function $\delta'$ is defined as $\delta'([q],a)=[\delta(q,a)]$ for all equivalence classes $[q]$ and all $a\in \Sigma$.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Myhill-Nerode Theorem}
+    A language $L\subseteq \Sigma^*$ is regular if and only if the equivalence relation $\equiv_L$ defined as $x\equiv_L y$ if for all $z\in \Sigma^*$, $xz\in L$ if and only if $yz\in L$ has a finite number of equivalence classes.
+    
+    This theorem is used to construct the minimal DFA for a regular language $L$. The states of the minimal DFA are the equivalence classes of $\equiv_L$.
+\end{frame} 
+
+\begin{frame}{Algorithm for Minimizing a DFA}
+    \begin{itemize}
+        \item Create a table with all pairs of states $(p,q)$ where $p,q\in Q$ and $p\neq q$.
+        \item Mark all pairs $(p,q)$ where $p\in F$ and $q\notin F$ or $p\notin F$ and $q\in F$.
+        \item Repeat until no new pairs are marked:
+        \begin{itemize}
+            \item For each unmarked pair $(p,q)$, for each $a\in \Sigma$, check the pair $(\delta(p,a),\delta(q,a))$. If this pair is marked, mark $(p,q)$.
+        \end{itemize}
+        \item The unmarked pairs represent equivalent states. Merge them to form the states of the minimal DFA.
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Pumping Lemma for Regular Languages}
+    If $L$ is a regular language, then there exists a constant $p$ (the pumping length) such that any string $w\in L$ with $|w|\geq p$ can be split into three parts, $w=xyz$, such that:
+    \begin{itemize}
+        \item $|xy|\leq p$
+        \item $|y|>0$
+        \item $xy^n z\in L$ for all $n\geq 0$
+    \end{itemize}
+    This can be used to prove that a language is not regular.
+
+    \end{frame}
+
+\begin{frame}{Pushdown Automata}
+    A pushdown automaton (PDA) is a 7-tuple $M=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$ where
+    \begin{itemize}
+        \item $Q$ is a finite set of states.
+        \item $\Sigma$ is the input alphabet. It holds $Q\cap \Sigma=\emptyset$.
+        \item $\Gamma$ is the stack alphabet. It holds $Q\cap \Gamma=\emptyset$ and $\Sigma\cap \Gamma=\emptyset$.
+        \item $\delta:Q\times (\Sigma\cup\{\varepsilon\})\times \Gamma\to 2^{Q\times \Gamma^*}$ is the transition function.
+        \item $q_0\in Q$ is the start state.
+        \item $Z_0\in \Gamma$ is the initial stack symbol.
+        \item $F\subseteq Q$ is the set of accepting states.
+    \end{itemize}
+    \end{frame}
+
+\begin{frame}{PDA Configurations}
+    A configuration of a PDA is a triple $(q,w,\gamma)$ where $q\in Q$ is the current state, $w\in \Sigma^*$ is the remaining input, and $\gamma\in \Gamma^*$ is the current stack content (with the top of the stack being the leftmost symbol).
+    
+    The PDA can make a transition from configuration $(q,aw,\gamma Z)$ to $(p,w,\beta \gamma)$ if $(p,\beta)\in \delta(q,a,Z)$ for $a\in \Sigma\cup\{\varepsilon\}$, $Z\in \Gamma$, and $\beta\in \Gamma^*$.
+    
+    The PDA accepts an input string $w$ if there exists a sequence of transitions starting from $(q_0,w,Z_0)$ that leads to a configuration $(q,\varepsilon,\gamma)$ where $q\in F$.
+\end{frame}
+\begin{frame}{Turing Machines}
+    A Turing machine (TM) is a 7-tuple $M=(Q,\Sigma,\Gamma,\delta,q_0,B,F)$ where
+    \begin{itemize}
+        \item $Q$ is a finite set of states.
+        \item $\Sigma$ is the input alphabet. It holds $Q\cap \Sigma=\emptyset$.
+        \item $\Gamma$ is the tape alphabet. It holds $Q\cap \Gamma=\emptyset$ and $\Sigma\subseteq \Gamma$.
+        \item $\delta:Q\times \Gamma\to Q\times \Gamma\times \{L,R\}$ is the transition function.
+        \item $q_0\in Q$ is the start state.
+        \item $B\in \Gamma$ is the blank symbol.
+        \item $F\subseteq Q$ is the set of accepting states.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{TM Configurations}
+    A configuration of a TM is a triple $(q,w,a\gamma)$ where $q\in Q$ is the current state, $w\in \Gamma^*$ is the content of the tape to the left of the head, and $a\gamma\in \Gamma^*$ is the content of the tape from the head position to the right (with $a$ being the symbol under the head).
+    
+    The TM can make a transition from configuration $(q,w,a\gamma)$ to $(p,w',b\gamma')$ if $\delta(q,a)=(p,b,D)$ where $D\in \{L,R\}$, and
+    \begin{itemize}
+        \item If $D=R$, then $w'=wb$ and $\gamma'=\gamma$.
+        \item If $D=L$, then $w'$ is $w$ without its last symbol (if $w$ is not empty) and $\gamma'=c b \gamma$ where $c$ is the last symbol of $w$ (or $B$ if $w$ is empty).
+    \end{itemize}
+    
+    The TM accepts an input string $w$ if there exists a sequence of transitions starting from $(q_0,\varepsilon,w)$ that leads to a configuration $(q,\alpha,\beta)$ where $q\in F$.
+
+\end{frame}
+
+\begin{frame}{Linear Bounded Automata}
+    A linear bounded automaton (LBA) is a Turing machine with the restriction that the tape head cannot move beyond the portion of the tape that contains the input string. In other words, the tape is bounded by the length of the input.
+    
+    Formally, an LBA is a TM $M=(Q,\Sigma,\Gamma,\delta,q_0,B,F)$ where the tape head is not allowed to move left of the leftmost symbol of the input or right of the rightmost symbol of the input.
+    
+    LBAs recognize context-sensitive languages.
+\end{frame}
+
+\begin{frame}{Correspondence between Grammars and Automata}
+    \begin{itemize}
+        \item Regular languages (Type 3) can be recognized by DFAs and NFAs.
+        \item Context-free languages (Type 2) can be recognized by PDAs.
+        \item Context-sensitive languages (Type 1) can be recognized by LBAs.
+        \item Recursively enumerable languages (Type 0) can be recognized by TMs.
+    \end{itemize}
+\end{frame}
+
 
 % Slide 1: What are Formal Languages?
 % \section{What are Formal Languages?}
