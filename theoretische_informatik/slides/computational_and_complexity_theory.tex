@@ -69,6 +69,46 @@
  Hence, although there must be a proof for every valid formula, there is no algorithm that can find it for every formula in finite time.
 \end{frame}
 
+\begin{frame}{Decidability of the Chomsky Hierarchy}
+\begin{itemize}
+    \item Type 3 (Regular Languages): Decidable
+    \item Type 2 (Context-Free Languages): Decidable
+    \item Type 1 (Context-Sensitive Languages): Decidable
+    \item Type 0 (Recursively Enumerable Languages): Semi-decidable
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recursively Enumerable vs. Recursive Languages}
+\begin{itemize}
+    \item \textbf{Recursive Languages}: Languages for which there exists a Turing machine that halts on all inputs and decides membership.
+    \item \textbf{Recursively Enumerable Languages}: Languages for which there exists a Turing machine that will enumerate all valid strings but may not halt on invalid strings.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Primitive Recursive Functions}
+\begin{itemize}
+    \item A class of functions that can be defined using basic functions (zero, successor, projection) and closed under composition and primitive recursion.
+    \item All primitive recursive functions are total and computable.
+    \item Example: Addition, multiplication, and factorial are primitive recursive functions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Mu-Recursive Functions}
+\begin{itemize}
+    \item An extension of primitive recursive functions that includes the minimization operator.
+    \item Mu-recursive functions can express a wider range of computations, including some that are not primitive recursive.
+    \item All mu-recursive functions are computable, but not all are total.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Church-Turing Thesis}
+\begin{itemize}
+    \item The Church-Turing Thesis posits that any function that can be computed by an algorithm can be computed by a Turing machine.
+    \item This thesis provides a foundation for the field of computability theory.
+    \item It implies that Turing machines are a powerful model of computation, equivalent to other models (e.g., lambda calculus, recursive functions).
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Computability vs. Complexity}
 \begin{itemize}
     \item \textbf{Computability} is concerned with what can be computed (i.e., the existence of an algorithm).
