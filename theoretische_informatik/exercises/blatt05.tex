@@ -1,0 +1,86 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{5}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage{bussproofs}
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+
+\aufgabetitel{$2$}{Formale Sprache modellieren}\\
+
+Gegeben ist die Sprache $L = \{ w \in \{0,1\}^* \mid w \text{ endet auf } 01 \}$.
+Entwerfen Sie einen DFA, der $L$ erkennt.
+
+\aufgabetitel{$3$}{Minimierung von DFA}\\
+Gegeben ist folgender DFA $M = (Q, \Sigma, \delta, q_0, F)$ mit:
+\begin{itemize}
+    \item $Q = \{A, B, C, D, E\}$
+    \item $\Sigma = \{0,1\}$
+    \item $\delta(A,0)=B,\ \delta(A,1)=C$
+    \item $\delta(B,0)=A,\ \delta(B,1)=D$
+    \item $\delta(C,0)=E,\ \delta(C,1)=A$
+    \item $\delta(D,0)=E,\ \delta(D,1)=B$
+    \item $\delta(E,0)=E,\ \delta(E,1)=E$
+    \item $q_0 = A$
+    \item $F = \{A, D\}$
+\end{itemize}
+Minimieren Sie den DFA. 
+
+\aufgabetitel{$3$}{Minimierung von DFA}\\
+Gegeben ist folgender DFA $M = (Q, \Sigma, \delta, q_0, F)$ mit:
+\begin{itemize}
+    \item $Q = \{A, B, C, D\}$
+    \item $\Sigma = \{0,1\}$
+    \item $\delta(A,0)=C,\ \delta(A,1)=B$
+    \item $\delta(B,0)=D,\ \delta(B,1)=A$
+    \item $\delta(C,0)=A,\ \delta(C,1)=D$
+    \item $\delta(D,0)=B,\ \delta(D,1)=C$
+    \item $q_0 = A$
+    \item $F = \{A,C\}$
+\end{itemize}
+Minimieren Sie den DFA.
+
+
+\aufgabetitel{$5$}{DFA für Sprache}\\
+Konstruieren Sie einen NFA für die Sprache
+$L = \{ w \in \{a,b\}^* \mid \text{ das dritte Zeichen von rechts ist } 1 \}$.
+
+Wandeln Sie den NFA in einen äquivalenten DFA um.
+
+
+\aufgabetitel{$3$}{Pumping Lemma}\\
+Zeigen Sie mit Hilfe des Pumping-Lemmas, dass die Sprache
+$L = \{ a^n b^n \mid n\in\mathbb{N}\}$
+
+\aufgabetitel{$5$}{Reguläre Ausdrücke}\\
+Gegeben ist der reguläre Ausdruck
+$r = (ab^*)^*a$
+
+Geben Sie einen NFA an und einen äquivalenten DFA, die beide die von $r$ beschriebene Sprache erkennen.
+
+\aufgabetitel{$2$}{Grammatik}\\
+Gegeben ist die Grammatik $G$:
+$S\rightarrow aSb \mid bSa \mid \varepsilon$
+
+Geben Sie die Elemente von $L_4:=\{w\in L(G)\mid |w|\leq 4\}$ an.
+
+Ist L(G) regulär? Begründen Sie.
+
+
+\end{document}
