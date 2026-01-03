@@ -1,6 +1,7 @@
 \documentclass{beamer}
 \usetheme{CambridgeUS}
 \usepackage{tikz}
+\usepackage{tikz-cd}
 \usepackage[german]{babel}
 \usetikzlibrary{matrix,arrows,fit,positioning, mindmap, trees}
 
@@ -9,7 +10,7 @@
 \usepackage{times}
 \usepackage{xmpmulti}
 \usepackage{animate}
-\usepackage{amsmath}
+\usepackage{amsmath, amssymb}
 \usepackage{verbatim}
 \usepackage{mathrsfs}
 
@@ -356,7 +357,7 @@ Es gilt:
   \item $\forall A,B,C: A\cap(B\cup C)=(A\cap B)\cup (B\cap C)$
   \item $\forall A,B,C: A\cup (B\cap C)=(A\cup B)\cap (A\cup C)$
   \item $\forall A,B,C: A\backslash(B\cup C)=(A\backslash B)\cap (A\backslash C)$
-  \item $\forall A,B,C: A\backslash(B\cap C)=(A\backslash B)\cap (A\backslash C)$
+  \item $\forall A,B,C: A\backslash(B\cap C)=(A\backslash B)\cup (A\backslash C)$
 \end{itemize}
 
 \end{frame}
@@ -514,38 +515,30 @@ Die Komposition ist praktisch die \glqq Hintereinanderschaltung\grqq der Relatio
     Die Idee ist, die reflexiven und transitiven Beziehungen nicht darzustellen. Sie gelten implizit. Und gilt $aRb$ in der Ordnung $R$, dann wird $a$ unterhalb von $b$ angeordnet und beide werden mit einer Linie verbunden.
     
   \end{frame}
-  \begin{frame}{Partitionen}
-    \begin{definition}[Partition]
-      Eine Partition einer Menge $M$ ist eine Menge von nicht-leeren Teilmengen $\{A_i\}_{i\in I}$, so dass
-      \begin{itemize}
-        \item $\bigcup_{i\in I} A_i = M$ (die Vereinigung aller Teilmengen ergibt die Menge $M$)
-        \item $A_i \cap A_j = \emptyset$ f"ur alle $i \neq j$ (die Teilmengen sind paarweise disjunkt)
-      \end{itemize}
-    \end{definition}
-    \begin{example}
-      Sei $M = \{1, 2, 3, 4\}$. Eine m"ogliche Partition von $M$ ist $\{\{1, 2\}, \{3, 4\}\}$.
-    \end{example}
+
+  \begin{frame}{Quotientenmenge}
+    Sei $R\subseteq M\times M$ eine "Aquivalenzrelation auf der Menge $M$. F"ur $x\in M$ definieren wir die \textbf{"Aquivalenzklasse} von $x$ bez"uglich $R$ als 
+    \[[x]_R:=\{y\in M|(x,y)\in R\}\]
+    Die Menge aller "Aquivalenzklassen nennen wir \textbf{Quotientenmenge} von $M$ bez"uglich $R$ und schreiben 
+    \[M/R:=\{[x]_R|x\in M\}\]
   \end{frame}
-\begin{frame}{Zusammenhang von Partitionen und "Aquivalenzrelationen}
+
+\begin{frame}{Partitionen}
+\begin{definition}{Partition}
+  Eine Mengenfamilie $P\subseteq\mathscr{P}(M)$ f"ur eine Menge $M$ ist eine \textbf{Partition} von $M$, wenn
   \begin{itemize}
-    \item Jede "Aquivalenzrelation auf einer Menge $M$ definiert eine Partition von $M$.
-    \item Umgekehrt definiert jede Partition einer Menge $M$ eine "Aquivalenzrelation auf $M$.
+    \item $\forall A\in P:A\neq\emptyset$
+    \item $\bigcup_{A\in P} A=M$
+    \item $\forall A,B\in P:A\neq B\Rightarrow A\cap B=\emptyset$
   \end{itemize}
-  \begin{example}
-    Sei $M = \{1, 2, 3, 4\}$ und die Partition $\{\{1, 2\}, \{3, 4\}\}$. Die entsprechende "Aquivalenzrelation ist:
-    \[
-    R = \{(1, 1), (1, 2), (2, 1), (2, 2), (3, 3), (3, 4), (4, 3), (4, 4)\}
-    \]
-  \end{example}
+\end{definition}
+Also ist eine Partition eine Menge von paarweise disjunkten, nicht-leeren Teilmengen, deren Vereinigung die Gesamtmenge ergibt.
 \end{frame}
 \begin{frame}{Zusammenhang von Partitionen und "Aquivalenzrelationen}
-
-  \begin{definition}[Menge der "Aquivalenzklassen]
-    Sei $R$ eine "Aquivalenzrelation auf einer Menge $M$. Die Menge der "Aquivalenzklassen von $M$ bzgl. $R$ (auch bezeichnet als Quotienten- oder Faktormenge) ist definiert als:
-    \[M/R := \{[x]_R \mid x \in M\}\]
-    wobei $[x]_R := \{y \in M \mid (x, y) \in R\}$ die "Aquivalenzklasse von $x$ bzgl. $R$ ist.
-  \end{definition}
-  Es gilt, dass zu jeder "Aquivalenzrelation $R\subseteq M\times M$ die Menge der "Aquivalenzklassen $M/R$ eine Partition bildet. Umgekehrt gibt es zu jeder Partition $P\subseteq\mathscr{P}(M)$ eine passende "Aquivalenzrelation $R\subseteq M\times M$, so dass also $M/R=P$.
+  \begin{itemize}
+    \item Jede "Aquivalenzrelation auf einer Menge $M$ definiert eine Partition von $M$, n"amlich die Quotientenmenge $M/R=\{[x]_R|x\in M\}$ mit $[x]_R=\{y\in M|(x,y)\in R\}$.
+    \item Umgekehrt definiert jede Partition einer Menge $M$ eine "Aquivalenzrelation auf $M$. Die kanonische Relation ist \[R=\{(x,y)\in M\times M|\exists A\in P:x\in A\wedge y\in A\}\]
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Reflexiv-transitive H"ulle}
@@ -555,6 +548,7 @@ Es gilt $R^*=\bigcup_{n=0}^\infty R^n$ mit $R^0=Id$, $R^{n+1}=R^n\circ R$. Dabei
 
 Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"ugt bis $\bigcup{i=0}^n R^i$ station"ar wird.
 \end{frame}
+
 \subsection{Funktionen}
 
 \begin{frame}{Agenda}
@@ -572,14 +566,6 @@ Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"u
 \end{frame}
 
 
-  \begin{frame}{Ordnungen und "Aquivalenzrelationen}
-    \begin{definition}[Ordnungen]
-      Eine Relation $R\subseteq M\times M$ hei"st \textbf{Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist.
-    \end{definition}
-    \begin{definition}["Aquivalenzrelationen]
-      Eine Relation $R\subseteq M\times M$ hei"st \textbf{"Aquivalenzrelation}, wenn sie reflexiv, symmetrisch und transitiv ist.
-    \end{definition}
-  \end{frame}
 \begin{frame}{Eigenschaften von Funktionen}
 \begin{definition}[Eigenschaften von Funktionen]
   Eine Funktion $f:M\to N$ hei"st 
@@ -591,6 +577,33 @@ Bei endlichen Mengen kann man $R^*$ berechnen, indem man so lange $R^n$ hinzuf"u
 \end{definition}
 Intuitiv bedeutet \textit{injektiv}, dass ein Funktionswert h"ochstens einen Ursprungswert hat, oder anders: Jeder Wert im Zielraum wird h"ochstens einmal von $f$ \glqq getroffen\grqq. \textit{Surjektiv} bedeutet, dass jeder Wert von $f$ \glqq getroffen\grqq wird.
 \end{frame}
+
+\begin{frame}{Der Homomorphiesatz (Kanonische Zerlegung)}
+    Sei $f: M \to N$ eine beliebige Abbildung. Dann existiert eine Zerlegung:
+    
+    \vspace{0.5cm}
+    
+    \begin{itemize}
+        \item \textbf{"Aquivalenzrelation:} $x \equiv y \iff f(x) = f(y)$
+        \item \textbf{Projektion:} $\pi: M \to M/{\equiv}, \quad x \mapsto [x]$
+        \item \textbf{Induzierte Abb.:} $\tilde{f}: M/{\equiv} \to N, \quad [x] \mapsto f(x)$
+    \end{itemize}
+
+    \vspace{0.5cm}
+    
+    Das Diagramm kommutiert, d.h. $f = \tilde{f} \circ \pi$. 
+    Dabei ist $\pi$ surjektiv und $\tilde{f}$ injektiv.
+\end{frame}
+
+\begin{frame}{Beispiel}
+  Sei $f:\mathbb{Z}\to\mathbb{Z}, x\mapsto x^2$. Dann ist die zu $f$ kanonische Zerlegung:
+  \begin{itemize}
+    \item \textbf{"Aquivalenzrelation:} $x\equiv y\iff x^2=y^2\iff x=y\vee x=-y$
+    \item \textbf{Projektion:} $\pi:\mathbb{Z}\to\mathbb{Z}/\equiv, x\mapsto [x]$
+    \item \textbf{Induzierte Abb.:} $\tilde{f}:\mathbb{Z}/\equiv\to\mathbb{Z}, [x]\mapsto x^2$
+  \end{itemize}
+\end{frame}
+
   % \begin{block}{Cryptographic System}
   %   An encryption is a function $enc:K\times P\to C$ from the cartesian product of the set of keys $K$ and the set of plaintexts $P$ to the set cyphertexts $C$. A decryption is a function $dec: K\times C\to P$. A suitable decryption has a key $k'$ such that \[\forall k\in K\forall x\in P: dec(k',enc(k,x))=x\]
   %   Alternative notation for $enc(k,m)$ is $enc_k(m)$.
