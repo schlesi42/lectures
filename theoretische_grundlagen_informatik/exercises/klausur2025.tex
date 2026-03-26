@@ -8,6 +8,7 @@
 \newcommand{\blattnummer}{1}
 %\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
 \input{include/config.tex}
+\usepackage{booktabs}
 
 % Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
 \begin{document}
@@ -39,22 +40,70 @@ Gegeben sei die Menge $A=\{1,\{1\},\{1,2\},\{\emptyset\}\}$, $\mathscr{P}(A)$ di
 
 \end{enumerate}
 
-\aufgabetitel{$12$}{Relationen}\\
-Wir haben zwei Gruppen von Personen: Eine Gruppe ist das Führungspersonal: $F=\{\text{Anna},\text{Bob},\text{Charlie}\}$, die andere Gruppe sind die Mitarbeiter: $M=\{\text{David},\text{Eve},\text{Frank}, \text{Grace}\}$. 
-
-Das Vorgesetztenverhältnis $R\subseteq F\times M$ ist gegeben durch \[R=\{(\text{Anna},\text{David}),(\text{Anna},\text{Frank}),(\text{Bob},\text{Grace}),(\text{Charlie},\text{Eve})\}\].
-Die Mitarbeitenden wiederum haben spezielle Skills, die sie wiederum an ihre Vorgesetzten weitergeben. Diese Relation $S\subseteq M\times F$ ist gegeben durch \[S=\{(\text{David},\text{Bob}),(\text{Eve},\text{Alice}),(\text{Eve},\text{Bob}),(\text{Eve},\text{Charlie}),(\text{Frank},\text{Bob}),(\text{Grace},\text{Bob})\}\].
+\aufgabetitel{$8$}{Relationen}\\
+In einer Firma gibt es eine Matrixorganisation: Die Mitarbeiter sind $M=\{\text{David},\text{Eve},\text{Frank}, \text{Grace}\}$, die Vorgesetzten sind $V=\{\text{Anna},\text{Bob},\text{Charlie}\}$. Jeder Mitarbeiter hat genau einen direkten Vorgesetzten, kann aber auch an mehreren Projekten arbeiten. Die folgende Tabelle gibt eine Übersicht über die Mitarbeiter, ihre Vorgesetzten und die Projekte, an denen sie arbeiten.
+\begin{table}[h]
+    \centering
+    \caption{Projektübersicht der Mitarbeiter}
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Mitarbeiter} & \textbf{Vorgesetzte} & \textbf{Projekt} \\
+        \midrule
+        David & Anna    & Projekt 1 \\
+        Eve    & Charlie & Projekt 1 und Projekt 2 \\
+        Frank  & Anna    & Projekt 2 \\
+        Grace  & Bob     & Projekt 2 und Projekt 3 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+Den Projekten sind aus der Menge der Vorgesetzten Koordinatoren zugeordnet:
+\begin{table}[h]
+    \centering
+    \caption{Projekleitungen}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Projekt} & \textbf{Koordinatoren}\\
+        \midrule
+        Projekt 1 & Anna und Bob    \\
+        Projekt 2 & Bob und Charlie    \\
+        Projekt 3 & Charlie     \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+Wir sind neu im Unternehmen und wollen f"ur unser eigenes Projekt ein gutes Stakeholder-Management aufbauen. Dazu wollen wir die Relationen zwischen den Mitarbeitenden und den Vorgesetzten analysieren. 
 \begin{enumerate}[(a)]
-    \item Stellen Sie $R$ und $S$ als Graphen und Adjazenzmatrix dar.
-    \item Stellen Sie die Relation $R\circ S$ als Graphen dar. Was modelliert diese Relation in unserem Beispiel?
-    \item Stellen Sie die Relation $S\circ R$ als Graphen dar. Was modelliert diese Relation in unserem Beispiel?
-    \item Zeichnen Sie jeweils f"ur $(R\circ S)^*$ und $(S\circ R)^*$ die Hasse-Diagramme, sofern es Ordnungen sind. Was kann man hinsichtlich der Interpretation dieser Relationen aus den Diagrammen ablesen?
-    \item Angenommen, die Vorgesetzten geben die Skills, die sie erlernt haben, an ihre Mitarbeitenden weiter. Gibt es am Ende eine Person in der Firma, die alle Skills besitzt? Begründen Sie Ihre Antwort mithilfe der Relationen.
+    \item Stllen Sie die Vorgesetzten-Mitarbeiter-Relation $R\subseteq V\times M$ als Graphen und Adjazenzmatrix dar.
+    \item Stellen Sie die Mitarbeiter-Projekt-Relation $S\subseteq M\times P$ als Graphen und Adjazenzmatrix dar.
+    \item Stellen Sie die Projekt-Koordinatoren-Relation $T\subseteq P\times V$ als Graphen und Adjazenzmatrix dar.
+    \item Wir wollen herausfinden, welche Vorgesetzten den gr"o{\ss}ten Einfluss haben. Ein Vorgesetzter hat Einfluss auf die ihm/ihr direkt zugeordneten Mitarbeiter, aber auch auf die Mitarbeiter, die an Projekten arbeiten, die von ihm/ihr koordiniert werden. Wie kann man diesen Einfluss mittels Relationenkomposition modellieren? Stellen Sie die entsprechende Relation als Graphen dar, geben Sie das Hasse-Diagramm an, sofern es sich um eine Ordnung handelt, und interpretieren Sie das Ergebnis.
 \end{enumerate}
 
-\aufgabetitel{$4$}{Funktionen}\\
-Nun sei eine Menge von Lehrern
 
+\aufgabetitel{$6$}{Bell-LaPadula}\\
+In einem Hochsicherheitsbereich werden Sicherheitslabels verwendet. Ein Label besteht aus einem Sicherheitslevel und einer Menge von Kategorien (Need-to-Know-Prinzip). 
+Die Menge der Labels ist definiert als $L=\text{Level}\times\mathcal{P}(\{A,B\})$, wobei $\{A,B\}$ die Menge der Kategorien (z.B. Abteilung $A$ oder $B$ ist.
+Die Sicherheitslevel sind geordnet: $0$ (Public) $< 1$ (Secret).
+Ein Label ist also ein Paar $(l,K)$. 
+
+Wir definieren die Dominanzrelation $\preceq$ auf $L$ wie folgt: $(l_1,K_1) \preceq (l_2,K_2)\Leftrightarrow l_1 \leq l_2 \wedge K_1 \subseteq K_2$ gilt.
+Die Labels k"onnen Subjekten (wie Usern) und Objekten (wie Dateien) zugewiesen werden.
+Die Idee ist, dass ein Subjekt mit Label $L_s=(l_s,K_s)$ auf ein Objekt mit Label lesend $L_o=(l_o,K_o)$ zugreifen darf, wenn $L_o \preceq L_s$ gilt (no read up).
+Gegeben seien folgende Sicherheitslabel:
+\begin{itemize}
+    \item $L_1 = (0,\emptyset)$
+    \item $L_2 = (1,\{A\})$
+    \item $L_3 = (1,\{B\})$
+    \item $L_4 = (1,\{A,B\})$
+    \item $L_5 = (0,\{A\})$
+   
+\end{itemize}
+\begin{enumerate}[(a)]
+    \item Zeichnen Sie das Hasse-Diagramm der Labels bez"uglich der Dominanzrelation $\preceq$ f"uer die Labels $L_1$ bis $L_5$.
+    \item Ein Benutzer Alice hat das Label $L_A = (1,\{A\})$. Darf Alice auf Objekte mit den Labels $L_1$ bis $L_5$ lesend zugreifen? Begr"unden Sie Ihre Antwort.
+\end{enumerate}
+
+\aufgabetitel{$5$}{Beweis mit Relationen}\\
+Sei $M$ eine nichtleere Menge, $R,S\subseteq M\times M$ zwei Relationen auf $M$. Beweisen Sie, dass wenn $R$ und $S$ beide transitiv sind, auch die Relation $R\cap S$ transitiv ist.
 
 \hspace{5cm}
 \newpage
