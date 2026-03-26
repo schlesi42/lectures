@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.yakindu.sct.simulation.core.launch.statechart">
+    <stringAttribute key="filename" value="/itemis.create.examples.basic.tutorial/model/01_basic/01_LightSwitch.ysc"/>
+</launchConfiguration>

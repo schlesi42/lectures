@@ -1,0 +1,31 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{7}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usetikzlibrary{automata}
+
+% Notation: gesendete Signale mit !, empfangene mit ?
+% \textbf{?/!} vermeiden: in kleinen Kursivschriften fehlen diese Zeichen
+\newcommand{\snd}[1]{\textit{#1}!}
+\newcommand{\rcv}[1]{\textit{#1}?}
+
+\begin{document}
+\setblatthema{Verifikation von Timed Automata}
+\iforiginal{\input{include/kopf.tex}}
+
+% ===========================================================
+% Aufgabe 1: Automatische Schiebetür
+% ===========================================================
+
+\aufgabetitel{$5$}{Automatische Schiebetür}\\
+
+
+\end{document}

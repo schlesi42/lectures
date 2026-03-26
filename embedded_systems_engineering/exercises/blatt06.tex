@@ -1,0 +1,510 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{6}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usetikzlibrary{automata}
+
+% Notation: gesendete Signale mit !, empfangene mit ?
+% \textbf{?/!} vermeiden: in kleinen Kursivschriften fehlen diese Zeichen
+\newcommand{\snd}[1]{\textit{#1}!}
+\newcommand{\rcv}[1]{\textit{#1}?}
+
+\begin{document}
+\setblatthema{Timed Automata}
+\iforiginal{\input{include/kopf.tex}}
+
+% ===========================================================
+% Aufgabe 1: Automatische Schiebetür
+% ===========================================================
+
+\aufgabetitel{$5$}{Automatische Schiebetür}\\
+Eine automatische Schiebetür öffnet sich, wenn ein Bewegungssensor eine Person erkennt.
+Die Tür bleibt mindestens 5 Sekunden geöffnet. Erkennt der Sensor während dieser Zeit erneut
+eine Bewegung, wird der Timer zurückgesetzt. Sind 5 Sekunden vergangen, ohne dass eine neue
+Bewegung erkannt wurde, schließt sich die Tür automatisch. Verwende eine einzige Uhr $x$.
+Gesendete Signale werden mit \textbf{!}, empfangene mit \textbf{?} annotiert.
+
+\begin{enumerate}
+    \item Identifiziere die Zustände, Uhren und Ereignisse des Timed Automaton.
+    \item Zeichne den Timed Automaton. Gib Invarianten, Guards und Uhren-Resets vollständig an.
+    \item Erkläre die Rolle der Invariante im Zustand \textit{Offen}. Was würde passieren,
+          wenn man sie weglässt?
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1:}
+\begin{itemize}
+    \item \textbf{Zustände:} $\mathit{Zu}$, $\mathit{Offen}$
+    \item \textbf{Uhren:} $x$ -- Zeit seit letzter Bewegungserkennung im Zustand \textit{Offen}
+    \item \textbf{Ereignisse (empfangen):} \rcv{motion} (Bewegungssensor)
+\end{itemize}
+
+\textbf{Zu 2:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=5.5cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1.2cm,
+    every state/.style={minimum size=2cm, align=center, font=\small}]
+  \node[state, initial] (zu) {$\mathit{Zu}$};
+  \node[state, right of=zu] (offen) {$\mathit{Offen}$\\[2pt]$x \leq 5$};
+  \path[->]
+    (zu)    edge[bend left=25] node[above]
+              {\rcv{motion} $/ \; x {:=} 0$} (offen)
+    (offen) edge[loop above]   node[above]
+              {\rcv{motion} $/ \; x {:=} 0$} (offen)
+    (offen) edge[bend left=25] node[below]
+              {$x = 5$} (zu);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Zu 3:}\\
+Die Invariante $x \leq 5$ erzwingt, dass der Automat \textit{Offen} nach spätestens 5\,s
+verlässt. Ohne sie ist die Transition $x = 5 \to \mathit{Zu}$ lediglich \emph{erlaubt},
+aber nicht \emph{erzwungen} -- der Automat könnte beliebig lange offen bleiben.
+\end{loesung}
+
+\umbruchlsg
+
+% ===========================================================
+% Aufgabe 2: Fußgängerampel
+% ===========================================================
+
+\aufgabetitel{$6$}{Fußgängerampel}\\
+Eine Fußgängerampel soll als Timed Automaton mit einer einzigen Uhr $x$ modelliert werden.
+Die Ampel beginnt im Rotlicht. Drückt eine Fußgängerin den Anforderungsknopf, wechselt die
+Ampel nach frühestens 30 Sekunden auf Grün. Das Grünlicht leuchtet genau 20 Sekunden, danach
+wechselt die Ampel automatisch wieder auf Rot. Eine neue Grünphase darf frühestens 30 Sekunden
+nach dem Ende der letzten Grünphase beginnen.
+
+\begin{enumerate}
+    \item Zeichne den Timed Automaton mit allen Invarianten, Guards und Uhren-Resets.
+    \item Erkläre, wie die eine Uhr $x$ beide Zeitbedingungen (min.\ 30\,s Rot, genau 20\,s
+          Grün) korrekt abbildet.
+    \item Was ist der frühestmögliche Zeitpunkt einer zweiten Grünphase, wenn der Knopf
+          jeweils sofort nach dem frühestmöglichen Zeitpunkt gedrückt wird?
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6.5cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1.2cm,
+    every state/.style={minimum size=2cm, align=center, font=\small}]
+  \node[state, initial] (rot)  {$\mathit{Rot}$};
+  \node[state, right of=rot] (gruen) {\textit{Grün}\\[2pt]$x \leq 20$};
+  \path[->]
+    (rot)   edge[bend left=25] node[above]
+              {\rcv{press} $[x \geq 30]$ $/ \; x {:=} 0$} (gruen)
+    (gruen) edge[bend left=25] node[below]
+              {$x = 20 \; / \; x {:=} 0$} (rot);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Zu 2:}\\
+Da $x$ bei jedem Zustandswechsel zurückgesetzt wird, misst sie jeweils die im aktuellen
+Zustand verbrachte Zeit. In \textit{Rot} stellt der Guard $x \geq 30$ die Mindest-Rotdauer
+sicher; in \textit{Grün} erzwingt die Invariante $x \leq 20$ die exakte Gründauer.
+
+\textbf{Zu 3:}\\
+Erste Grünphase frühestens bei $t = 30\,\text{s}$, Dauer 20\,s $\Rightarrow$ Ende bei
+$t = 50\,\text{s}$.
+Zweite Grünphase frühestens 30\,s später: $t = \mathbf{80\,\text{s}}$.
+\end{loesung}
+
+\umbruchlsg
+
+% ===========================================================
+% Aufgabe 3: Watchdog-Timer
+% ===========================================================
+
+\aufgabetitel{$5$}{Watchdog-Timer}\\
+In sicherheitskritischen eingebetteten Systemen muss ein überwachter Prozess alle 10 Sekunden
+ein Lebenszeichen senden (\rcv{heartbeat}). Erhält der Watchdog innerhalb von 10 Sekunden
+kein Lebenszeichen, wechselt er in den Zustand \textit{Alarm}. Ein manuelles
+\rcv{reset}-Ereignis bringt ihn in den Normalzustand zurück. Verwende eine Uhr $x$.
+
+\begin{enumerate}
+    \item Zeichne den Timed Automaton für den Watchdog-Timer.
+    \item Erkläre die Rollen von Invariante und Guard.
+    \item Angenommen, ein \rcv{heartbeat} trifft genau bei $x = 10$ ein. Kann die
+          Timeout-Transition nach \textit{Alarm} trotzdem noch feuern? Begründe mit der
+          Semantik von Timed Automata.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=5.5cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1.2cm,
+    every state/.style={minimum size=2cm, align=center, font=\small}]
+  \node[state, initial] (normal) {$\mathit{Normal}$\\[2pt]$x \leq 10$};
+  \node[state, right of=normal] (alarm)  {$\mathit{Alarm}$};
+  \path[->]
+    (normal) edge[loop above] node[above]
+               {\rcv{heartbeat} $/ \; x {:=} 0$} (normal)
+    (normal) edge[bend left=25] node[above]
+               {$x = 10$} (alarm)
+    (alarm)  edge[bend left=25] node[below]
+               {\rcv{reset} $/ \; x {:=} 0$} (normal);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Zu 2:}
+\begin{itemize}
+    \item \textbf{Invariante} $x \leq 10$: erzwingt das Verlassen von \textit{Normal}
+          nach spätestens 10\,s -- ohne sie könnte der Automat trotz fehlendem Heartbeat
+          dort verbleiben.
+    \item \textbf{Guard} $x = 10$ auf der Timeout-Transition: die Transition darf erst
+          nach genau 10\,s feuern.
+\end{itemize}
+
+\textbf{Zu 3:}\\
+Bei $x = 10$ ist $x \leq 10$ noch erfüllt. Sowohl \rcv{heartbeat} als auch die
+Timeout-Transition sind aktivierbar -- \emph{Nichtdeterminismus}. In der Praxis (z.\,B.
+UPPAAL) haben externe Ereignistransitionen üblicherweise Vorrang, sodass \rcv{heartbeat}
+noch verarbeitet werden kann.
+\end{loesung}
+
+\umbruchlsg
+
+% ===========================================================
+% Aufgabe 4: Tastenentprellung
+% ===========================================================
+
+\aufgabetitel{$6$}{Tastenentprellung (Button Debouncing)}\\
+Mechanische Tasten erzeugen beim Drücken und Loslassen kurze Kontaktstörungen
+(\emph{Prellen}): Das Signal wechselt innerhalb weniger Millisekunden mehrfach zwischen
+\rcv{down} und \rcv{up}. Ein Entprellungs-TA soll diese Störungen herausfiltern:
+
+\begin{itemize}
+  \item Ein Tastendruck gilt erst als stabil, wenn das Signal \rcv{down} für mindestens
+        20\,ms gehalten wurde \emph{ohne} ein zwischenzeitliches \rcv{up}. Dann wird
+        \snd{press} gesendet.
+  \item Beim Loslassen gilt analog: \rcv{up} muss 20\,ms stabil sein \emph{ohne}
+        erneutes \rcv{down}, bevor \snd{release} gesendet wird.
+  \item Tritt während der Entprellzeit ein erneutes Signal gleicher Art auf (also
+        \rcv{down} in der Drückphase, \rcv{up} in der Loslassphase), wird der Timer
+        zurückgesetzt.
+\end{itemize}
+
+Verwende eine Uhr $x$ (Einheit: ms).
+
+\begin{enumerate}
+  \item Identifiziere die Zustände und zeichne den Timed Automaton. Annotiere gesendete
+        Signale mit \textbf{!} und empfangene mit \textbf{?}.
+  \item Was passiert, wenn nach dem ersten \rcv{down} bei $x = 8$ ein weiteres \rcv{down}
+        folgt?
+  \item Was passiert, wenn nach dem ersten \rcv{down} bei $x = 5$ ein \rcv{up} folgt?
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1:}\\
+Zustände: $\mathit{Ruhend}$, $\mathit{EntprDruck}$ (entprelle Drücken, Inv.\ $x \leq 20$),
+\textit{Gedrückt}, $\mathit{EntprLos}$ (entprelle Loslassen, Inv.\ $x \leq 20$).
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.8cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1.2cm,
+    every state/.style={minimum size=2.1cm, align=center, font=\small}]
+  % Nodes in 2x2 layout
+  \node[state, initial] (ruhend)    at (0, 0)    {$\mathit{Ruhend}$};
+  \node[state]          (edruck)    at (5.5, 0)  {$\mathit{EntprDruck}$\\[2pt]$x \leq 20$};
+  \node[state]          (gedrueckt) at (5.5, -3.5){\textit{Gedrückt}};
+  \node[state]          (elos)      at (0, -3.5) {$\mathit{EntprLos}$\\[2pt]$x \leq 20$};
+
+  \path[->]
+    % Ruhend -> EntprDruck
+    (ruhend)    edge node[above] {\rcv{down} $/ \; x {:=} 0$} (edruck)
+    % EntprDruck: Bounce (down resets timer)
+    (edruck)    edge[loop above] node[above] {\rcv{down} $/ \; x {:=} 0$} (edruck)
+    % EntprDruck -> Ruhend on premature up
+    (edruck)    edge[bend right=15] node[left, pos=0.45] {\rcv{up}} (ruhend)
+    % EntprDruck -> Gedrückt after stable 20ms
+    (edruck)    edge node[right] {$x = 20$ $/ \; \snd{press}$} (gedrueckt)
+    % Gedrückt -> EntprLos
+    (gedrueckt) edge node[below] {\rcv{up} $/ \; x {:=} 0$} (elos)
+    % EntprLos: Bounce (up resets timer)
+    (elos)      edge[loop below] node[below] {\rcv{up} $/ \; x {:=} 0$} (elos)
+    % EntprLos -> Gedrückt on premature down
+    (elos)      edge[bend right=15] node[right, pos=0.55] {\rcv{down}} (gedrueckt)
+    % EntprLos -> Ruhend after stable 20ms
+    (elos)      edge node[left] {$x = 20$ $/ \; \snd{release}$} (ruhend);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Zu 2:}\\
+Bei $x = 8$ trifft ein weiteres \rcv{down} ein. Der Automat ist in $\mathit{EntprDruck}$
+und feuert die Self-Loop: $x := 0$. Der 20\,ms-Timer läuft erneut von vorne -- das Prellen
+wird unterdrückt, \snd{press} wird (noch) nicht gesendet.
+
+\textbf{Zu 3:}\\
+Bei $x = 5$ trifft \rcv{up} ein. Der Automat wechselt von $\mathit{EntprDruck}$ zurück
+nach $\mathit{Ruhend}$ (kein Reset, kein Press). Der kurze \rcv{down}-Impuls von nur 5\,ms
+wird als Prellen gewertet und ignoriert.
+\end{loesung}
+
+\umbruchlsg
+
+% ===========================================================
+% Aufgabe 5: Handshake-Protokoll (Parallelkomposition)
+% ===========================================================
+
+\aufgabetitel{$8$}{Handshake-Protokoll -- Parallelkomposition}\\
+Ein einfaches Stop-and-Wait-Protokoll besteht aus zwei Komponenten, die jeweils als eigener
+Timed Automaton modelliert werden und über gemeinsame Signale synchronisieren.
+
+\textbf{Sender} (Uhr $x$): Der Sender wartet auf ein \rcv{start}-Ereignis. Danach sendet er
+eine Anfrage (\snd{req}) und wartet bis zu 8 Sekunden auf eine Bestätigung (\rcv{ack}).
+Kommt keine Bestätigung, wechselt er in den Fehlerzustand.
+
+\textbf{Empfänger} (Uhr $y$): Der Empfänger wartet auf eine Anfrage (\rcv{req}), verarbeitet
+sie für genau 4 Sekunden und antwortet dann (\snd{ack}).
+
+\begin{enumerate}
+  \item Zeichne Sender und Empfänger als separate Timed Automata. Annotiere gesendete
+        Signale mit \textbf{!} und empfangene mit \textbf{?}.
+  \item Auf welchen Signalen synchronisieren Sender und Empfänger in der
+        Parallelkomposition $\mathit{Sender} \| \textit{Empfänger}$? Welche
+        Transitionen werden jeweils gleichzeitig ausgeführt?
+  \item Skizziere den erreichbaren globalen Zustandsraum der Parallelkomposition als
+        Tupel $(\mathit{Zustand}_S, \mathit{Zustand}_E)$.
+  \item Kann der Sender den Zustand \textit{Fehler} erreichen? Begründe anhand der
+        Zeitkonstanten.
+  \item Welche Round-Trip-Zeit (von \rcv{start} bis Erreichen von \textit{Fertig})
+        ergibt sich, wenn der Empfänger immer exakt 4\,s verarbeitet?
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1:}
+
+\begin{center}
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\textbf{Sender} (Uhr $x$)
+
+\vspace{0.4em}
+\begin{tikzpicture}[node distance=2.8cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1cm,
+    every state/.style={minimum size=1.7cm, align=center, font=\small}]
+  \node[state, initial] (bereit)  {$\mathit{Bereit}$};
+  \node[state, right of=bereit]  (wartend) {$\mathit{Wartend}$\\[2pt]$x \leq 8$};
+  \node[state, below of=wartend] (fertig)  {$\mathit{Fertig}$};
+  \node[state, below of=bereit]  (fehler)  {$\mathit{Fehler}$};
+  \path[->]
+    (bereit)  edge node[above, align=center, font=\footnotesize]
+                {\rcv{start} / \snd{req}, $x{:=}0$} (wartend)
+    (wartend) edge node[right, font=\footnotesize] {\rcv{ack}} (fertig)
+    (wartend) edge node[above, font=\footnotesize] {$x = 8$}  (fehler);
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\textbf{Empfänger} (Uhr $y$)
+
+\vspace{0.4em}
+\begin{tikzpicture}[node distance=2.8cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1cm,
+    every state/.style={minimum size=1.7cm, align=center, font=\small}]
+  \node[state, initial] (warten)      {$\mathit{Warten}$};
+  \node[state, right of=warten] (verarbeiten) {$\mathit{Verarb.}$\\[2pt]$y \leq 4$};
+  \path[->]
+    (warten)      edge[bend left=30] node[above, font=\footnotesize]
+                    {\rcv{req} $/ \; y{:=}0$} (verarbeiten)
+    (verarbeiten) edge[bend left=30] node[below, font=\footnotesize]
+                    {$y = 4 \;/\; \snd{ack}$} (warten);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+
+\textbf{Zu 2:}\\
+Synchronisiert wird auf zwei Signalpaaren:
+\begin{itemize}
+  \item \textbf{req}: Sender sendet \snd{req} (Transition $\mathit{Bereit} \to
+        \mathit{Wartend}$), Empfänger empfängt \rcv{req} (Transition $\mathit{Warten} \to
+        \mathit{Verarbeiten}$) -- beide Transitionen feuern \emph{gleichzeitig}.
+  \item \textbf{ack}: Empfänger sendet \snd{ack} (Transition $\mathit{Verarbeiten} \to
+        \mathit{Warten}$), Sender empfängt \rcv{ack} (Transition $\mathit{Wartend} \to
+        \mathit{Fertig}$) -- ebenfalls gleichzeitig.
+\end{itemize}
+
+\textbf{Zu 3:}\\
+Erreichbare Zustände der Parallelkomposition (Notation: $(\mathit{Sender}, \mathit{Empf.})$):
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.5cm, on grid, auto, >=Latex, font=\small]
+  \node[draw, rounded corners] (s0) {$(\mathit{Bereit},\;\mathit{Warten})$};
+  \node[draw, rounded corners, right of=s0] (s1) {$(\mathit{Wartend},\;\mathit{Verarbeiten})$};
+  \node[draw, rounded corners, right of=s1] (s2) {$(\mathit{Fertig},\;\mathit{Warten})$};
+  \path[->]
+    (s0) edge node[above, align=center] {\rcv{start}/\snd{req}, \rcv{req}\\(Sync.)} (s1)
+    (s1) edge node[above, align=center] {\snd{ack}, \rcv{ack}\\(Sync.)} (s2);
+\end{tikzpicture}
+\end{center}
+
+Der Zustand $(\mathit{Fehler}, \cdot)$ ist \emph{nicht} erreichbar (s.\ Zu~4).
+
+\textbf{Zu 4:}\\
+Der Empfänger sendet \snd{ack} nach exakt $y = 4\,\text{s}$. Der Sender wartet bis zu
+$x = 8\,\text{s}$. Da $4 < 8$, empfängt der Sender \rcv{ack} immer vor dem Timeout --
+$\mathit{Fehler}$ ist in der Parallelkomposition \textbf{nicht erreichbar}.
+
+Allgemein: $\mathit{Fehler}$ ist nicht erreichbar, solange die Verarbeitungszeit des
+Empfängers kleiner als die Timeout-Schranke des Senders ist.
+
+\textbf{Zu 5:}\\
+Zeitablauf nach \rcv{start}:
+\begin{enumerate}
+  \item $t = 0$: \snd{req} / \rcv{req}; Empfänger-Uhr $y := 0$.
+  \item $t = 4$: Empfänger fertig; \snd{ack} / \rcv{ack}; Sender erreicht \textit{Fertig}.
+\end{enumerate}
+Round-Trip-Zeit: $\mathbf{4\,\text{s}}$.
+\end{loesung}
+
+\umbruchlsg
+
+% ===========================================================
+% Aufgabe 6: Ampelkreuzung (Parallelkomposition)
+% ===========================================================
+
+\aufgabetitel{$9$}{Ampelkreuzung -- Parallelkomposition mit Sicherheitseigenschaft}\\
+An einer Kreuzung koordiniert ein \textbf{Steuerungs-TA} die Phasen zweier Ampeln
+(\textbf{Ampel\_NS} für den Nord-Süd-Verkehr, \textbf{Ampel\_OW} für den Ost-West-Verkehr)
+über Synchronisationssignale. Alle drei laufen als parallele Timed Automata.
+
+\textbf{Steuerung} (Uhr $c$): Wechselt zyklisch zwischen einer NS-Phase (25\,s) und einer
+OW-Phase (25\,s). Zwischen den Phasen liegt jeweils eine Sicherheitspause von 5\,s, in der
+beide Ampeln rot zeigen. Die Steuerung informiert die Ampeln über die folgenden Signale:
+\snd{stop\_ns}, \snd{start\_ow}, \snd{stop\_ow}, \snd{start\_ns}.
+
+\textbf{Ampel\_NS} und \textbf{Ampel\_OW}: Reagieren ausschließlich auf die Signale der
+Steuerung. Sie besitzen keine eigene Uhr.
+
+\begin{enumerate}
+  \item Zeichne alle drei Timed Automata. Annotiere gesendete Signale mit \textbf{!}
+        und empfangene mit \textbf{?}. Gib die Initialzustände an.
+  \item Welche Signalpaare werden in der Parallelkomposition
+        $\mathit{Steuerung} \| \mathit{Ampel\_NS} \| \mathit{Ampel\_OW}$ synchronisiert?
+  \item \textbf{Sicherheitseigenschaft:} Ampel\_NS und Ampel\_OW dürfen niemals gleichzeitig
+        Grün zeigen. Ist diese Eigenschaft in der Komposition erfüllt? Begründe anhand der
+        Übergänge der Steuerung.
+  \item Erweitere das Modell um eine \textbf{Fußgängerampel Ampel\_Fuss}, die die
+        Ost-West-Straße quert (d.\,h.\ parallel zum NS-Fahrzeugverkehr läuft). Sie zeigt
+        genau dann Grün, wenn Ampel\_OW Rot zeigt. Zeichne Ampel\_Fuss als TA, das auf
+        Signale der Steuerung reagiert -- ohne neue Signale einzuführen.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1:}
+
+\textbf{Steuerung} (Uhr $c$, Initialzustand: $\mathit{NS\_aktiv}$):
+\begin{center}
+\begin{tikzpicture}[node distance=3.6cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1.2cm,
+    every state/.style={minimum size=2.1cm, align=center, font=\small}]
+  \node[state, initial] (ns) {$\mathit{NS\_aktiv}$\\[2pt]$c \leq 25$};
+  \node[state, right of=ns]  (pa) {$\mathit{Pause\_A}$\\[2pt]$c \leq 5$};
+  \node[state, right of=pa]  (ow) {$\mathit{OW\_aktiv}$\\[2pt]$c \leq 25$};
+  \node[state, right of=ow]  (pb) {$\mathit{Pause\_B}$\\[2pt]$c \leq 5$};
+  \path[->]
+    (ns) edge node[above, align=center, font=\footnotesize]
+              {$c = 25$ \\ \snd{stop\_ns} \\ $c{:=}0$} (pa)
+    (pa) edge node[above, align=center, font=\footnotesize]
+              {$c = 5$ \\ \snd{start\_ow} \\ $c{:=}0$} (ow)
+    (ow) edge node[above, align=center, font=\footnotesize]
+              {$c = 25$ \\ \snd{stop\_ow} \\ $c{:=}0$} (pb)
+    (pb) edge[bend right=40] node[below, align=center, font=\footnotesize]
+              {$c = 5$ / \snd{start\_ns}, $c{:=}0$} (ns);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Ampel\_NS} (kein Clock, Initialzustand: \textit{Grün}) \hfill
+\textbf{Ampel\_OW} (kein Clock, Initialzustand: $\mathit{Rot}$)
+
+\begin{center}
+\begin{minipage}[t]{0.44\textwidth}
+\centering
+\begin{tikzpicture}[node distance=2.8cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1cm,
+    every state/.style={minimum size=1.7cm, align=center, font=\small}]
+  \node[state, initial] (g) {\textit{Grün}};
+  \node[state, right of=g]  (r) {$\mathit{Rot}$};
+  \path[->]
+    (g) edge[bend left=30] node[above, font=\footnotesize] {\rcv{stop\_ns}} (r)
+    (r) edge[bend left=30] node[below, font=\footnotesize] {\rcv{start\_ns}} (g);
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.44\textwidth}
+\centering
+\begin{tikzpicture}[node distance=2.8cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1cm,
+    every state/.style={minimum size=1.7cm, align=center, font=\small}]
+  \node[state, initial] (r) {$\mathit{Rot}$};
+  \node[state, right of=r]  (g) {\textit{Grün}};
+  \path[->]
+    (r) edge[bend left=30] node[above, font=\footnotesize] {\rcv{start\_ow}} (g)
+    (g) edge[bend left=30] node[below, font=\footnotesize] {\rcv{stop\_ow}} (r);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+
+\textbf{Zu 2:}\\
+Vier Signalpaare werden synchronisiert (jeweils Steuerung $\to$ Ampel):
+\begin{itemize}
+  \item \textbf{stop\_ns}: Steuerung ($\mathit{NS\_aktiv} \to \mathit{Pause\_A}$)
+        $\;\|\;$ Ampel\_NS ($\text{Grün} \to \mathit{Rot}$)
+  \item \textbf{start\_ow}: Steuerung ($\mathit{Pause\_A} \to \mathit{OW\_aktiv}$)
+        $\;\|\;$ Ampel\_OW ($\mathit{Rot} \to \text{Grün}$)
+  \item \textbf{stop\_ow}: Steuerung ($\mathit{OW\_aktiv} \to \mathit{Pause\_B}$)
+        $\;\|\;$ Ampel\_OW ($\text{Grün} \to \mathit{Rot}$)
+  \item \textbf{start\_ns}: Steuerung ($\mathit{Pause\_B} \to \mathit{NS\_aktiv}$)
+        $\;\|\;$ Ampel\_NS ($\mathit{Rot} \to \text{Grün}$)
+\end{itemize}
+
+\textbf{Zu 3:}\\
+\textbf{Ja}, die Sicherheitseigenschaft ist erfüllt. In der Steuerung gibt es keine Transition,
+die \snd{start\_ns} und \snd{start\_ow} gleichzeitig sendet. Die Übergänge sind strikt
+sequentiell: \snd{stop\_ns} trennt die NS-Grünphase vom Start der OW-Grünphase durch eine
+5\,s-Pause (\textit{Pause\_A}), und umgekehrt. Damit gilt:
+\[
+  \square\;\bigl(\mathit{Ampel\_NS} = \text{Grün}
+  \;\Rightarrow\; \mathit{Ampel\_OW} = \mathit{Rot}\bigr)
+  \quad\text{und}\quad
+  \square\;\bigl(\mathit{Ampel\_OW} = \text{Grün}
+  \;\Rightarrow\; \mathit{Ampel\_NS} = \mathit{Rot}\bigr)
+\]
+
+\textbf{Zu 4:}\\
+Ampel\_Fuss zeigt Grün, wenn NS-Fahrzeuge Grün haben (Fußgänger queren OW). Sie wechselt
+auf Rot, wenn NS stoppt (\rcv{stop\_ns}), und wieder auf Grün, wenn NS wieder startet
+(\rcv{start\_ns}). Die bereits vorhandenen Signale der Steuerung reichen aus:
+
+\begin{center}
+\begin{tikzpicture}[node distance=3.2cm, on grid, auto, >=Latex,
+    initial text={}, initial distance=1cm,
+    every state/.style={minimum size=1.8cm, align=center, font=\small}]
+  \node[state, initial] (fg) {\textit{Fuss}\\[2pt]\textit{Grün}};
+  \node[state, right of=fg]  (fr) {\textit{Fuss}\\[2pt]\textit{Rot}};
+  \path[->]
+    (fg) edge[bend left=30] node[above, font=\footnotesize] {\rcv{stop\_ns}} (fr)
+    (fr) edge[bend left=30] node[below, font=\footnotesize] {\rcv{start\_ns}} (fg);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Sicherheitseigenschaft Ampel\_Fuss:} Da \rcv{stop\_ns} und \rcv{start\_ow} in der
+Steuerung durch Pause\_A (5\,s) getrennt sind, zeigt Ampel\_Fuss immer Rot, wenn Ampel\_OW
+Grün zeigt -- die Fußgänger-Sicherheit ist garantiert.
+\end{loesung}
+
+\end{document}

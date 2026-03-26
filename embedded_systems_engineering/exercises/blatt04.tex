@@ -1,0 +1,229 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{4}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\setblatthema{State Charts}
+\iforiginal{\input{include/kopf.tex}}
+
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+\section*{Übersicht: CREATE Syntax}
+
+CREATE Statecharts besitzen einen Definitions- und einen Modellbereich. Der Definitionsbereich definiert Events und
+Variablen, die ihr im Modellbereich verwenden könnt:
+
+\begin{itemize}[leftmargin=*, itemsep=0.4em]
+  \item Alle \emph{Member} (Events und Variablen) gehören entweder zu einem Interface oder sind \emph{intern}.
+  Interne Member sind nur im Modellbereich, aber beispielsweise nicht in Unittests verfügbar.
+  Alle Interfaces haben einen Namen. Ausnahme: es darf ein Interface ohne Namen geben.
+  Member eines benannten Interfaces sind über Punkt-Notation verfügbar.
+  Beispiel: \texttt{Button.start} für das Event \texttt{start} im Interface \texttt{Button}.
+  Member des unbenannten Interfaces können ohne dieses Präfix verwendet werden.
+
+  \item \texttt{in events} dürfen nur als Trigger verwendet werden, \texttt{out events} nur als Effekt.
+  Variablen können in Guards geprüft oder als Effekt aktualisiert werden.
+\end{itemize}
+
+Der Modellbereich enthält euer Modell. Transitionen zwischen Zuständen besitzen die Syntax
+\textbf{Trigger} \,[\textbf{Guard}] \,/\, \textbf{Effekt}:
+
+\begin{itemize}[leftmargin=*, itemsep=0.5em]
+  \item \emph{Trigger} ist ein Trigger (Event aus Definitionsbereich oder Zeitevent) oder eine Liste von Triggern,
+  die mit Komma getrennt sind. Zur Aktivierung der Transition muss min.\ einer dieser Trigger aktiv sein.
+  Zeitevents besitzen die Form \texttt{after} + Zeit + Zeiteinheit. Beispiel: \texttt{after 30s}.
+
+  \item \emph{Guard} ist ein boolscher Ausdruck, der zur Aktivierung der Transition erfüllt sein muss.
+  Beispiel: \texttt{score == 100}.\\
+  \textbf{Guards dürfen nur Variablen, aber keine Events enthalten!}
+
+  \item \emph{Effekt} ist ein Effekt (Event oder Variablenzuweisung) oder eine Liste von Effekten,
+  die mit Semikolon getrennt sind. Nach Aktivierung der Transition werden alle Effekte ausgelöst.
+  Um ein Event als Effekt auszulösen, muss \texttt{raise} verwendet werden.
+  Beispiel: \texttt{raise Licht.an}.
+
+  \item Guards und Effekte optional, Trigger nicht.
+  \textbf{Jede Transition zwischen zwei Zuständen muss also einen Trigger besitzen!}
+  Ein Guard ersetzt keinen Trigger!
+
+  \item Transitionen von \emph{Entries} (Initial/Deep und Shallow History) zu Zuständen dürfen nur Effekte besitzen.
+\end{itemize}
+
+Schließlich können Modelle event- oder zyklusbasiert ausgeführt werden.
+\textbf{Wir nutzen ausschließlich das event-basierte Modell.}
+
+\vspace{1em}
+
+\textcolor{red}{CREATE führt auch Modelle aus, die nicht alle der obigen Regeln befolgen.
+Verwendet ihr dennoch Transitionen ohne Trigger, Events in Guards oder \texttt{in} und \texttt{out} Events falsch,
+führt dies oft zu Fehlverhalten und Problemen.}
+
+\vspace{1em}
+
+Eine ausführliche Beschreibung der CREATE Syntax findet ihr auf der Website des Herstellers.
+
+\aufgabetitel{$5$}{Modellierung eines Fahrstuhls}
+
+In dieser Aufgabe sollt ihren einfachen Fahrstuhl mit zwei Knöpfen und einer Statusanzeige modellieren.
+Erstellt dazu ein CREATE Statechart mit folgender Definition:
+
+\begin{lstlisting}
+@EventDriven
+interface Button:
+    in event up
+    in event down
+
+interface Status:
+    out event arrived
+
+interface:
+    var location : integer // 1 = oben, 2 = unten
+\end{lstlisting}
+
+Der Fahrstuhl hat folgendes Verhalten:
+
+\begin{itemize}
+\item Es gibt zwei Stockwerke (EG und OG) zwischen denen der Fahrstuhl hin und her fährt.
+Zu Beginn steht der Fahrstuhl im Erdgeschoss (\textit{location = 2}).
+
+\item Der Fahrstuhl wird durch die Knöpfe im Stockwerk gesteuert
+(Im EG mit \textit{Button.up}, im OG mit \textit{Button.down}).
+
+\item Das Fahren zwischen den Stockwerken dauert 3 Sekunden.
+
+\item Ist der Fahrstuhl im Zielstockwerk angekommen, wird eine Meldung
+(\textit{Status.arrived}) ausgegeben.
+\end{itemize}
+
+Modelliert das beschriebene Verhalten in eurem Statechart. Verwendet ausschließlich die in der
+Spezifikation genannten Events aus der Definition. Ihr dürft die Definition \textbf{nicht verändern},
+d.h. auch keine weiteren Events oder Variablen hinzufügen.
+
+\aufgabetitel{$10$}{Modellierung eines Reinigungsroboters}
+
+In den folgenden beiden Teilaufgaben sollt ihr zwei Funktionen eines Reinigungsroboters mit CREATE Statecharts modellieren.
+
+\begin{enumerate}[a)] 
+\item In dieser Teilaufgabe sollt ihr die Grundfunktionen des Roboters modellieren.
+Der Roboter kann über eine Fernbedienung gesteuert werden, überwacht seine Umgebung mit einem Sensor und gibt
+Meldungen auf einer Statusanzeige aus.
+
+Erstellt dazu ein CREATE Statechart mit folgender Definition:
+
+\begin{lstlisting}
+@EventDriven
+interface Hindernis:
+    in event detect // Hindernis erkannt
+
+interface Status:
+    out event warten  // Wechsel zu warten
+    out event saugen  // Wechsel zu saugen
+    out event wischen // Wechsel zu wischen
+    out event ein     // eingeschaltet
+    out event aus     // ausgeschaltet
+    out event hindernis // Hindernis
+
+interface Remote:
+    in event power // Ein/Aus-Schalter
+    in event stop  // Stopp-Schalter
+    in event mode  // Modus-Schalter
+\end{lstlisting}
+
+Der Roboter verhält sich wie folgt:
+
+\begin{itemize}
+\item Zu Beginn ist der Roboter ausgeschaltet. Durch Druck auf den power-Knopf der Fernbedienung
+(\textit{Remote.power}) wird der Roboter eingeschaltet (\textit{Status.ein}).
+
+\item Ist der Roboter eingeschaltet, befindet er sich in einem der drei Modi Saugen, Wischen oder Warten.
+Beim ersten Start befindet sich der Roboter im Modus Warten.
+  \begin{itemize}
+  \item Ist der Roboter eingeschaltet, können Nutzende über eine Modus-Taste auf der Fernbedienung
+  (\textit{Remote.mode}) den Modus wechseln. Durch wiederholtes Drücken der Taste soll dabei zyklisch zwischen
+  Warten, Saugen, Wischen, Warten, \dots\ umgeschaltet werden.
+
+  \item Beim Wechsel des Modus soll der neue Modus auf der Statusanzeige ausgegeben werden. Dazu dienen
+  \textit{Status.warten} beim Wechsel zu Warten, \textit{Status.saugen} beim Wechsel zu Saugen und
+  \textit{Status.wischen} beim Wechsel zu Wischen.
+
+  \item Über eine Stopp-Taste auf der Fernbedienung (\textit{Remote.stop}) können Nutzende direkt in den Modus
+  Warten wechseln, wenn sich der Roboter im Modus Saugen oder Wischen befindet.
+  \end{itemize}
+
+\item Ist der Roboter eingeschaltet, wird er durch erneuten Druck auf den power-Knopf (\textit{Remote.power})
+ausgeschaltet (\textit{Status.aus}). Bei erneutem Einschalten startet er in dem Modus, in dem er sich beim
+Ausschalten befunden hat. Dabei muss der Modus nicht auf der Statusanzeige ausgegeben werden.
+
+\item Ist der Roboter eingeschaltet, überwacht er seine Umgebung auf Hindernisse:
+  \begin{itemize}
+  \item Erkennt der Umgebungssensor ein Hindernis (\textit{Hindernis.detect}), zeigt der Roboter eine entsprechende
+  Meldung an (\textit{Status.hindernis}).
+  \item Ist der Roboter ausgeschaltet, soll er Events des Umgebungssensors ignorieren.
+  \end{itemize}
+\end{itemize}
+
+\textbf{Modelliert das beschriebene Verhalten in eurem Statechart.} Nutzt Hierarchie und Nebenläufigkeit, wo möglich.
+Verwendet \textbf{ausschließlich} die in der Spezifikation genannten Events aus der Definition. Ihr dürft die Definition
+\textbf{nicht verändern}, d.h.\ auch keine weiteren Events oder Variablen hinzufügen.
+\item Unser Roboter besitzt einen Staubsaugerbeutel, der regelmäßig geleert werden muss.
+In dieser Teilaufgabe sollt ihr die Überwachung des Beutelfüllstandes modellieren.
+Erstellt dazu ein CREATE Statechart mit folgender Definition:
+
+\begin{lstlisting}
+@EventDriven
+interface Sensor:
+    out event check_dust // pruefe Fuellstand
+    in event dust_checked // Messung erfolgt
+    var dust_level : integer // Fuellstand in Prozent (Wert: 0-100)
+
+interface Beutel:
+    in event replaced // Beutel ersetzt
+    out event sound // Beutel fast voll
+\end{lstlisting}
+
+Die Füllstandsüberwachung verhält sich wie folgt:
+\begin{itemize}
+\item Der Roboter misst mit einem speziellen Sensor den Füllstand des Beutels:
+  \begin{itemize}
+  \item Um den Füllstand zu messen, muss der Roboter den Sensor auslösen
+  (\textit{Sensor.check\_dust}).
+
+  \item Anschließend wartet der Roboter auf das Messergebnis. Das Event
+  \textit{Sensor.dust\_checked} gibt an, dass der Sensor das Ergebnis in der Variablen
+  \textit{Sensor.dust\_level} gespeichert hat. Dann kann der Roboter den Wert auslesen.
+  \end{itemize}
+
+\item Beim Start misst der Roboter sofort den Füllstand. In Abhängigkeit des Füllstandes wählt er anschließend
+eine Aktion:
+  \begin{itemize}
+  \item Wenn weniger als 90\% gefüllt: nach 5 Sekunden erneut messen und Aktion wählen.
+
+  \item Wenn größer oder gleich 90\%, aber weniger als 99\%: Warnton ausgeben
+  (\textit{Beutel.sound}) und nach 1 Sekunde erneut messen und Aktion wählen.
+
+  \item Wenn 99\% oder mehr: Warnton ausgeben (\textit{Beutel.sound}) und warten, bis Nutzer*in den Beutel
+  ersetzt hat (\textit{Beutel.replaced}). Wenn nach 5 Sekunden nicht ersetzt, einmalig erneut Ton ausgeben.
+  Sobald der Beutel ersetzt wurde, soll sofort erneut gemessen und eine Aktion gewählt werden.
+  \end{itemize}
+\end{itemize}
+
+Modelliert das beschriebene Verhalten in eurem Statechart. Nutzt Hierarchie und Nebenläufigkeit, wo möglich.
+Verwendet ausschließlich die in der Spezifikation genannten Events aus der Definition. Ihr dürft die Definition
+\textbf{nicht verändern}, d.\,h.\ auch keine weiteren Events oder Variablen hinzufügen.
+\end{enumerate}
+\end{document}

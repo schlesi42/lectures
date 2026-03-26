@@ -1,0 +1,822 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{5}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+
+% Kopfzeile auf C-Einführung anpassen
+\lohead[]{Übung zur Vorlesung \textit{Einführung in die Programmiersprache C} -- Wintersemester 2026}
+
+\begin{document}
+\setblatthema{Grundlagen, Pointer \& Algorithmen}
+
+% Kopf manuell (analog zu kopf.tex, aber Titel angepasst)
+\thispagestyle{scrplain}
+\vspace*{-3cm}
+\begin{minipage}[t][1.1cm][c]{4.5cm}
+  \includegraphics[width=4cm]{include/hwr-logo.png}
+\end{minipage}
+\hfill
+\begin{minipage}[t][1.5cm][c]{8cm}
+  \begin{center}
+  \begin{footnotesize}
+    \textsf{Prof. Dr.-Ing. Sebastian Schlesinger} \\[-0.1cm]
+    \textsf{Fachbereich 2 - Duales Studium Wirtschaft \& Technik}
+  \end{footnotesize}
+  \end{center}
+\end{minipage}
+
+\vspace*{-0.3cm}
+\begin{center}
+  \hrulefill \\[0.1cm]
+  {\large Übung} \\[0.15cm]
+  {\huge \bfseries Einführung in die Programmiersprache C} \\[0.10cm]
+  \ifthenelse{\equal{\blatthema}{}}{}{%
+    {\Large \bfseries \blatthema} \\[0.10cm]
+  }%
+  {HWR Berlin, Wintersemester 2026} \\[-0.4cm]
+  \begin{tabular}{lcr}
+    \hspace{0.3\textwidth} & \hspace{0.3\textwidth} & \hspace{0.3\textwidth} \\
+    Prof. Dr.-Ing. Sebastian Schlesinger & & Übung \\
+    Blatt \blattnummer
+  \end{tabular} \\[0.1cm]
+  \hrulefill
+\end{center}
+
+
+% ============================================================
+\aufgabetitel{$6$}{Grundlagen: Datentypen und Ausdrücke}
+% ============================================================
+
+\begin{enumerate}[a)]
+
+\item Welchen Datentyp und welchen Wert haben die folgenden C-Ausdrücke?
+Begründet eure Antwort kurz.
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+\textbf{Ausdruck} & \textbf{Typ} & \textbf{Wert} \\
+\hline
+\texttt{3 + 4}      & \quad & \quad \\[0.3em]
+\texttt{7 / 2}      & \quad & \quad \\[0.3em]
+\texttt{7.0 / 2}    & \quad & \quad \\[0.3em]
+\texttt{7 \% 3}     & \quad & \quad \\[0.3em]
+\texttt{'A' + 1}    & \quad & \quad \\[0.3em]
+\texttt{(int) 3.9}  & \quad & \quad \\[0.3em]
+\hline
+\end{tabular}
+\end{center}
+
+\begin{loesung}
+\begin{center}
+\begin{tabular}{lll}
+\hline
+\textbf{Ausdruck} & \textbf{Typ} & \textbf{Wert} \\
+\hline
+\texttt{3 + 4}      & \texttt{int}    & \texttt{7}   \\[0.3em]
+\texttt{7 / 2}      & \texttt{int}    & \texttt{3} \quad (Ganzzahldivision, Nachkommastellen werden abgeschnitten) \\[0.3em]
+\texttt{7.0 / 2}    & \texttt{double} & \texttt{3.5} \quad (ein Operand ist \texttt{double} $\Rightarrow$ implizite Konvertierung) \\[0.3em]
+\texttt{7 \% 3}     & \texttt{int}    & \texttt{1} \quad (Modulo: Rest der Ganzzahldivision) \\[0.3em]
+\texttt{'A' + 1}    & \texttt{int}    & \texttt{66} \quad (\texttt{'A'} hat ASCII-Wert 65) \\[0.3em]
+\texttt{(int) 3.9}  & \texttt{int}    & \texttt{3} \quad (expliziter Cast schneidet Nachkommastellen ab) \\[0.3em]
+\hline
+\end{tabular}
+\end{center}
+\end{loesung}
+
+\item Was gibt das folgende Programm aus? Erklärt die Ausgabe Schritt für Schritt.
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int main(void) {
+    int x = 5;
+    int y = 2;
+
+    printf("%d\n", x++);
+    printf("%d\n", ++y);
+    printf("%d %d\n", x, y);
+    printf("%d\n", x > y ? x : y);
+
+    return 0;
+}
+\end{lstlisting}
+
+\begin{loesung}
+Ausgabe:
+\begin{lstlisting}[language={}]
+5
+3
+6 3
+6
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{x++} ist Post-Inkrement: der \emph{aktuelle} Wert (5) wird ausgegeben, danach wird \texttt{x} auf 6 erhöht.
+  \item \texttt{++y} ist Prä-Inkrement: \texttt{y} wird \emph{zuerst} auf 3 erhöht, dann ausgegeben.
+  \item Nun gilt \texttt{x = 6}, \texttt{y = 3}, also Ausgabe \texttt{6 3}.
+  \item Der ternäre Operator \texttt{x > y ? x : y} liefert \texttt{x = 6}, da \texttt{6 > 3} wahr ist.
+\end{itemize}
+\end{loesung}
+
+\end{enumerate}
+
+% ============================================================
+\aufgabetitel{$8$}{Kontrollfluss: Schleifen und Verzweigungen}
+% ============================================================
+
+\begin{enumerate}[a)]
+
+\item Schreibt ein C-Programm, das alle Primzahlen von 2 bis 100 ausgibt.
+Verwendet dazu eine äußere Schleife über alle Kandidaten und eine innere Schleife, die prüft, ob ein Teiler existiert.
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int main(void) {
+    int n, d, is_prime;
+
+    for (n = 2; n <= 100; n++) {
+        is_prime = 1;
+        for (d = 2; d < n; d++) {
+            if (n % d == 0) {
+                is_prime = 0;
+                break;
+            }
+        }
+        if (is_prime) {
+            printf("%d\n", n);
+        }
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\textbf{Hinweis:} Es genügt, Teiler bis $\lfloor\sqrt{n}\rfloor$ zu prüfen.
+Eine optimierte Version würde \texttt{d * d <= n} als Schleifenbedingung nutzen, was aber nicht verlangt war.
+\end{loesung}
+
+\item Schreibt eine Funktion \texttt{int digit\_sum(int n)}, die die Quersumme einer
+nicht-negativen ganzen Zahl \texttt{n} berechnet und zurückgibt.
+Beispiel: \texttt{digit\_sum(1234)} soll \texttt{10} zurückgeben.
+Schreibt außerdem ein \texttt{main}, das die Funktion mit einigen Beispielwerten testet.
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int digit_sum(int n) {
+    int sum = 0;
+    if (n < 0) n = -n;   /* negative Zahlen behandeln */
+    while (n > 0) {
+        sum += n % 10;   /* letzte Ziffer addieren */
+        n   /= 10;       /* letzte Ziffer entfernen */
+    }
+    return sum;
+}
+
+int main(void) {
+    printf("digit_sum(1234) = %d\n", digit_sum(1234));  /* 10 */
+    printf("digit_sum(0)    = %d\n", digit_sum(0));     /*  0 */
+    printf("digit_sum(999)  = %d\n", digit_sum(999));   /* 27 */
+    return 0;
+}
+\end{lstlisting}
+\end{loesung}
+
+\end{enumerate}
+
+% ============================================================
+\aufgabetitel{$10$}{Pointer und Arrays}
+% ============================================================
+
+\begin{enumerate}[a)]
+
+\item Betrachtet den folgenden Code. Was gibt er aus? Erklärt, was jeder
+\texttt{printf}-Aufruf ausgibt und warum.
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int main(void) {
+    int arr[] = {10, 20, 30, 40, 50};
+    int *p = arr;
+
+    printf("%d\n", *p);
+    printf("%d\n", *(p + 2));
+    printf("%d\n", p[4]);
+
+    p++;
+    printf("%d\n", *p);
+    printf("%p\n", (void *)p);
+    printf("%p\n", (void *)arr);
+
+    return 0;
+}
+\end{lstlisting}
+
+\begin{loesung}
+\begin{lstlisting}[language={}]
+10
+30
+50
+20
+<Adresse von arr[1]>
+<Adresse von arr[0]>
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{*p} dereferenziert \texttt{p}, das auf \texttt{arr[0] = 10} zeigt.
+  \item \texttt{*(p + 2)} addiert 2 zur Adresse (Pointer-Arithmetik, je 4~Byte bei \texttt{int}), zeigt auf \texttt{arr[2] = 30}.
+  \item \texttt{p[4]} ist syntaktischer Zucker für \texttt{*(p + 4)}, also \texttt{arr[4] = 50}.
+  \item Nach \texttt{p++} zeigt \texttt{p} auf \texttt{arr[1] = 20}.
+  \item Die beiden Adressen unterscheiden sich um \texttt{sizeof(int)} Bytes (typischerweise 4).
+\end{itemize}
+\end{loesung}
+
+\item Implementiert die Funktion
+
+\begin{lstlisting}[language=C]
+void reverse(int *arr, int n);
+\end{lstlisting}
+
+die ein Array mit \texttt{n} Elementen \emph{in-place} (ohne zusätzliches Array) umdreht.
+Schreibt ebenfalls ein \texttt{main}, das die Funktion testet und das Ergebnis ausgibt.
+
+\textbf{Hinweis:} Nutzt zwei Pointer (oder Indizes), die von beiden Enden des Arrays aufeinander zulaufen.
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+void reverse(int *arr, int n) {
+    int *left  = arr;
+    int *right = arr + n - 1;
+    int  tmp;
+
+    while (left < right) {
+        tmp    = *left;
+        *left  = *right;
+        *right = tmp;
+        left++;
+        right--;
+    }
+}
+
+int main(void) {
+    int a[] = {1, 2, 3, 4, 5};
+    int i;
+
+    reverse(a, 5);
+    for (i = 0; i < 5; i++) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");   /* Ausgabe: 5 4 3 2 1 */
+    return 0;
+}
+\end{lstlisting}
+\end{loesung}
+
+\item Schreibt eine Funktion
+
+\begin{lstlisting}[language=C]
+int str_len(const char *s);
+\end{lstlisting}
+
+die die Länge eines C-Strings (ohne das abschließende \texttt{'\textbackslash{}0'}) zurückgibt -- \emph{ohne} \texttt{strlen} zu verwenden.
+Iteriert dabei ausschließlich mit einem Pointer (kein Array-Index).
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int str_len(const char *s) {
+    const char *p = s;
+    while (*p != '\0') {
+        p++;
+    }
+    return (int)(p - s);
+}
+
+int main(void) {
+    printf("%d\n", str_len("Hallo"));    /* 5 */
+    printf("%d\n", str_len(""));         /* 0 */
+    printf("%d\n", str_len("C rocks!")); /* 8 */
+    return 0;
+}
+\end{lstlisting}
+
+Der Trick: am Ende der Schleife zeigt \texttt{p} auf das Nullbyte.
+Die Differenz \texttt{p - s} liefert direkt die Anzahl der Zeichen vor dem Nullbyte.
+\end{loesung}
+
+\end{enumerate}
+
+% ============================================================
+\aufgabetitel{$12$}{Algorithmen: Suchen und Sortieren}
+% ============================================================
+
+\begin{enumerate}[a)]
+
+\item \textbf{Lineare Suche.}
+Implementiert die Funktion
+
+\begin{lstlisting}[language=C]
+int linear_search(const int *arr, int n, int key);
+\end{lstlisting}
+
+die im Array \texttt{arr} der Länge \texttt{n} nach dem Wert \texttt{key} sucht.
+Die Funktion soll den Index des ersten Vorkommens zurückgeben, oder \texttt{-1},
+falls \texttt{key} nicht gefunden wurde.
+
+Was ist die Zeitkomplexität eurer Implementierung im schlechtesten Fall?
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+int linear_search(const int *arr, int n, int key) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (arr[i] == key) {
+            return i;
+        }
+    }
+    return -1;
+}
+\end{lstlisting}
+
+Zeitkomplexität im schlechtesten Fall: $\oh(n)$ -- das Element befindet sich am letzten Index oder gar nicht im Array.
+\end{loesung}
+
+\item \textbf{Binäre Suche.}
+Implementiert die Funktion
+
+\begin{lstlisting}[language=C]
+int binary_search(const int *arr, int n, int key);
+\end{lstlisting}
+
+die \emph{voraussetzt}, dass \texttt{arr} aufsteigend sortiert ist,
+und darin nach \texttt{key} sucht. Rückgabewert wie oben.
+Vergleicht die Zeitkomplexität mit der linearen Suche.
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+int binary_search(const int *arr, int n, int key) {
+    int lo = 0;
+    int hi = n - 1;
+
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;   /* Overflow-sicheres Mittelpunkt */
+
+        if (arr[mid] == key) {
+            return mid;
+        } else if (arr[mid] < key) {
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    return -1;
+}
+\end{lstlisting}
+
+Zeitkomplexität im schlechtesten Fall: $\oh(\log n)$ -- bei jedem Schritt wird der Suchbereich halbiert.
+Im Vergleich zur linearen Suche ($\oh(n)$) ist die binäre Suche für große, sortierte Arrays wesentlich effizienter.
+Beispiel: $n = 1{.}000{.}000$ erfordert binär höchstens $\lceil \log_2 1{.}000{.}000 \rceil = 20$ Schritte,
+linear im Worst Case eine Million.
+\end{loesung}
+
+\item \textbf{Insertion Sort.}
+Implementiert den Insertion-Sort-Algorithmus:
+
+\begin{lstlisting}[language=C]
+void insertion_sort(int *arr, int n);
+\end{lstlisting}
+
+Erklärt das Prinzip des Algorithmus kurz in eigenen Worten und gebt die Zeitkomplexität für Best Case und Worst Case an.
+
+\begin{loesung}
+\textbf{Prinzip:} Das Array wird von links nach rechts durchlaufen.
+Bei jedem Schritt $i$ wird \texttt{arr[i]} (das \enquote{aktuelle Element}) so lange mit seinem linken Nachbarn
+getauscht, bis es an der richtigen Position im bereits sortierten Teilarray \texttt{arr[0..i-1]} eingefügt ist.
+
+\begin{lstlisting}[language=C]
+void insertion_sort(int *arr, int n) {
+    int i, j, key;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+        /* Verschiebe Elemente, die groesser als key sind, eine Position nach rechts */
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+\end{lstlisting}
+
+\begin{itemize}
+  \item \textbf{Best Case} (Array bereits sortiert): Die innere Schleife macht für jedes $i$ keinen Schritt.
+  Zeitkomplexität: $\oh(n)$.
+  \item \textbf{Worst Case} (Array umgekehrt sortiert): Das Element muss jedes Mal ganz nach links verschoben werden.
+  Zeitkomplexität: $\oh(n^2)$.
+\end{itemize}
+\end{loesung}
+
+\end{enumerate}
+
+% ============================================================
+\aufgabetitel{$15$}{Matrizen in C -- drei Wege, ein Konzept}
+% ============================================================
+
+In dieser Aufgabe implementiert ihr eine $m \times n$-Matrix auf drei verschiedene Weisen
+und lernt dabei, warum die Wahl der Datenstruktur in C große Konsequenzen für Lesbarkeit,
+Typsicherheit und Speicherlayout hat.
+
+Als roter Faden dient jeweils die Funktion \texttt{mat\_set(matrix, i, j, val)},
+die das Element an Position $(i, j)$ auf den Wert \texttt{val} setzt.
+
+% ------------------------------------------------------------
+\begin{enumerate}[a)]
+
+\item \textbf{Rohes Doppelzeiger-Design: \texttt{int ***}.}
+
+Die einfachste Idee, eine Matrix als Linked-List-Struktur abzubilden, ist:
+jede Zeile ist eine verkettete Liste von \texttt{int}-Werten;
+die Matrix ist ein Array von Zeigern auf solche Zeilen -- also ein \texttt{int **}.
+Da man dieses Array selbst noch übergeben und verändern möchte, wird der Parameter
+einer Einfüge-Funktion zu einem \texttt{int ***}.
+
+Die folgende Struktur beschreibt einen Knoten einer Zeile:
+
+\begin{lstlisting}[language=C]
+typedef struct node {
+    int          val;
+    struct node *next;
+} node_t;
+\end{lstlisting}
+
+\textbf{Aufgaben:}
+\begin{itemize}
+  \item Implementiert \texttt{node\_t *node\_new(int val)}, das einen neuen Knoten allokiert.
+  \item Implementiert \texttt{node\_t **mat\_create(int rows, int cols)},\\
+        das eine Matrix als Array von Zeilen-Listen anlegt (alle Werte 0).
+        Rückgabetyp ist \texttt{node\_t **} (Array von Zeigern auf Zeilenköpfe).
+  \item Implementiert
+\begin{lstlisting}[language=C]
+void mat_set(node_t ***p, int i, int j, int val);
+\end{lstlisting}
+        die das Element $(i,j)$ setzt. Der Parameter \texttt{p} ist ein Zeiger auf das
+        \texttt{node\_t **} (damit die Funktion das Array ggf. verändern könnte --
+        erklärt in der Lösung, warum das notwendig ist).
+  \item Implementiert \texttt{int mat\_get(node\_t **m, int i, int j)}.
+  \item Schreibt ein \texttt{main}, das eine $3 \times 3$-Matrix anlegt, einige Werte
+        setzt und die Matrix zeilenweise ausgibt.
+\end{itemize}
+
+\textbf{Denkt nach:} Was ist an der Signatur \texttt{mat\_set(node\_t ***p, \ldots)} unschön?
+Was passiert, wenn jemand die Funktion mit dem falschen Pointer-Level aufruft?
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+    int          val;
+    struct node *next;
+} node_t;
+
+/* Neuen Knoten allokieren */
+node_t *node_new(int val) {
+    node_t *n = malloc(sizeof(node_t));
+    if (!n) { perror("malloc"); exit(1); }
+    n->val  = val;
+    n->next = NULL;
+    return n;
+}
+
+/* Matrix als Array von Zeilenkoepfen anlegen */
+node_t **mat_create(int rows, int cols) {
+    int i, j;
+    node_t **m = malloc(rows * sizeof(node_t *));
+    if (!m) { perror("malloc"); exit(1); }
+    for (i = 0; i < rows; i++) {
+        /* Erste Zelle der Zeile */
+        m[i] = node_new(0);
+        node_t *cur = m[i];
+        for (j = 1; j < cols; j++) {
+            cur->next = node_new(0);
+            cur = cur->next;
+        }
+    }
+    return m;
+}
+
+/* p ist Zeiger auf das node_t**-Handle, damit eine Funktion
+   den Zeiger selbst austauschen koennte (hier: nur Konsistenz
+   mit dem Lernziel -- in der Praxis genuegt node_t **m). */
+void mat_set(node_t ***p, int i, int j, int val) {
+    node_t *cur = (*p)[i];   /* Zeilenkopf */
+    int k;
+    for (k = 0; k < j; k++) {
+        cur = cur->next;
+    }
+    cur->val = val;
+}
+
+int mat_get(node_t **m, int i, int j) {
+    node_t *cur = m[i];
+    int k;
+    for (k = 0; k < j; k++) {
+        cur = cur->next;
+    }
+    return cur->val;
+}
+
+int main(void) {
+    int rows = 3, cols = 3, i, j;
+    node_t **m = mat_create(rows, cols);
+
+    mat_set(&m, 0, 0, 1);
+    mat_set(&m, 1, 1, 5);
+    mat_set(&m, 2, 2, 9);
+
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            printf("%3d", mat_get(m, i, j));
+        }
+        printf("\n");
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\textbf{Kritik am Design:} Der Typ \texttt{node\_t ***} ist für den Aufrufer schwer verständlich.
+Der Compiler kann nicht prüfen, ob jemand aus Versehen \texttt{node\_t **} oder \texttt{int ***} übergibt --
+ein falscher Cast führt zu undefiniertem Verhalten ohne Warnung.
+Außerdem ist das Speicherlayout \emph{fragmentiert}: jeder Knoten liegt an einer eigenen,
+beliebigen Stelle im Heap; kein zusammenhängender Speicherblock.
+\end{loesung}
+
+% ------------------------------------------------------------
+\item \textbf{Typsicheres Design mit \texttt{typedef struct} -- der Wrapper.}
+
+Um die chaotische Schnittstelle aus (a) zu verbergen, fasst man alle Informationen in einer
+Struct zusammen und übergibt nur noch einen Zeiger darauf.
+
+\begin{itemize}
+  \item Definiert eine Struct \texttt{matrix\_t}, die das \texttt{node\_t **}-Array,
+        die Anzahl der Zeilen und Spalten enthält.
+  \item Schreibt \texttt{matrix\_t *mat\_alloc(int rows, int cols)},
+        das die Struct allokiert und \texttt{mat\_create} aus (a) intern nutzt.
+  \item Implementiert
+\begin{lstlisting}[language=C]
+void mat_set(matrix_t *m, int i, int j, int val);
+int  mat_get(matrix_t *m, int i, int j);
+\end{lstlisting}
+  \item Schreibt dasselbe \texttt{main} wie in (a) -- aber jetzt mit der sauberen Schnittstelle.
+\end{itemize}
+
+\textbf{Diskutiert:} Welche Vorteile hat die neue Signatur gegenüber \texttt{int ***}?
+Bleibt das Problem mit dem fragmentierten Speicher bestehen?
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+/* node_t wie in (a) ... */
+typedef struct node {
+    int val; struct node *next;
+} node_t;
+
+node_t *node_new(int val) {
+    node_t *n = malloc(sizeof(node_t));
+    if (!n) { perror("malloc"); exit(1); }
+    n->val = val; n->next = NULL; return n;
+}
+
+/* Wrapper-Struct */
+typedef struct {
+    node_t **rows;
+    int      nrows;
+    int      ncols;
+} matrix_t;
+
+matrix_t *mat_alloc(int rows, int cols) {
+    int i, j;
+    matrix_t *m = malloc(sizeof(matrix_t));
+    if (!m) { perror("malloc"); exit(1); }
+    m->nrows = rows;
+    m->ncols = cols;
+    m->rows  = malloc(rows * sizeof(node_t *));
+    for (i = 0; i < rows; i++) {
+        m->rows[i] = node_new(0);
+        node_t *cur = m->rows[i];
+        for (j = 1; j < cols; j++) {
+            cur->next = node_new(0); cur = cur->next;
+        }
+    }
+    return m;
+}
+
+void mat_set(matrix_t *m, int i, int j, int val) {
+    node_t *cur = m->rows[i];
+    int k;
+    for (k = 0; k < j; k++) cur = cur->next;
+    cur->val = val;
+}
+
+int mat_get(matrix_t *m, int i, int j) {
+    node_t *cur = m->rows[i];
+    int k;
+    for (k = 0; k < j; k++) cur = cur->next;
+    return cur->val;
+}
+
+int main(void) {
+    matrix_t *m = mat_alloc(3, 3);
+    int i, j;
+
+    mat_set(m, 0, 0, 1);
+    mat_set(m, 1, 1, 5);
+    mat_set(m, 2, 2, 9);
+
+    for (i = 0; i < m->nrows; i++) {
+        for (j = 0; j < m->ncols; j++)
+            printf("%3d", mat_get(m, i, j));
+        printf("\n");
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\textbf{Vorteile gegenüber (a):}
+\begin{itemize}
+  \item Typsicherheit: \texttt{matrix\_t *} ist ein konkreter, benannter Typ.
+        Der Compiler warnt, wenn man etwas anderes übergibt.
+  \item Kapslung: Zeilen- und Spaltenzahl werden \emph{zusammen mit} den Daten verwaltet --
+        man kann keine inkonsistenten Argumente übergeben.
+  \item Lesbarkeit: \texttt{mat\_set(m, 1, 1, 5)} ist selbsterklärend;
+        \texttt{mat\_set(\&\&\&m, 1, 1, 5)} ist es nicht.
+\end{itemize}
+
+\textbf{Bleibendes Problem:} Das Speicherlayout ist weiterhin fragmentiert.
+Jeder \texttt{node\_t} liegt separat auf dem Heap; Zeile~0, Spalte~2 ist \emph{kein} Nachbar
+von Zeile~0, Spalte~3 im physischen Speicher.
+Das führt zu schlechter Cache-Lokalität und ist für eine dichte Matrix unnötig.
+\end{loesung}
+
+% ------------------------------------------------------------
+\item \textbf{Der idiomatische C-Weg: flaches Array mit Indexrechnung.}
+
+Für dichte Matrizen fester Größe ist der klassische C-Ansatz ein \emph{einzelner, zusammenhängender
+Speicherblock} der Größe $m \cdot n \cdot \texttt{sizeof(int)}$.
+Zeile $i$ und Spalte $j$ werden dann durch die Indexformel
+\[
+  \text{Index} = i \cdot n + j
+\]
+adressiert. Damit kann man das Element auch direkt als \texttt{data[i*n + j]} ansprechen --
+oder, mit einem kleinen Trick, sogar als \texttt{m[i][j]}.
+
+\begin{itemize}
+  \item Definiert eine Struct \texttt{mat\_flat\_t} mit den Feldern
+        \texttt{int *data}, \texttt{int nrows}, \texttt{int ncols}.
+  \item Implementiert \texttt{mat\_flat\_t *mat\_flat\_alloc(int rows, int cols)},
+        das \emph{einen einzigen} \texttt{malloc}-Aufruf für alle Elemente verwendet.
+  \item Implementiert \texttt{mat\_flat\_set} und \texttt{mat\_flat\_get}
+        mit der Indexformel oben -- \textbf{ohne} Linked Lists.
+  \item \textbf{Bonus:} Zeigt, wie man mit \texttt{int (*row)[N]} oder einem
+        Zeiger-auf-Zeile-Array \texttt{int **ptr} trotzdem \texttt{ptr[i][j]}-Syntax
+        erhält, obwohl der Speicher flach ist.
+\end{itemize}
+
+\textbf{Vergleicht abschließend} alle drei Varianten hinsichtlich:
+Speicherlayout, Cache-Effizienz, Typsicherheit und Aufwand beim Zugriff.
+
+\begin{loesung}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    int  nrows;
+    int  ncols;
+} mat_flat_t;
+
+mat_flat_t *mat_flat_alloc(int rows, int cols) {
+    mat_flat_t *m = malloc(sizeof(mat_flat_t));
+    if (!m) { perror("malloc"); exit(1); }
+    m->nrows = rows;
+    m->ncols = cols;
+    /* Ein einziger Block fuer alle rows*cols Elemente */
+    m->data  = calloc(rows * cols, sizeof(int));
+    if (!m->data) { perror("calloc"); exit(1); }
+    return m;
+}
+
+void mat_flat_set(mat_flat_t *m, int i, int j, int val) {
+    m->data[i * m->ncols + j] = val;
+}
+
+int mat_flat_get(mat_flat_t *m, int i, int j) {
+    return m->data[i * m->ncols + j];
+}
+
+/* --- Bonus: ptr[i][j]-Syntax mit flachem Speicher --- */
+/* Schritt 1: Array von Zeigern aufbauen, die jeweils auf
+   den Anfang einer Zeile im flachen Block zeigen.        */
+int **make_row_ptr(mat_flat_t *m) {
+    int **ptr = malloc(m->nrows * sizeof(int *));
+    int i;
+    for (i = 0; i < m->nrows; i++)
+        ptr[i] = m->data + i * m->ncols;
+    return ptr;
+}
+
+int main(void) {
+    int i, j;
+    mat_flat_t *m = mat_flat_alloc(3, 3);
+
+    mat_flat_set(m, 0, 0, 1);
+    mat_flat_set(m, 1, 1, 5);
+    mat_flat_set(m, 2, 2, 9);
+
+    /* Ausgabe ueber Hilfsfunktion */
+    for (i = 0; i < m->nrows; i++) {
+        for (j = 0; j < m->ncols; j++)
+            printf("%3d", mat_flat_get(m, i, j));
+        printf("\n");
+    }
+
+    /* Bonus: ptr[i][j]-Syntax */
+    int **ptr = make_row_ptr(m);
+    printf("\nZugriff via ptr[1][1] = %d\n", ptr[1][1]); /* 5 */
+
+    free(ptr);
+    free(m->data);
+    free(m);
+    return 0;
+}
+\end{lstlisting}
+
+\textbf{Warum funktioniert \texttt{ptr[i][j]}?}
+\texttt{ptr[i]} liefert den Zeiger auf Zeile~$i$ (d.\,h.\ auf \texttt{data + i*ncols}).
+\texttt{ptr[i][j]} ist dann \texttt{*(ptr[i] + j)}, was direkt das Element $(i,j)$ im
+flachen Block adressiert.
+Der Speicher ist physisch zusammenhängend -- nur die Zeigertabelle (\texttt{ptr}) ist extra.
+
+\bigskip
+\textbf{Vergleich der drei Varianten:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{p{3cm}p{3.2cm}p{3.2cm}p{3.2cm}}
+\hline
+ & \textbf{(a) Linked List /} \texttt{int ***}
+ & \textbf{(b) Wrapper-Struct}
+ & \textbf{(c) Flaches Array} \\
+\hline
+\textbf{Speicherlayout}
+  & fragmentiert: je ein \texttt{malloc} pro Knoten
+  & fragmentiert (gleich wie a)
+  & zusammenhängend: ein \texttt{malloc} \\
+\textbf{Cache-Effizienz}
+  & schlecht (Pointer-Chasing)
+  & schlecht (gleich wie a)
+  & sehr gut (sequentieller Zugriff) \\
+\textbf{Typsicherheit}
+  & gering (\texttt{int ***} opak)
+  & gut (benannter Struct-Typ)
+  & gut (benannter Struct-Typ) \\
+\textbf{Zugriff}
+  & \texttt{mat\_get(m,i,j)} oder Traversierung
+  & \texttt{mat\_get(m,i,j)}
+  & \texttt{mat\_flat\_get} oder \texttt{ptr[i][j]} \\
+\textbf{Eignung}
+  & sparse, dynamisch wachsende Matrizen
+  & wie (a), aber lesbarer
+  & dichte Matrizen fester oder bekannter Größe \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Fazit:} Für die allermeisten numerischen Anwendungen (Bildverarbeitung, lineare Algebra,
+Simulation) ist das flache Array die richtige Wahl. Linked-List-Matrizen sind sinnvoll, wenn die
+Matrix sehr dünn besetzt (\emph{sparse}) ist und nur wenige Einträge ungleich null hat.
+\end{loesung}
+
+\end{enumerate}
+
+\end{document}

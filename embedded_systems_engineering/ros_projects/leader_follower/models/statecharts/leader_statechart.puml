@@ -1,0 +1,163 @@
+@startuml Leader Robot State Chart
+title Leader Robot — State Machine\n(TurtleBot3 Burger, ROS2 Humble)
+
+skinparam state {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+    ArrowColor DarkBlue
+    FontSize 12
+}
+
+skinparam note {
+    BackgroundColor LightYellow
+    BorderColor Orange
+}
+
+[*] --> INIT : system start
+
+state INIT {
+    [*] --> waiting_sensor_ready
+    waiting_sensor_ready --> ready : sensors OK\n& ROS topics active
+}
+
+INIT --> WAITING_FOR_FOLLOWER : follower READY signal\nnot yet received\n[timeout: 60s]
+
+note right of INIT
+  Entry actions:
+  - Initialize ROS2 nodes
+  - Start SLAM toolbox
+  - Enable LiDAR
+  - Publish STATUS=INIT
+
+  Transition guard:
+  - Wait for /follower/command:CMD_READY
+end note
+
+state WAITING_FOR_FOLLOWER {
+    [*] --> paused_at_start
+    paused_at_start --> paused_at_start : heartbeat\n(publish status every 1s)
+}
+
+WAITING_FOR_FOLLOWER --> EXPLORING : [follower_status.distance ≤ FOLLOW_THRESHOLD\n AND follower_status.state = FOLLOWING]
+WAITING_FOR_FOLLOWER --> WAITING_FOR_FOLLOWER : follower approaching\n(stay paused)
+
+note right of WAITING_FOR_FOLLOWER
+  Entry actions:
+  - Stop motors (cmd_vel = 0)
+  - Publish STATUS=WAITING_FOR_FOLLOWER
+
+  Invariant (Uppaal): t ≤ 60s
+  After 60s without follower → ERROR state
+end note
+
+state EXPLORING {
+    [*] --> navigating
+    navigating --> scan_checking : LiDAR update
+    scan_checking --> navigating : path clear
+    scan_checking --> dead_end_check : forward blocked
+    dead_end_check --> navigating : escape route found
+    dead_end_check --> [*] : no escape\n→ DEAD_END
+}
+
+EXPLORING --> DEAD_END : dead end detected\n(forward ≤ 0.4m blocked,\nescape routes blocked)
+EXPLORING --> WAITING_FOR_FOLLOWER : follower too far\n(distance > FAR_THRESHOLD = 1.5m)
+EXPLORING --> WAITING_FOR_LOST_FOLLOWER : follower status timeout\n(no msg for > 5s)
+
+note right of EXPLORING
+  Entry actions:
+  - Resume navigation
+  - Resume SLAM mapping
+  - Publish STATUS=EXPLORING
+
+  Internal every 100ms:
+  - Send nav2 frontier goal
+  - Monitor follower distance
+  - Check LiDAR for dead ends
+
+  Dead-end detection:
+  - Forward sector (±30°): all ranges < 0.4m
+  - Left sector (60°-120°): all ranges < 0.4m
+  - Right sector (240°-300°): all ranges < 0.4m
+end note
+
+state DEAD_END {
+    [*] --> signaling
+    signaling --> waiting_ack : CMD_DEAD_END sent
+    waiting_ack --> waiting_ack : retry every 2s
+    waiting_ack --> [*] : CMD_BACKED_UP received
+}
+
+DEAD_END --> REVERSING : follower backed up\n(CMD_BACKED_UP received)
+DEAD_END --> REVERSING : timeout (15s)\nforce reversal
+
+note right of DEAD_END
+  Entry actions:
+  - Stop motors
+  - Send /follower/command: CMD_DEAD_END
+  - Publish STATUS=DEAD_END
+
+  Invariant (Uppaal): t ≤ 15s
+  If follower does not ack in 15s:
+    force transition to REVERSING
+end note
+
+state REVERSING {
+    [*] --> backing_out
+    backing_out --> turning : obstacle cleared
+    turning --> [*] : new heading found
+}
+
+REVERSING --> EXPLORING : path cleared\n(forward sector free)\n& rotation complete
+REVERSING --> WAITING_FOR_LOST_FOLLOWER : follower lost during reversal
+
+note right of REVERSING
+  Entry actions:
+  - Cancel current Nav2 goal
+  - Drive backward (cmd_vel.linear.x = -0.1)
+  - Send /follower/command: CMD_LEAD_TEMPORARILY
+  - Publish STATUS=REVERSING
+
+  Exit actions:
+  - Turn to find new path
+  - Send /follower/command: CMD_RESUME
+  - Publish STATUS=EXPLORING
+end note
+
+state WAITING_FOR_LOST_FOLLOWER {
+    [*] --> halted
+    halted --> searching_broadcast : every 2s
+    searching_broadcast --> halted : no response
+    searching_broadcast --> [*] : CMD_FOUND_YOU received
+}
+
+WAITING_FOR_LOST_FOLLOWER --> EXPLORING : follower found\n(CMD_FOUND_YOU received\n& distance ≤ FOLLOW_THRESHOLD)
+WAITING_FOR_LOST_FOLLOWER --> WAITING_FOR_LOST_FOLLOWER : still searching\n(stay halted, broadcast I_AM_HERE)
+
+note right of WAITING_FOR_LOST_FOLLOWER
+  Entry actions:
+  - Stop all motion
+  - Send /follower/command: CMD_SEARCH_FOR_ME
+  - Publish STATUS=WAITING_FOR_LOST_FOLLOWER
+
+  Internal every 2s:
+  - Publish /leader/command: CMD_I_AM_HERE
+    with current pose in data field
+
+  Invariant (Uppaal): t ≤ 120s
+end note
+
+' Error/terminal state
+state ERROR {
+}
+
+INIT --> ERROR : sensor failure\nor ROS2 timeout
+WAITING_FOR_FOLLOWER --> ERROR : timeout > 60s\n& no follower found
+WAITING_FOR_LOST_FOLLOWER --> ERROR : timeout > 120s\n& follower not found
+
+ERROR --> [*] : operator intervention
+
+note on link
+  All states: emergency_stop signal → ERROR
+end note
+
+@enduml

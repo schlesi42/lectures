@@ -1,0 +1,71 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{1}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\setblatthema{Embedded Systems Grundlagen}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+\aufgabetitel{$3$}{Embedded Systems - Grundlagen}\\
+\begin{enumerate}
+    \item Was sind ’eingebettete’ Systeme? Überlegen Sie sich Beispiele und klassifizieren Sie diese nach den in der Vorlesung vorgestellten Kriterien zur Klassifikation eingebetteter Software.
+    \item Wie lässt sich der Aufbau eingebetteter Systeme beschreiben?
+    \item Was bezeichnet der Begriff Regelstrecke?
+\end{enumerate}
+
+\aufgabetitel{$3$}{Embedded Intro - Teil 1}\\
+In \cite{lee2002embedded} steht ein Überblicksartikel zum Thema Embedded Software. Dieser gibt einen sehr guten
+Einblick in die speziellen Probleme, denen die Entwickler eingebetteter Software gegenüberstehen. Lesen Sie die Abschnitte 1 bis 3 und bereiten Sie sich auf folgende Fragen
+vor:
+\begin{enumerate}
+    \item Inwiefern unterscheidet sich Embedded Software von ’klassischer’ Software? Welche unterschiedlichen Anforderungen gibt es? Warum ist das für uns als Software-Entwickler wichtig und wie können wir damit umgehen?
+    \item Diskutieren Sie die Begriffe Timeliness, Concurrency, Liveness, Interfaces, Heterogeneity, Reactivity und deren Bedeutung für die Entwickler eingebetteter Systeme.
+    \item Welche Schwächen (laut Autor) haben die vorherrschenden Ansötze der Softwaretechnik für Embedded Software (Objektorientierung, Hardware-Beschreibungssprachen und Echtzeitbetriebssysteme)? Teilen Sie die Meinung des Autors?
+\end{enumerate}
+
+\aufgabetitel{$3$}{Embedded Intro - Teil 2}\\
+Lesen Sie nun die verbleibenden Abschnitte des Papers \cite{lee2002embedded} und bereiten Sie sich auf folgende Fragen vor: 
+\begin{enumerate}
+    \item Welchen Ansatz schlägt der Autor vor? Inwiefern vermeidet er die beschriebenen Schwächen der anderen Ansätze? Was halten Sie von dem Ansatz?
+    \item Was bedeutet der Begriff Model of Computation und welchem Zweck dient er?
+    \item Im Artikel werden die Models of Computation der folgenden Konzepte diskutiert. Notieren Sie zu jedem der genannten Konzepte 1-2 Stichpunkte, die bezeichnend für das jeweilige Model of Computation sind.
+    \begin{enumerate}
+        \item Datenflussmodelle
+        \item Time Triggered Architectures (TTA)
+        \item Synchronous / Reactive (SR)
+        \item Discrete Event models (DE)
+        \item Process Networks
+        \item Rendezvous
+        \item Publish and Subscribe
+        \item Continuous Time models (CT) 
+        \item Finite State Machines
+    \end{enumerate}
+    \item Was sind Vor- und Nachteile der Verwendung allgemeiner oder spezialisierter Modelle zur Modellierung eingebetteter Systeme? Welche Vor- und Nachteile hat die Kombination mehrerer Modelle?
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{lee2002embedded}
+Edward A. Lee.
+\newblock Embedded software.
+\newblock In: {\em Advances in Computers}, Vol.~56, pp.~55--95.
+\newblock Elsevier, 2002.
+\newblock DOI: \url{https://doi.org/10.1016/S0065-2458(02)80004-3}
+
+\end{thebibliography}
+
+\end{document}

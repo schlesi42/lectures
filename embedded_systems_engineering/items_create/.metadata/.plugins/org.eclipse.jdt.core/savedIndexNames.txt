@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+/Users/schlesinger/code/Embedded-Systems-Engineering/items_create/.metadata/.plugins/org.eclipse.jdt.core
+1080436700.index
+1829372214.index
+1865797976.index

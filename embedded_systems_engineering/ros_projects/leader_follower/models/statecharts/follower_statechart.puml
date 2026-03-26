@@ -1,0 +1,208 @@
+@startuml Follower Robot State Chart
+title Follower Robot — State Machine\n(TurtleBot3 Burger, ROS2 Humble)
+
+skinparam state {
+    BackgroundColor LightGreen
+    BorderColor DarkGreen
+    ArrowColor DarkGreen
+    FontSize 12
+}
+
+skinparam note {
+    BackgroundColor LightYellow
+    BorderColor Orange
+}
+
+[*] --> INIT : system start
+
+state INIT {
+    [*] --> boot
+    boot --> sensors_ready : sensors active
+    sensors_ready --> locate_leader : leader status\nmessage received
+    locate_leader --> [*] : leader pose known
+}
+
+INIT --> APPROACHING : leader pose available\n(from /leader/status topic)
+
+note right of INIT
+  Entry actions:
+  - Initialize ROS2 nodes
+  - Subscribe to /leader/status
+  - Subscribe to /leader/command
+  - Enable LiDAR
+  - Publish STATUS=INIT
+
+  Note: follower does NOT run SLAM.
+  It uses the leader's published pose
+  to determine its own relative position.
+end note
+
+state APPROACHING {
+    [*] --> compute_goal
+    compute_goal --> navigating_to_leader
+    navigating_to_leader --> recompute : leader moved\n(every 2s)
+    recompute --> compute_goal
+    navigating_to_leader --> [*] : distance ≤ APPROACH_THRESHOLD\n(0.7m)
+}
+
+APPROACHING --> FOLLOWING : in position\n(distance ≤ 0.7m)\n→ send CMD_READY
+APPROACHING --> SEARCHING_FOR_LEADER : leader status timeout\n(no msg > 5s)\nor nav2 failure
+
+note right of APPROACHING
+  Entry actions:
+  - Compute goal: 0.6m behind leader's pose
+  - Send Nav2 NavigateToPose goal
+  - Publish STATUS=APPROACHING
+
+  Goal recomputation every 2s:
+  - New goal = leader_pose - 0.6m in leader's direction
+
+  Transition guard:
+  - euclidean_distance(self_pose, leader_pose) ≤ 0.7m
+
+  On transition → FOLLOWING:
+  - Send /leader/command: CMD_READY
+end note
+
+state FOLLOWING {
+    [*] --> track_leader
+    track_leader --> adjust_speed : distance error
+    adjust_speed --> track_leader : motor command sent
+    track_leader --> maintain_bearing : bearing drift > 5°
+    maintain_bearing --> track_leader : heading corrected
+}
+
+FOLLOWING --> WAITING_CMD : /leader/command received\n(CMD_BACK_UP, CMD_WAIT, etc.)
+FOLLOWING --> SEARCHING_FOR_LEADER : leader status timeout\n(no msg > 5s)
+FOLLOWING --> APPROACHING : leader moved too far\n(distance > FAR_THRESHOLD = 1.5m)
+
+note right of FOLLOWING
+  Entry actions:
+  - Cancel Nav2 goals
+  - Switch to reactive controller
+  - Publish STATUS=FOLLOWING
+
+  Control loop (10 Hz):
+  - error = distance_to_leader - TARGET_DISTANCE(0.5m)
+  - v = Kp_v * error  (Kp_v = 0.3)
+  - bearing = atan2(dy, dx) to leader
+  - omega = Kp_w * bearing_error  (Kp_w = 0.8)
+  - Publish /follower/cmd_vel
+
+  Safety: if forward obstacle < 0.2m → stop
+end note
+
+state WAITING_CMD {
+    [*] --> stopped
+    stopped --> [*] : command processed
+}
+
+WAITING_CMD --> BACKING_UP : command = CMD_BACK_UP\nor CMD_DEAD_END
+WAITING_CMD --> FOLLOWING : command = CMD_RESUME
+WAITING_CMD --> SEARCHING_FOR_LEADER : command = CMD_SEARCH_FOR_ME
+
+note right of WAITING_CMD
+  Entry actions:
+  - Stop motors
+  - Parse received command
+  - Publish STATUS=WAITING_CMD
+end note
+
+state BACKING_UP {
+    [*] --> reversing
+    reversing --> clear_check : every 100ms
+    clear_check --> reversing : still blocked
+    clear_check --> [*] : 1.5m backed up
+}
+
+BACKING_UP --> LEADING_TEMPORARILY : backed up enough\n(1.5m from entry point)\n→ send CMD_BACKED_UP
+
+note right of BACKING_UP
+  Entry actions:
+  - Cancel Nav2 goals
+  - Drive backward (cmd_vel.linear.x = -0.1)
+  - Track distance backed up
+  - Publish STATUS=BACKING_UP
+
+  Target: reverse 1.5m from current position
+
+  On transition → LEADING_TEMPORARILY:
+  - Send /leader/command: CMD_BACKED_UP
+  - Store backed_up_position
+end note
+
+state LEADING_TEMPORARILY {
+    [*] --> navigate_forward
+    navigate_forward --> waiting_resume : obstacle ahead
+    navigate_forward --> [*] : CMD_RESUME received
+    waiting_resume --> [*] : CMD_RESUME received
+}
+
+LEADING_TEMPORARILY --> FOLLOWING : leader signals done\n(CMD_RESUME received)
+LEADING_TEMPORARILY --> SEARCHING_FOR_LEADER : leader status timeout\n(no msg > 10s)
+
+note right of LEADING_TEMPORARILY
+  Entry actions:
+  - Drive forward slowly (v = 0.05 m/s)
+  - Continue moving to clear space for leader
+  - Publish STATUS=LEADING_TEMP
+
+  When CMD_RESUME received:
+  - Stop forward motion
+  - Transition to FOLLOWING
+
+  This state ensures the follower
+  is NOT blocking the leader's
+  reverse path.
+end note
+
+state SEARCHING_FOR_LEADER {
+    [*] --> go_to_last_known
+    go_to_last_known --> rotate_scan : arrived at last_known_pos
+    rotate_scan --> expanding_search : 360° scan, not found (15s)
+    expanding_search --> [*] : leader_status received
+    go_to_last_known --> [*] : leader_status received
+    rotate_scan --> [*] : leader_status received
+}
+
+SEARCHING_FOR_LEADER --> APPROACHING : leader found\n(status msg received)
+SEARCHING_FOR_LEADER --> ERROR : timeout > 90s
+
+note right of SEARCHING_FOR_LEADER
+  Entry actions:
+  - Store last_known_leader_pose
+  - Send /leader/command: CMD_LOST_YOU
+  - Publish STATUS=SEARCHING
+
+  Search algorithm:
+  1. Navigate to last_known_leader_pose
+  2. Execute 360° rotation scan
+  3. If not found: expanding square pattern
+     (step 0.5m, 1.0m, 1.5m, 2.0m)
+  4. Every 2s: broadcast CMD_LOST_YOU
+
+  Leader response: CMD_I_AM_HERE with pose data
+
+  Invariant (Uppaal): t ≤ 90s
+end note
+
+state ERROR {
+}
+
+INIT --> ERROR : sensor failure
+SEARCHING_FOR_LEADER --> ERROR : timeout > 90s
+
+ERROR --> [*] : operator intervention
+
+note bottom
+  Communication topics:
+  Publish: /follower/status (RobotStatus, 10 Hz)
+  Publish: /follower/cmd_vel (Twist, 10 Hz)
+  Publish: /leader/command (CoordinationCommand)
+  Subscribe: /leader/status (RobotStatus)
+  Subscribe: /follower/command (CoordinationCommand)
+  Subscribe: /follower/scan (LaserScan)
+  Subscribe: /follower/odom (Odometry)
+end note
+
+@enduml

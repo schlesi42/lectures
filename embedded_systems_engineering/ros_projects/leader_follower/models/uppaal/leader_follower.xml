@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+<!--
+  Uppaal Timed Automata Model: Leader-Follower Multi-Robot System
+  =============================================================
+  MDE Step 2: Formal Verification Model
+
+  This model captures the essential coordination protocol between
+  the Leader robot (doing SLAM exploration) and the Follower robot.
+
+  Templates:
+    - LeaderRobot:    States and transitions of the leader
+    - FollowerRobot:  States and transitions of the follower
+    - Environment:    Non-deterministic event generator (obstacle, signal loss)
+
+  Channels:
+    - follower_ready:     Follower → Leader: "I am in position, ready to follow"
+    - leader_start:       Leader → Follower: "Start following me"
+    - dead_end_alert:     Leader → Follower: "I am in a dead end, back up"
+    - follower_backed_up: Follower → Leader: "I backed up, you can reverse"
+    - reversal_done:      Leader → Follower: "Reversal complete, resume following"
+    - leader_lost_signal: Follower → Leader: "I lost you"
+    - leader_found_reply: Leader → Follower: "I am here at position X"
+    - emergency_stop:     Broadcast: halt all motion
+
+  Clock variables:
+    - t_leader:   Leader's local clock (reset on state entry)
+    - t_follower: Follower's local clock (reset on state entry)
+
+  Integer variables:
+    - follower_distance:  Abstract distance (0=close, 1=medium, 2=far, 3=lost)
+    - leader_path_status: 0=clear, 1=blocked (dead end)
+
+  Verification queries: see leader_follower.q
+
+  HOW TO USE IN UPPAAL:
+  1. Open Uppaal 5.x (free download: uppaal.org)
+  2. File → Open System → select this file
+  3. File → Open Queries → select leader_follower.q
+  4. Go to Verifier tab, select all queries, click "Check"
+-->
+	<declaration>
+// ============================================================
+// GLOBAL DECLARATIONS
+// ============================================================
+
+// Communication channels
+// Regular channels (binary synchronization: sender waits for receiver)
+chan follower_ready;       // Follower signals: I am in following position
+chan leader_start;         // Leader signals: begin exploration
+chan dead_end_alert;       // Leader signals: dead end detected, back up
+chan follower_backed_up;   // Follower signals: backed up, you can reverse
+chan reversal_done;        // Leader signals: reversal complete, resume
+chan leader_lost_signal;   // Follower signals: I lost contact with leader
+chan leader_found_reply;   // Leader signals: I am at this position
+
+// Broadcast channels (sender does not wait; all enabled receivers sync)
+broadcast chan emergency_stop;  // Emergency halt all robots
+
+// ============================================================
+// SHARED ABSTRACT STATE (simplified for model checking)
+// ============================================================
+
+// Abstract distance between robots (discretized):
+//   0 = CLOSE   (≤ 0.7m, follower in following zone)
+//   1 = MEDIUM  (0.7m - 1.5m, acceptable gap)
+//   2 = FAR     (> 1.5m, leader should wait)
+//   3 = LOST    (signal lost, > 5s timeout)
+int[0,3] follower_distance;
+
+// Leader path status:
+//   0 = CLEAR      (can navigate forward)
+//   1 = DEAD_END   (blocked, needs to reverse)
+int[0,1] leader_path_status;
+
+// Coordination flags
+bool follower_is_searching;    // true when follower is in SEARCHING state
+bool leader_is_waiting;        // true when leader is waiting for follower
+
+// State sync counter (for liveness analysis)
+int[0,10] sync_count;
+	</declaration>
+	<template>
+		<name x="5" y="5">LeaderRobot</name>
+		<declaration>
+// Leader-local clock: reset on each state transition
+clock t;
+
+// Number of consecutive dead ends encountered (for liveness)
+int[0,5] dead_end_count;
+		</declaration>
+		<location id="id0" x="-170" y="-272">
+			<name x="-200" y="-306">INIT</name>
+		</location>
+		<location id="id1" x="-170" y="-136">
+			<name x="-225" y="-153">WAITING_FOR_FOLLOWER</name>
+			<label kind="invariant" x="-340" y="-119">t &lt;= 60</label>
+		</location>
+		<location id="id2" x="102" y="-136">
+			<name x="68" y="-153">EXPLORING</name>
+		</location>
+		<location id="id3" x="102" y="34">
+			<name x="68" y="17">DEAD_END</name>
+			<label kind="invariant" x="119" y="51">t &lt;= 15</label>
+		</location>
+		<location id="id4" x="102" y="204">
+			<name x="68" y="187">REVERSING</name>
+		</location>
+		<location id="id5" x="-170" y="34">
+			<name x="-340" y="17">WAITING_FOR_LOST_FOLLOWER</name>
+			<label kind="invariant" x="-408" y="51">t &lt;= 120</label>
+		</location>
+		<location id="id6" x="-170" y="204">
+			<name x="-200" y="187">ERROR</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="t0">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-272" y="-221">follower_distance == 2 || follower_distance == 3</label>
+			<label kind="synchronisation" x="-272" y="-204">leader_start!</label>
+			<label kind="assignment" x="-272" y="-187">t = 0, leader_is_waiting = true</label>
+			<nail x="-272" y="-272"/>
+			<nail x="-272" y="-136"/>
+		</transition>
+		<transition id="t1">
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-68" y="-272">follower_distance == 0 || follower_distance == 1</label>
+			<label kind="synchronisation" x="-68" y="-255">leader_start!</label>
+			<label kind="assignment" x="-68" y="-238">t = 0, leader_is_waiting = false</label>
+			<nail x="-68" y="-272"/>
+			<nail x="-68" y="-136"/>
+		</transition>
+		<transition id="t2">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-68" y="-170">follower_distance &lt;= 1</label>
+			<label kind="synchronisation" x="-68" y="-153">follower_ready?</label>
+			<label kind="assignment" x="-68" y="-136">t = 0, leader_is_waiting = false</label>
+		</transition>
+		<transition id="t3">
+			<source ref="id1"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-340" y="-68">t &gt;= 60</label>
+			<label kind="assignment" x="-340" y="-51">leader_is_waiting = false</label>
+			<nail x="-340" y="-136"/>
+			<nail x="-340" y="204"/>
+		</transition>
+		<transition id="t4">
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-68" y="-102">follower_distance == 2</label>
+			<label kind="assignment" x="-68" y="-85">t = 0, leader_is_waiting = true</label>
+		</transition>
+		<transition id="t5">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="119" y="-68">leader_path_status == 1</label>
+			<label kind="synchronisation" x="119" y="-51">dead_end_alert!</label>
+			<label kind="assignment" x="119" y="-34">t = 0, dead_end_count++</label>
+		</transition>
+		<transition id="t6">
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-68" y="-68">follower_distance == 3</label>
+			<label kind="synchronisation" x="-68" y="-51">leader_lost_signal?</label>
+			<label kind="assignment" x="-68" y="-34">t = 0, follower_is_searching = true</label>
+		</transition>
+		<transition id="t7">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="119" y="102">follower_backed_up?</label>
+			<label kind="assignment" x="119" y="119">t = 0</label>
+		</transition>
+		<transition id="t8">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-102" y="102">t &gt;= 15</label>
+			<label kind="assignment" x="-102" y="119">t = 0</label>
+			<nail x="-34" y="34"/>
+			<nail x="-34" y="204"/>
+		</transition>
+		<transition id="t9">
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="guard" x="170" y="34">leader_path_status == 0</label>
+			<label kind="synchronisation" x="170" y="51">reversal_done!</label>
+			<label kind="assignment" x="170" y="68">t = 0</label>
+			<nail x="272" y="204"/>
+			<nail x="272" y="-136"/>
+		</transition>
+		<transition id="t10">
+			<source ref="id5"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-68" y="68">follower_distance &lt;= 1</label>
+			<label kind="synchronisation" x="-68" y="85">leader_found_reply!</label>
+			<label kind="assignment" x="-68" y="102">t = 0, follower_is_searching = false</label>
+		</transition>
+		<transition id="t11">
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-340" y="136">t &gt;= 120</label>
+			<label kind="assignment" x="-340" y="153">follower_is_searching = false</label>
+			<nail x="-340" y="34"/>
+		</transition>
+		<transition id="t12">
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="guard" x="340" y="-170">follower_distance == 0 || follower_distance == 1</label>
+			<label kind="assignment" x="340" y="-153">t = 0, leader_is_waiting = false, sync_count++</label>
+			<nail x="238" y="-136"/>
+		</transition>
+		<transition id="t13">
+			<source ref="id0"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-102" y="-221">follower_distance == 3 &amp;&amp; t &gt;= 10</label>
+			<nail x="-102" y="-272"/>
+			<nail x="-102" y="204"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">FollowerRobot</name>
+		<declaration>
+// Follower-local clock: reset on each state transition
+clock t;
+
+// Distance backed up during BACKING_UP state (abstract: 0=none, 1=enough)
+int[0,1] backed_up_enough;
+		</declaration>
+		<location id="id7" x="-204" y="-272">
+			<name x="-234" y="-306">INIT</name>
+		</location>
+		<location id="id8" x="-204" y="-136">
+			<name x="-259" y="-153">APPROACHING</name>
+			<label kind="invariant" x="-374" y="-119">t &lt;= 60</label>
+		</location>
+		<location id="id9" x="68" y="-136">
+			<name x="34" y="-153">FOLLOWING</name>
+		</location>
+		<location id="id10" x="68" y="34">
+			<name x="34" y="17">BACKING_UP</name>
+		</location>
+		<location id="id11" x="68" y="204">
+			<name x="34" y="187">LEADING_TEMPORARILY</name>
+		</location>
+		<location id="id12" x="-204" y="34">
+			<name x="-374" y="17">SEARCHING_FOR_LEADER</name>
+			<label kind="invariant" x="-374" y="51">t &lt;= 90</label>
+		</location>
+		<location id="id13" x="-204" y="204">
+			<name x="-234" y="187">ERROR</name>
+		</location>
+		<location id="id14" x="-204" y="-34">
+			<name x="-259" y="-51">WAITING_CMD</name>
+		</location>
+		<init ref="id7"/>
+		<transition id="t14">
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-374" y="-221">leader_start?</label>
+			<label kind="assignment" x="-374" y="-204">t = 0</label>
+			<nail x="-374" y="-272"/>
+			<nail x="-374" y="-136"/>
+		</transition>
+		<transition id="t15">
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-68" y="-170">follower_distance == 0</label>
+			<label kind="synchronisation" x="-68" y="-153">follower_ready!</label>
+			<label kind="assignment" x="-68" y="-136">t = 0</label>
+		</transition>
+		<transition id="t16">
+			<source ref="id8"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-374" y="-85">follower_distance == 3 || t &gt;= 60</label>
+			<label kind="assignment" x="-374" y="-68">t = 0, follower_is_searching = true</label>
+			<nail x="-374" y="-136"/>
+			<nail x="-374" y="34"/>
+		</transition>
+		<transition id="t17">
+			<source ref="id9"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-102" y="-102">leader_path_status == 1</label>
+			<label kind="synchronisation" x="-102" y="-85">dead_end_alert?</label>
+			<label kind="assignment" x="-102" y="-68">t = 0</label>
+		</transition>
+		<transition id="t18">
+			<source ref="id9"/>
+			<target ref="id12"/>
+			<label kind="guard" x="170" y="-102">follower_distance == 3</label>
+			<label kind="synchronisation" x="170" y="-85">leader_lost_signal!</label>
+			<label kind="assignment" x="170" y="-68">t = 0, follower_is_searching = true</label>
+			<nail x="204" y="-136"/>
+			<nail x="204" y="34"/>
+		</transition>
+		<transition id="t19">
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-68" y="-204">follower_distance == 2</label>
+			<label kind="assignment" x="-68" y="-187">t = 0</label>
+			<nail x="-68" y="-204"/>
+		</transition>
+		<transition id="t20">
+			<source ref="id14"/>
+			<target ref="id10"/>
+			<label kind="guard" x="170" y="-17">leader_path_status == 1</label>
+			<label kind="assignment" x="170" y="0">t = 0, backed_up_enough = 0</label>
+			<nail x="170" y="-34"/>
+			<nail x="170" y="34"/>
+		</transition>
+		<transition id="t21">
+			<source ref="id14"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-102" y="-17">leader_path_status == 0</label>
+			<label kind="assignment" x="-102" y="0">t = 0</label>
+		</transition>
+		<transition id="t22">
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="guard" x="119" y="102">backed_up_enough == 1</label>
+			<label kind="synchronisation" x="119" y="119">follower_backed_up!</label>
+			<label kind="assignment" x="119" y="136">t = 0</label>
+		</transition>
+		<transition id="t23">
+			<source ref="id11"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-102" y="170">leader_path_status == 0</label>
+			<label kind="synchronisation" x="-102" y="187">reversal_done?</label>
+			<label kind="assignment" x="-102" y="204">t = 0</label>
+		</transition>
+		<transition id="t24">
+			<source ref="id12"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-374" y="68">follower_distance &lt;= 1</label>
+			<label kind="synchronisation" x="-374" y="85">leader_found_reply?</label>
+			<label kind="assignment" x="-374" y="102">t = 0, follower_is_searching = false</label>
+		</transition>
+		<transition id="t25">
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-374" y="136">t &gt;= 90</label>
+		</transition>
+		<transition id="t26">
+			<source ref="id10"/>
+			<target ref="id10"/>
+			<label kind="guard" x="204" y="85">backed_up_enough == 0 &amp;&amp; t &lt; 10</label>
+			<label kind="assignment" x="204" y="102">backed_up_enough = 1</label>
+			<nail x="238" y="34"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Environment</name>
+		<declaration>
+// Environment models external non-deterministic events:
+//   - Obstacles that create dead ends for the leader
+//   - Signal loss between robots (follower loses leader)
+//   - Distance changes between robots
+clock t_env;
+		</declaration>
+		<location id="id15" x="0" y="0">
+			<name x="-34" y="-34">NORMAL</name>
+		</location>
+		<location id="id16" x="204" y="0">
+			<name x="187" y="-34">OBSTACLE</name>
+		</location>
+		<location id="id17" x="0" y="204">
+			<name x="-68" y="204">SIGNAL_LOSS</name>
+		</location>
+		<init ref="id15"/>
+		<transition id="t27">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="guard" x="68" y="-34">t_env &gt;= 5</label>
+			<label kind="assignment" x="68" y="-17">leader_path_status = 1, t_env = 0</label>
+		</transition>
+		<transition id="t28">
+			<source ref="id16"/>
+			<target ref="id15"/>
+			<label kind="guard" x="68" y="34">t_env &gt;= 3</label>
+			<label kind="assignment" x="68" y="51">leader_path_status = 0, t_env = 0</label>
+		</transition>
+		<transition id="t29">
+			<source ref="id15"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-170" y="68">t_env &gt;= 8</label>
+			<label kind="assignment" x="-170" y="85">follower_distance = 3, t_env = 0</label>
+		</transition>
+		<transition id="t30">
+			<source ref="id17"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-170" y="136">t_env &gt;= 5</label>
+			<label kind="assignment" x="-170" y="153">follower_distance = 0, t_env = 0</label>
+		</transition>
+		<transition id="t31">
+			<source ref="id15"/>
+			<target ref="id15"/>
+			<label kind="guard" x="68" y="-102">t_env &gt;= 2</label>
+			<label kind="assignment" x="68" y="-85">follower_distance = (follower_distance + 1) % 3, t_env = 0</label>
+			<nail x="136" y="-68"/>
+		</transition>
+	</template>
+	<system>
+// ============================================================
+// SYSTEM COMPOSITION
+// ============================================================
+// Instantiate all three templates and compose them in parallel.
+// The LeaderRobot and FollowerRobot communicate via channels.
+// The Environment generates non-deterministic external events.
+
+Leader = LeaderRobot();
+Follower = FollowerRobot();
+Env = Environment();
+
+system Leader, Follower, Env;
+	</system>
+	<queries>
+		<option key="--diagnostic" value="0"/>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>Property 1 (CRITICAL): Deadlock Freedom
+The entire system must never reach a state where no transitions are
+possible (even after time elapse). This is the most important property
+for any concurrent system.
+
+Expected result: SATISFIED
+If violated: there exists a reachable state where both robots
+are waiting for the other to act first (mutual deadlock).</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Leader.EXPLORING and Follower.FOLLOWING)</formula>
+			<comment>Property 2: Reachability of Normal Operation
+There exists at least one execution where both robots simultaneously
+reach their "normal" cooperative operation states.
+
+Expected result: SATISFIED
+If violated: the normal operating mode is unreachable (system design error).</comment>
+		</query>
+		<query>
+			<formula>Follower.APPROACHING --&gt; Follower.FOLLOWING</formula>
+			<comment>Property 3: Follower Eventually Follows (Liveness)
+Whenever the follower is in APPROACHING state, it will eventually
+reach FOLLOWING state. This ensures the approaching phase terminates.
+
+Expected result: SATISFIED
+If violated: follower can approach forever without entering following mode.</comment>
+		</query>
+		<query>
+			<formula>Leader.DEAD_END --&gt; Leader.EXPLORING</formula>
+			<comment>Property 4: Leader Recovers from Dead End (Liveness)
+Whenever the leader detects a dead end, it will eventually return
+to EXPLORING state. This ensures dead ends don't permanently block.
+
+Expected result: SATISFIED
+If violated: the leader can get permanently stuck in DEAD_END or REVERSING.</comment>
+		</query>
+		<query>
+			<formula>Follower.SEARCHING_FOR_LEADER --&gt; Follower.APPROACHING</formula>
+			<comment>Property 5: Follower Finds Leader (Liveness)
+Whenever the follower is searching for the leader, it will eventually
+transition to APPROACHING state (meaning leader was found).
+
+Expected result: SATISFIED (bounded by t &lt;= 90 invariant + environment)
+If violated: follower can search forever without finding leader.</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Leader.DEAD_END</formula>
+			<comment>Property 6: Dead End State is Reachable
+Confirms that the dead end scenario (set up by the Environment template)
+is actually exercised. If this fails, the model is not testing what we think.
+
+Expected result: SATISFIED</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Follower.LEADING_TEMPORARILY</formula>
+			<comment>Property 7: Temporary Leader Role is Reachable
+The follower can reach the LEADING_TEMPORARILY state. This verifies
+the dead-end recovery protocol is fully reachable in the model.
+
+Expected result: SATISFIED</comment>
+		</query>
+		<query>
+			<formula>A[] not (Leader.WAITING_FOR_LOST_FOLLOWER and Follower.SEARCHING_FOR_LEADER and Leader.t >= 120)</formula>
+			<comment>Property 8: No Mutual Timeout (Livelock Prevention)
+The system must not remain in a state where both robots are
+simultaneously waiting/searching beyond the maximum timeout.
+The clock invariants (leader ≤ 120, follower ≤ 90) bound this.
+
+Expected result: SATISFIED
+If violated: the timeout mechanism is broken, allowing infinite mutual wait.</comment>
+		</query>
+		<query>
+			<formula>A[] (Leader.WAITING_FOR_FOLLOWER imply Leader.t &lt;= 60)</formula>
+			<comment>Property 9: Waiting for Follower is Time-Bounded
+The leader must not wait indefinitely for the follower to approach.
+The clock invariant enforces this, but this query double-checks it.
+
+Expected result: SATISFIED</comment>
+		</query>
+		<query>
+			<formula>A[] (Follower.SEARCHING_FOR_LEADER imply Follower.t &lt;= 90)</formula>
+			<comment>Property 10: Search Phase is Time-Bounded
+The follower must not search indefinitely. After 90 seconds it
+transitions to ERROR, allowing operator intervention.
+
+Expected result: SATISFIED</comment>
+		</query>
+		<query>
+			<formula>Leader.EXPLORING --&gt; (Leader.EXPLORING or Leader.DEAD_END or Leader.WAITING_FOR_FOLLOWER or Leader.WAITING_FOR_LOST_FOLLOWER)</formula>
+			<comment>Property 11: Progress from EXPLORING (Safety)
+Once the leader is exploring, it either continues exploring or
+transitions to a well-defined state. It cannot silently disappear.
+
+Expected result: SATISFIED</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; (Leader.EXPLORING and Follower.FOLLOWING)</formula>
+			<comment>Property 12 (ADVANCED - may NOT be satisfied): Universal Liveness
+ALL executions eventually reach the cooperative state. This is a
+stronger property than E&lt;&gt;. May fail due to ERROR states.
+Useful for students to analyze WHY it fails and what assumptions
+would make it hold.
+
+Expected result: May fail (ERROR states are deadlocked)
+Exercise: Add assumptions to make this hold (e.g., no ERROR state).</comment>
+		</query>
+	</queries>
+</nta>

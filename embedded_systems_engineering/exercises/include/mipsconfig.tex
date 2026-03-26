@@ -1,0 +1,19 @@
+\usepackage{include/mips}
+
+\definecolor{lightgreen}{rgb}{0,0.7,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{mips}{ %
+  language=[mips]Assembler,       % the language of the code
+  keywordstyle=\color{blue},          % keyword style
+  keywordstyle=[2]\color{magenta},     % keyword style
+  keywordstyle=[3]\color{red},          % keyword style
+  commentstyle=\color{lightgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+\newcommand{\mipsinline}[1]{\lstinline[style=mips,columns=fixed]{#1}}
+\newcommand{\mipsregister}[1]{\mipsinline{\$#1}}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.yakindu.sct.simulation.core.launch.statechart">
+    <stringAttribute key="filename" value="/ESÜbung StateCharts/Fahrstuhl.ysc"/>
+</launchConfiguration>
