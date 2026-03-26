@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+clock x,y;
+chan on_board, passenger_approaching, approaching, departing;</declaration>
+	<template>
+		<name x="5" y="5">Haltestelle</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-229" y="-93">
+			<name x="-239" y="-127">Bus_weg</name>
+		</location>
+		<location id="id1" x="-8" y="-93">
+			<name x="-18" y="-127">Bus_da</name>
+			<label kind="invariant" x="17" y="-102">x&lt;=120</label>
+		</location>
+		<location id="id2" x="-8" y="59">
+			<name x="17" y="34">Bus_wartet_auf_Passagier</name>
+			<label kind="invariant" x="-18" y="76">x&lt;=120</label>
+		</location>
+		<location id="id3" x="-238" y="59">
+			<name x="-425" y="59">Bus_wartet_erweitert</name>
+			<label kind="invariant" x="-248" y="76">x&lt;=30</label>
+		</location>
+		<location id="id4" x="-127" y="-8">
+			<name x="-195" y="-42">passenger_on_board</name>
+			<urgent/>
+		</location>
+		<init ref="id0"/>
+		<transition id="id5">
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-211" y="-67">departing!</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-323" y="-25">departing!</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-220" y="0">on_board?</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-109" y="0">on_board?</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-169" y="68">x&gt;=120</label>
+			<label kind="assignment" x="-161" y="93">x:=0</label>
+		</transition>
+		<transition id="id10">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-16" y="-59">passenger_approaching?</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-93" y="-187">x&gt;=120</label>
+			<nail x="-127" y="-187"/>
+			<nail x="-127" y="-187"/>
+		</transition>
+		<transition id="id12">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-170" y="-110">approaching?</label>
+			<label kind="assignment" x="-144" y="-93">x:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Passenger</name>
+		<location id="id13" x="-238" y="-153">
+			<name x="-248" y="-187">idle</name>
+		</location>
+		<location id="id14" x="-238" y="-42">
+			<name x="-255" y="-85">in_bus</name>
+		</location>
+		<location id="id15" x="-59" y="-153">
+			<name x="-69" y="-187">moving</name>
+			<label kind="invariant" x="-42" y="-153">y&lt;=180</label>
+		</location>
+		<location id="id16" x="-59" y="-42">
+			<name x="-42" y="-68">at_stop</name>
+			<label kind="invariant" x="-42" y="-51">y&lt;=180</label>
+		</location>
+		<location id="id17" x="-59" y="59">
+			<name x="-51" y="25">leaving</name>
+			<label kind="invariant" x="-69" y="76">y&gt;=180</label>
+		</location>
+		<init ref="id13"/>
+		<transition id="id18">
+			<source ref="id14"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-267" y="-101">y&gt;=300</label>
+			<nail x="-297" y="-93"/>
+			<nail x="-297" y="-93"/>
+		</transition>
+		<transition id="id19">
+			<source ref="id17"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-347" y="29">y&gt;=120</label>
+			<nail x="-365" y="68"/>
+			<nail x="-340" y="-153"/>
+		</transition>
+		<transition id="id20">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-51" y="-8">y&gt;=60</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id16"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-204" y="-59">on_board!</label>
+			<label kind="assignment" x="-187" y="-42">y:=0</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id13"/>
+			<target ref="id15"/>
+			<label kind="assignment" x="-178" y="-153">y:=0</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="guard" x="-51" y="-127">y&gt;=120</label>
+			<label kind="synchronisation" x="-51" y="-110">passenger_approaching!</label>
+			<label kind="assignment" x="-51" y="-93">y:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Bus</name>
+		<declaration>clock z;</declaration>
+		<location id="id24" x="-586" y="-263">
+			<name x="-596" y="-297">in_depot</name>
+		</location>
+		<location id="id25" x="-391" y="-263">
+			<name x="-401" y="-297">driving</name>
+			<label kind="invariant" x="-365" y="-272">z&lt;=300</label>
+		</location>
+		<location id="id26" x="-382" y="-144">
+			<name x="-374" y="-178">at_stop</name>
+		</location>
+		<location id="id27" x="-586" y="-136">
+			<name x="-596" y="-170">driving_back</name>
+			<label kind="invariant" x="-596" y="-119">z&lt;=300</label>
+		</location>
+		<init ref="id24"/>
+		<transition id="id28">
+			<source ref="id27"/>
+			<target ref="id24"/>
+			<label kind="guard" x="-646" y="-229">z&gt;=300</label>
+		</transition>
+		<transition id="id29">
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-484" y="-161">departing?</label>
+			<label kind="assignment" x="-484" y="-119">z:=0</label>
+		</transition>
+		<transition id="id30">
+			<source ref="id25"/>
+			<target ref="id26"/>
+			<label kind="guard" x="-386" y="-237">z&gt;=300</label>
+			<label kind="synchronisation" x="-386" y="-220">approaching!</label>
+		</transition>
+		<transition id="id31">
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-568" y="-280">departing!</label>
+			<label kind="assignment" x="-493" y="-255">z:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Starter</name>
+		<location id="id32" x="-272" y="-212">
+			<name x="-282" y="-246">initial</name>
+		</location>
+		<location id="id33" x="-59" y="-212">
+			<name x="-69" y="-246">done</name>
+		</location>
+		<init ref="id32"/>
+		<transition id="id34">
+			<source ref="id32"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-212" y="-229">departing!</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+h = Haltestelle();
+p = Passenger();
+b1 = Bus();
+b2 = Bus();
+s = Starter();
+// List one or more processes to be composed into a system.
+system h,p,b1,b2;
+</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<option key="--diagnostic" value="1"/>
+			<result outcome="failure" type="quality" timestamp="2026-03-23 20:55:15 +0100">
+				<option key="--diagnostic" value="1"/>
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (h.Bus_da and h.Bus_weg)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-03-23 21:02:21 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (p.in_bus and p.moving)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-03-23 21:03:53 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (b1.at_stop and b2.at_stop)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-03-23 21:04:19 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; p.in_bus</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-03-23 21:08:50 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>p.moving --&gt; p.in_bus</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-03-23 21:11:30 +0100">
+			</result>
+		</query>
+	</queries>
+</nta>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+clock x;
+chan a;</declaration>
+	<template>
+		<name x="5" y="5">TA1</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-552" y="-204">
+			<name x="-562" y="-238">s0</name>
+		</location>
+		<location id="id1" x="-391" y="-204">
+			<name x="-401" y="-238">s1</name>
+			<label kind="invariant" x="-401" y="-187">x&lt;=5</label>
+		</location>
+		<location id="id2" x="-501" y="-119">
+			<name x="-511" y="-153">s2</name>
+			<label kind="invariant" x="-520" y="-102">x&lt;=2</label>
+		</location>
+		<init ref="id0"/>
+		<transition id="id3">
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-526" y="-178">a!</label>
+		</transition>
+		<transition id="id4">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-492" y="-195">x&gt;=3</label>
+			<label kind="synchronisation" x="-442" y="-161">a?</label>
+			<label kind="assignment" x="-450" y="-144">x:=0</label>
+		</transition>
+		<transition id="id5">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-510" y="-204">x:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>TA2</name>
+		<location id="id6" x="-272" y="-127">
+			<name x="-282" y="-161">q0</name>
+		</location>
+		<location id="id7" x="-153" y="-127">
+			<name x="-163" y="-161">q1</name>
+			<label kind="invariant" x="-163" y="-110">x&lt;=3</label>
+		</location>
+		<init ref="id6"/>
+		<transition id="id8">
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-182" y="-93">a!</label>
+			<label kind="assignment" x="-182" y="-76">x:=0</label>
+			<nail x="-212" y="-25"/>
+			<nail x="-212" y="-25"/>
+			<nail x="-263" y="-25"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-254" y="-161">x&gt;=2</label>
+			<label kind="synchronisation" x="-229" y="-144">a!</label>
+			<label kind="assignment" x="-229" y="-127">x:=0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+TA_1 = TA1();
+TA_2 = TA2();
+// List one or more processes to be composed into a system.
+system TA_1,TA_2;
+</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<option key="--diagnostic" value="1"/>
+			<result outcome="failure" type="quality" timestamp="2026-03-19 13:10:12 +0100">
+				<option key="--diagnostic" value="1"/>
+			</result>
+		</query>
+	</queries>
+</nta>

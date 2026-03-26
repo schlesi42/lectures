@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+clock x;
+chan lower, raise, moving_fails, emergency_stop, error_corrected;</declaration>
+	<template>
+		<name x="5" y="5">NuclearPowerPlant</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-204" y="-110">
+			<name x="-222" y="-144">operation</name>
+		</location>
+		<location id="id1" x="-8" y="-110">
+			<name x="-18" y="-144">control_rods_moving_down</name>
+			<label kind="invariant" x="-18" y="-93">x&lt;=10</label>
+		</location>
+		<location id="id2" x="-8" y="25">
+			<name x="-76" y="42">control_rods_down</name>
+		</location>
+		<location id="id3" x="246" y="-110">
+			<name x="221" y="-144">error</name>
+		</location>
+		<location id="id4" x="-195" y="17">
+			<name x="-205" y="-17">stop</name>
+		</location>
+		<location id="id5" x="-8" y="153">
+			<name x="17" y="144">control_rods_moving_up</name>
+			<label kind="invariant" x="-18" y="170">x&lt;=10</label>
+		</location>
+		<init ref="id0"/>
+		<transition id="id6">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="25" y="-68">error_corrected?</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-254" y="144">x&gt;=5</label>
+			<nail x="-272" y="204"/>
+		</transition>
+		<transition id="id8">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-135" y="131">raise?</label>
+			<nail x="-153" y="144"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-144" y="68">emergency_stop?</label>
+		</transition>
+		<transition id="id10">
+			<source ref="id5"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="153" y="0">moving_fails?</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-8" y="72">raise?</label>
+			<label kind="assignment" x="-8" y="89">x:=0</label>
+		</transition>
+		<transition id="id12">
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-127" y="0">lower?</label>
+			<nail x="-68" y="-17"/>
+		</transition>
+		<transition id="id13">
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-229" y="-59">emergency_stop?</label>
+		</transition>
+		<transition id="id14">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="0" y="-34">x&gt;=5</label>
+		</transition>
+		<transition id="id15">
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="10" y="-127">moving_fails?</label>
+		</transition>
+		<transition id="id16">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-127" y="-136">lower?</label>
+			<label kind="assignment" x="-186" y="-110">x:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Controller</name>
+		<location id="id17" x="-221" y="-127">
+			<name x="-231" y="-161">idle</name>
+		</location>
+		<location id="id18" x="-42" y="-170">
+			<name x="-52" y="-204">shut_down</name>
+		</location>
+		<location id="id19" x="153" y="-127">
+			<name x="143" y="-161">stop</name>
+		</location>
+		<location id="id20" x="-34" y="-51">
+			<name x="-42" y="-34">operate</name>
+		</location>
+		<init ref="id17"/>
+		<transition id="id21">
+			<source ref="id20"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="42" y="-85">emergency_stop!</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id20"/>
+			<target ref="id17"/>
+		</transition>
+		<transition id="id23">
+			<source ref="id19"/>
+			<target ref="id17"/>
+			<nail x="-8" y="-263"/>
+		</transition>
+		<transition id="id24">
+			<source ref="id18"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="-93" y="-119">raise!</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-17" y="-144">emergency_stop!</label>
+		</transition>
+		<transition id="id26">
+			<source ref="id17"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-144" y="-144">lower!</label>
+		</transition>
+	</template>
+	<system>n = NuclearPowerPlant();
+c = Controller();
+system n,c;
+</system>
+	<queries>
+		<query>
+			<formula>n.stop --&gt; n.operation</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-03-23 23:21:32 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (n.operation and n.error)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-03-23 23:22:41 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>n.error --&gt; n.stop</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-03-24 13:14:52 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; n.error</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-03-24 13:15:35 +0100">
+			</result>
+		</query>
+	</queries>
+</nta>
