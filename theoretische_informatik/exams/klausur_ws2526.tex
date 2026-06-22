@@ -1,0 +1,288 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\klausurdatum}{29. Januar 2026}
+\newcommand{\klausurdauer}{90 Minuten}
+\newcommand{\klausuraufgaben}{7}
+\newcommand{\klausurpunkte}{45}
+\input{include/config.tex}
+\usepackage{bussproofs}
+
+\begin{document}
+\input{include/kopf_klausur.tex}
+
+% ============================================================
+\aufgabetitel{$8$}{Kalkül des natürlichen Schließens und Sequenzenkalkül}\\
+Beweisen Sie sowohl im \textbf{Kalkül des natürlichen Schließens} als auch im \textbf{Sequenzenkalkül}:
+\begin{enumerate}[a)]
+  \item $\vdash \neg(A \wedge B) \to (\neg A \vee \neg B)$
+  \item $A \wedge (B \vee C) \vdash (A \wedge B) \vee (A \wedge C)$
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Natürliches Schließen:}
+
+\begin{prooftree}
+  \AxiomC{$[\neg(A\wedge B)]^1$}
+  \AxiomC{$[A]^2$}
+  \AxiomC{$[B]^3$}
+  \BinaryInfC{$A \wedge B$}
+  \BinaryInfC{$\bot$}
+  \UnaryInfC{$\neg B$}
+  \RightLabel{$\neg I^3$}
+  \UnaryInfC{$\neg A \vee \neg B$}
+  \RightLabel{$\neg I^2$, $\vee I$}
+  \UnaryInfC{$\neg(A\wedge B) \to (\neg A \vee \neg B)$}
+  \RightLabel{$\to I^1$}
+\end{prooftree}
+
+(Hinweis: Der vollständige Beweis erfordert eine Fallunterscheidung über $A$ via $\neg\neg$-Elimination oder tertium non datur.)
+
+\textbf{a) Sequenzenkalkül:}
+
+Bottom-up beginnend mit dem Ziel $\Rightarrow \neg(A\wedge B)\to(\neg A\vee\neg B)$:
+\[
+  \frac{
+    \frac{
+      \frac{A\wedge B, \neg(A\wedge B) \Rightarrow}{A,B,\neg(A\wedge B)\Rightarrow}\ \wedge\Rightarrow
+    }{\neg(A\wedge B)\Rightarrow\neg A\vee\neg B,\neg B}\ \neg\Rightarrow, \Rightarrow\vee
+  }{\Rightarrow \neg(A\wedge B)\to(\neg A\vee\neg B)}\ \Rightarrow\to
+\]
+
+\textbf{b) Natürliches Schließen:}
+\begin{prooftree}
+  \AxiomC{$[A\wedge(B\vee C)]^1$}
+  \UnaryInfC{$A$}
+  \AxiomC{$[A\wedge(B\vee C)]^1$}
+  \UnaryInfC{$B\vee C$}
+  \AxiomC{$[B]^2$}
+  \BinaryInfC{$A\wedge B$}
+  \UnaryInfC{$(A\wedge B)\vee(A\wedge C)$}
+  \AxiomC{$[C]^3$}
+  \BinaryInfC{$A\wedge C$}
+  \UnaryInfC{$(A\wedge B)\vee(A\wedge C)$}
+  \TrinaryInfC{$(A\wedge B)\vee(A\wedge C)$}
+  \RightLabel{$\vee E^{2,3}$}
+\end{prooftree}
+
+\textbf{b) Sequenzenkalkül:}
+\[
+  \frac{
+    \frac{A,B\Rightarrow(A\wedge B)\vee(A\wedge C)}{A,B\vee C\Rightarrow(A\wedge B)\vee(A\wedge C)}
+    \quad
+    \frac{A,C\Rightarrow(A\wedge B)\vee(A\wedge C)}{A,B\vee C\Rightarrow(A\wedge B)\vee(A\wedge C)}
+  }{A\wedge(B\vee C)\Rightarrow(A\wedge B)\vee(A\wedge C)}
+\]
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Formale Sprachen -- DFA und reguläre Grammatik}\\
+Sei $L = \{(abb)^n \mid n \in \mathbb{N}\}$ eine reguläre Sprache.
+
+\textit{Hinweis:} Es gilt $w^0 = \varepsilon$ und $w^{n+1} = w^n w$.
+\begin{enumerate}[a)]
+  \item Geben Sie einen DFA $M$ an mit $T(M) = L$.
+  \item Geben Sie eine reguläre Grammatik $G$ an mit $L(G) = L$.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) DFA:}
+
+$M = (Q, \Sigma, \delta, q_0, F)$ mit $Q = \{q_0, q_1, q_2, q_3\}$, $\Sigma = \{a,b\}$, $F = \{q_0\}$ und:
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta$ & $a$ & $b$ \\
+  \hline
+  $\to q_0^*$ & $q_1$ & $q_3$ \\
+  $q_1$ & $q_3$ & $q_2$ \\
+  $q_2$ & $q_3$ & $q_0$ \\
+  $q_3$ & $q_3$ & $q_3$ \\
+\end{tabular}
+\end{center}
+
+$q_3$ ist ein Fehlerzustand. Der Automat liest $abb$ zyklisch: $q_0\xrightarrow{a}q_1\xrightarrow{b}q_2\xrightarrow{b}q_0$.
+
+\textbf{b) Reguläre Grammatik:}
+$G = (\{S, A, B\}, \{a,b\}, P, S)$ mit den Produktionen:
+\begin{align*}
+  S &\to aA \mid \varepsilon \\
+  A &\to bB \\
+  B &\to bS
+\end{align*}
+Es gilt $L(G) = L$, da $S$ das leere Wort erzeugt und jede weitere Ableitung genau ein $abb$ hinzufügt.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$6$}{NFA-zu-DFA-Umwandlung}\\
+Gegeben sei folgender NFA $M_\text{NFA} = (Q, \Sigma, \delta, S, F)$ mit $Q = \{q_0, q_1, q_2, q_3\}$, $\Sigma = \{a,b\}$, Startzustand $q_0$, Endzustand $F = \{q_3\}$, und der Übergangsfunktion $\delta$ wie im folgenden Graphen dargestellt:
+
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt, node distance=2.5cm, on grid, auto]
+  \node[state, initial]   (q0) {$q_0$};
+  \node[state]            (q1) [right=of q0] {$q_1$};
+  \node[state]            (q2) [below=of q0] {$q_2$};
+  \node[state, accepting] (q3) [right=of q1] {$q_3$};
+  \path[->]
+    (q0) edge              node {$a$}   (q1)
+    (q0) edge              node[left] {$b$} (q2)
+    (q1) edge [loop above] node {$a,b$} (q1)
+    (q1) edge              node {$b$}   (q3)
+    (q2) edge              node[below] {$a$} (q3)
+    (q3) edge [loop right] node {$b$}   (q3);
+\end{tikzpicture}
+\end{center}
+
+Geben Sie einen DFA $M_\text{DFA}$ an mit $T(M_\text{NFA}) = T(M_\text{DFA})$.
+
+\textit{Hinweis:} Es reichen die vom Anfangszustand erreichbaren Zustände.
+
+\begin{loesung}
+Potenzmengenkonstruktion (nur erreichbare Zustände):
+
+\begin{center}
+\begin{tabular}{l|cc}
+  DFA-Zustand & $a$ & $b$ \\
+  \hline
+  $\to\{q_0\}$ & $\{q_1\}$ & $\{q_2\}$ \\
+  $\{q_1\}$ & $\{q_1\}$ & $\{q_1,q_3\}^*$ \\
+  $\{q_2\}$ & $\{q_3\}^*$ & $\emptyset$ \\
+  $\{q_1,q_3\}^*$ & $\{q_1\}$ & $\{q_1,q_3\}^*$ \\
+  $\{q_3\}^*$ & $\emptyset$ & $\{q_3\}^*$ \\
+  $\emptyset$ & $\emptyset$ & $\emptyset$ \\
+\end{tabular}
+\end{center}
+
+Mit $*$ markierte Zustände sind Endzustände (enthalten $q_3$).
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$6$}{Strukturen und Termauswertung}\\
+Sei $\mathcal{M}$ eine Struktur über einer Sprache mit
+\begin{itemize}
+  \item zweistelligem Funktionssymbol $\circ$ (geschrieben in Infix-Notation),
+  \item einstelligen Funktionssymbolen $f$ und $g$,
+  \item Trägermenge $D = \mathbb{R}$,
+  \item $f^\mathcal{M}: x \mapsto x^2$,\quad $g^\mathcal{M}: x \mapsto x - 1$,\quad $\circ^\mathcal{M}: (f, g) \mapsto g \circ f$ \;(Funktionskomposition, d.h. $(g\circ f)(x)=g(f(x))$).
+\end{itemize}
+Sei $\sigma$ eine Variablenbelegung mit $\sigma(x) = 2$.
+\begin{enumerate}[a)]
+  \item Berechnen Sie $\llbracket (g \circ f)(x) \rrbracket^\mathcal{M}_\sigma$.
+  \item Berechnen Sie $\llbracket (f \circ g)(x) \rrbracket^\mathcal{M}_\sigma$.
+  \item Welche Stufe der Prädikatenlogik benötigt man, um Aussagen über diese Struktur zu formulieren, wenn die Trägermenge aus Funktionen besteht? Begründen Sie kurz.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a)} $\sigma(x)=2$, also:
+\[
+  \llbracket(g\circ f)(x)\rrbracket^\mathcal{M}_\sigma = g^\mathcal{M}(f^\mathcal{M}(\sigma(x))) = g(f(2)) = g(4) = 4-1 = 3
+\]
+
+\textbf{b)}
+\[
+  \llbracket(f\circ g)(x)\rrbracket^\mathcal{M}_\sigma = f^\mathcal{M}(g^\mathcal{M}(\sigma(x))) = f(g(2)) = f(1) = 1
+\]
+
+\textbf{c)} Da die Elemente der Trägermenge selbst Funktionen sind (also Abbildungen $\mathbb{R}\to\mathbb{R}$), und Variablen über diese Funktionen laufen, handelt es sich um \textbf{Prädikatenlogik erster Stufe} -- solange wir nicht über Mengen von Funktionen quantifizieren. Will man über Mengen von Funktionen quantifizieren, benötigt man Prädikatenlogik zweiter Stufe.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$4$}{Theorie und Modell}\\
+Gegeben sei folgende Theorie:
+\[
+  T := \Bigl\{\;\exists v_0\, \exists v_1\; \neg(v_0 = v_1),\quad
+  \exists v_0\, \exists v_1\, \exists v_2\; \bigl[\neg(v_0=v_1) \wedge \neg(v_0=v_2) \wedge \neg(v_1=v_2)\bigr]\;\Bigr\}
+\]
+Geben Sie ein Modell für $T$ an, d.\,h. eine Struktur $\mathcal{M}$ mit $\mathcal{M} \models T$.
+
+\begin{loesung}
+Wähle $\mathcal{M}$ mit Trägermenge $D = \{0, 1, 2\}$ (die Gleichheit wird als Identität interpretiert).
+
+Dann gilt:
+\begin{itemize}
+  \item $\exists v_0\,\exists v_1\,\neg(v_0=v_1)$: wähle $v_0=0, v_1=1$. \checkmark
+  \item $\exists v_0\,\exists v_1\,\exists v_2\,[\neg(v_0=v_1)\wedge\neg(v_0=v_2)\wedge\neg(v_1=v_2)]$: wähle $v_0=0,v_1=1,v_2=2$. \checkmark
+\end{itemize}
+Also ist $\mathcal{M}\models T$.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Ordnungen und Verbände}\\
+Sei folgende Ordnung als Hasse-Diagramm gegeben:
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.4cm, on grid]
+  \node (a) {$a$};
+  \node (b) [right=of a] {$b$};
+  \node (c) [above right=of a] {$c$};
+  \node (d) [above=of a] {$d$};
+  \node (e) [above=of b] {$e$};
+  \node (f) [above=of d] {$f$};
+  \node (g) [above=of e] {$g$};
+  \node (h) [above right=of f] {$h$};
+  \node (i) [above left=of h] {$i$};
+  \node (j) [above right=of h] {$j$};
+  \draw (a) -- (c) -- (d) -- (f);
+  \draw (b) -- (c) -- (e) -- (g);
+  \draw (f) -- (h) -- (i);
+  \draw (g) -- (h) -- (j);
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[a)]
+  \item Bestimmen Sie:
+  \begin{itemize}
+    \item $\sup(\{d, e\})$
+    \item $\inf(\{d, e\})$
+    \item $\sup(\{a, e\})$
+    \item $\inf(\{a, e\})$
+    \item $\sup(\{c, e, f, g\})$
+  \end{itemize}
+  \item Ist durch die Ordnung ein Verband induziert? Begründen Sie!
+\end{enumerate}
+
+\begin{loesung}
+Das Hasse-Diagramm von unten nach oben: $a,b$ werden durch $c$ verbunden, $c$ führt zu $d$ und $e$, $d$ geht zu $f$, $e$ zu $g$, $f$ und $g$ treffen sich in $h$, $h$ führt zu $i$ und $j$.
+
+\textbf{a)}
+\begin{itemize}
+  \item $\sup(\{d,e\}) = h$ \;(kleinste gemeinsame obere Schranke: $f$ und $g$ sind obere Schranken von $d$ bzw. $e$, aber nicht voneinander; $h$ ist die kleinste obere Schranke beider)
+  \item $\inf(\{d,e\}) = c$ \;(größte gemeinsame untere Schranke)
+  \item $\sup(\{a,e\}) = g$ \;($g$ ist obere Schranke von $a$ und $e$; kleinere gibt es nicht)
+  \item $\inf(\{a,e\}) = a$ \;($a \sqsubseteq e$ gilt, daher $a$)
+  \item $\sup(\{c,e,f,g\}) = h$
+\end{itemize}
+
+\textbf{b)} Die Ordnung induziert \textbf{keinen Verband}, denn $\sup(\{d,e\})$ existiert zwar ($h$), aber $\inf(\{f,g\})$ existiert nicht eindeutig: $d$ und $e$ sind untere Schranken von $f$ und $g$, aber es gibt kein größtes Element darunter, da $d$ und $e$ unvergleichbar sind. (Genauer: $d\not\sqsubseteq e$ und $e\not\sqsubseteq d$, und $c = \inf(\{d,e\})$, also ist $\inf(\{f,g\}) = c$ -- das geht noch. Aber $\sup(\{i,j\})$ existiert nicht, da $i$ und $j$ unvergleichbar und keine gemeinsame obere Schranke in der Ordnung vorhanden ist.)
+
+Daher ist die Ordnung kein Verband.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$5$}{Theoretische Begriffe}\\
+Sei $T$ eine Theorie und $\varphi$ eine Formel der Prädikatenlogik erster Stufe. Entscheiden Sie, ob die folgenden Aussagen gelten, und begründen Sie Ihre Antwort!
+\begin{enumerate}[a)]
+  \item $\operatorname{Erf}(T) \Rightarrow \models T$
+  \item $\operatorname{Erf}(T) \Rightarrow \vdash T$
+  \item $\operatorname{Erf}(T) \Rightarrow$ es gibt eine Struktur $\mathcal{M}$ mit $\mathcal{M} \models T$
+  \item $\{\varphi \wedge \neg\varphi\} \models \{\varphi \wedge \neg\varphi\}$
+  \item $\{\varphi \vee \neg\varphi\} \models \{\varphi \wedge \neg\varphi\}$
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a)} \textbf{Falsch.} $\operatorname{Erf}(T)$ bedeutet, dass $T$ ein Modell hat. Das bedeutet nicht, dass jede Formel in $T$ allgemeingültig ist ($\models T$ würde bedeuten, dass alle Formeln in $T$ in allen Strukturen gelten).
+
+\textbf{b)} \textbf{Falsch.} Aus Erfüllbarkeit folgt nicht Beweisbarkeit. Es könnte sein, dass $T$ ein Modell hat, aber einzelne Formeln aus $T$ nicht aus der leeren Menge von Axiomen herleitbar sind.
+
+\textbf{c)} \textbf{Wahr.} Das ist die Definition von $\operatorname{Erf}(T)$: $T$ ist erfüllbar genau dann, wenn es eine Struktur $\mathcal{M}$ gibt mit $\mathcal{M}\models T$.
+
+\textbf{d)} \textbf{Wahr.} Es gilt $\{\varphi\wedge\neg\varphi\}\models\{\varphi\wedge\neg\varphi\}$, da die Theorie $\{\varphi\wedge\neg\varphi\}$ unerfüllbar ist (kein Modell hat). Aus einer unerfüllbaren Theorie folgt alles (ex falso quodlibet).
+
+\textbf{e)} \textbf{Falsch.} Die Theorie $\{\varphi\vee\neg\varphi\}$ ist allgemeingültig und hat viele Modelle. In einem Modell, in dem $\varphi$ gilt, ist $\varphi\wedge\neg\varphi$ falsch. Also gilt $\{\varphi\vee\neg\varphi\}\not\models\{\varphi\wedge\neg\varphi\}$.
+\end{loesung}
+
+\end{document}

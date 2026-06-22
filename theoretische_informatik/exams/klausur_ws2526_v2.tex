@@ -1,0 +1,511 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\klausurdatum}{30. April 2026}
+\newcommand{\klausurdauer}{2 Stunden}
+\newcommand{\klausuraufgaben}{7}
+\newcommand{\klausurpunkte}{45}
+\input{include/config.tex}
+\usepackage{bussproofs}
+
+\begin{document}
+\input{include/kopf_klausur.tex}
+
+% ============================================================
+\aufgabetitel{$8$}{Kalkül des natürlichen Schließens und Sequenzenkalkül}\\
+Beweisen Sie sowohl im \textbf{Kalkül des natürlichen Schließens} als auch im \textbf{Sequenzenkalkül}:
+\begin{enumerate}[a)]
+  \item $\vdash A \to (B \to A)$
+  \item $(A \vee B),\; \neg A \vdash B$
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) $\vdash A\to(B\to A)$ -- natürliches Schließen:}
+
+\begin{prooftree}
+  \AxiomC{$[A]^1$}
+  \RightLabel{$\to I^2$}
+  \UnaryInfC{$B\to A$}
+  \RightLabel{$\to I^1$}
+  \UnaryInfC{$A\to(B\to A)$}
+\end{prooftree}
+
+Wir nehmen $A$ an (Annahme 1) und dann $B$ (Annahme 2). Aus der Annahme 1 gilt $A$. Entlastung von Annahme 2 liefert $B\to A$, dann Entlastung von Annahme 1 liefert $A\to(B\to A)$.
+
+\textbf{a) Sequenzenkalkül (bottom-up):}
+\[
+  \frac{
+    \frac{A,B\Rightarrow A}{\text{Axiom}}
+  }{
+    \frac{A\Rightarrow B\to A}{\Rightarrow\to}
+  }{\Rightarrow A\to(B\to A)}\ \Rightarrow\to
+\]
+
+\textbf{b) $(A\vee B),\neg A\vdash B$ -- natürliches Schließen:}
+
+\begin{prooftree}
+  \AxiomC{$A\vee B$}
+  \AxiomC{$[A]^1$}
+  \AxiomC{$\neg A$}
+  \BinaryInfC{$\bot$}
+  \UnaryInfC{$B$}
+  \AxiomC{$[B]^2$}
+  \TrinaryInfC{$B$}
+  \RightLabel{$\vee E^{1,2}$}
+\end{prooftree}
+
+\textbf{b) Sequenzenkalkül:}
+\[
+  \frac{
+    \frac{A,\neg A\Rightarrow B}{\neg\Rightarrow}
+    \qquad
+    B\Rightarrow B
+  }{A\vee B,\neg A\Rightarrow B}\ \vee\Rightarrow
+\]
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Formale Sprachen -- DFA und regulärer Ausdruck}\\
+Sei $\Sigma = \{0, 1\}$ und $L = \{ w \in \Sigma^* \mid w \text{ endet auf } 10 \}$.
+\begin{enumerate}[a)]
+  \item Konstruieren Sie einen \textbf{minimalen DFA} $M$ mit $T(M) = L$.
+  \item Geben Sie einen \textbf{regulären Ausdruck} $r$ an mit $L(r) = L$.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Minimaler DFA:}
+
+Zustände kodieren das Suffix der bisher gelesenen Eingabe (relevant: letztes Zeichen, vorletztes Zeichen):
+\begin{itemize}
+  \item $q_\varepsilon$: Startzustand, noch kein Muster erkannt
+  \item $q_1$: letztes Zeichen war $1$
+  \item $q_{10}$: letzten zwei Zeichen waren $10$ (Endzustand)
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta$ & $0$ & $1$ \\
+  \hline
+  $\to q_\varepsilon$ & $q_\varepsilon$ & $q_1$ \\
+  $q_1$ & $q_{10}$ & $q_1$ \\
+  $q_{10}^*$ & $q_\varepsilon$ & $q_1$ \\
+\end{tabular}
+\end{center}
+
+$F = \{q_{10}\}$. Der DFA hat 3 Zustände und ist minimal (alle Zustände sind paarweise unterscheidbar).
+
+\textbf{b) Regulärer Ausdruck:}
+\[
+  r = (0\mid 1)^* \cdot 10
+\]
+Jedes Wort über $\{0,1\}$ beliebiger Länge, gefolgt von $10$.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$6$}{NFA-zu-DFA-Umwandlung}\\
+Gegeben sei folgender NFA $M_\text{NFA} = (Q, \Sigma, \delta, q_0, F)$ mit $Q = \{q_0, q_1, q_2\}$, $\Sigma = \{a,b\}$, Startzustand $q_0$, $F = \{q_2\}$, und folgender Übergangstabelle:
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta$ & $a$ & $b$ \\
+  \hline
+  $q_0$ & $\{q_0, q_1\}$ & $\{q_0\}$ \\
+  $q_1$ & $\emptyset$ & $\{q_2\}$ \\
+  $q_2$ & $\emptyset$ & $\emptyset$ \\
+\end{tabular}
+\end{center}
+
+Dieser NFA erkennt alle Wörter über $\{a,b\}$, bei denen das vorletzte Zeichen ein $a$ ist.
+
+Geben Sie einen DFA $M_\text{DFA}$ an mit $T(M_\text{NFA}) = T(M_\text{DFA})$.
+
+\textit{Hinweis:} Es reichen die vom Anfangszustand erreichbaren Zustände.
+
+\begin{loesung}
+Potenzmengenkonstruktion (nur erreichbare Zustände, Endzustände mit $*$):
+
+\begin{center}
+\begin{tabular}{l|cc}
+  DFA-Zustand & $a$ & $b$ \\
+  \hline
+  $\to\{q_0\}$ & $\{q_0,q_1\}$ & $\{q_0\}$ \\
+  $\{q_0,q_1\}$ & $\{q_0,q_1\}$ & $\{q_0,q_2\}^*$ \\
+  $\{q_0,q_2\}^*$ & $\{q_0,q_1\}$ & $\{q_0\}$ \\
+\end{tabular}
+\end{center}
+
+Der DFA hat 3 Zustände. Endzustände sind alle Mengen, die $q_2$ enthalten.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$6$}{Pumping Lemma}\\
+Zeigen Sie mit Hilfe des \textbf{Pumping Lemmas für reguläre Sprachen}, dass die Sprache
+\[
+  L = \{ a^n b^n \mid n \in \mathbb{N},\, n \geq 1 \}
+\]
+nicht regulär ist.
+
+\textit{Erinnerung -- Pumping Lemma:} Ist $L$ regulär, so gibt es eine Konstante $p \geq 1$ (die Pumping-Länge), so dass jedes Wort $w \in L$ mit $|w| \geq p$ geschrieben werden kann als $w = xyz$ mit:
+\begin{itemize}
+  \item $|y| \geq 1$,
+  \item $|xy| \leq p$,
+  \item $xy^i z \in L$ für alle $i \geq 0$.
+\end{itemize}
+
+\begin{loesung}
+\textbf{Beweis durch Widerspruch:} Angenommen, $L$ ist regulär. Sei $p$ die Pumping-Länge.
+
+Wähle $w = a^p b^p \in L$. Es gilt $|w| = 2p \geq p$.
+
+Nach dem Pumping Lemma gibt es eine Zerlegung $w = xyz$ mit $|y|\geq 1$, $|xy|\leq p$ und $xy^iz\in L$ für alle $i\geq 0$.
+
+Da $|xy|\leq p$ und $w$ mit $p$ vielen $a$s beginnt, muss $xy$ vollständig im $a$-Block liegen. Also ist $y = a^k$ für ein $k\geq 1$.
+
+Betrachte $i=2$: $xy^2z = a^{p+k}b^p$. Da $k\geq 1$, gilt $p+k\neq p$, also $xy^2z\notin L$.
+
+Das ist ein Widerspruch zur Aussage des Pumping Lemmas. Also ist $L$ nicht regulär. \qed
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$4$}{Strukturen und Formeln}\\
+Gegeben sei die Sprache $\mathcal{S} = \{c, f, p\}$ mit Konstante $c$, einstelligem Funktionssymbol $f$ und zweistelligem Prädikatensymbol $p$. Sei $\mathcal{M}$ die Struktur mit:
+\begin{itemize}
+  \item Trägermenge $D = \mathbb{Z}$,
+  \item $c^\mathcal{M} = 0$,\quad $f^\mathcal{M}: x \mapsto x + 1$,\quad $p^\mathcal{M} = \{(a,b) \mid a \leq b\}$.
+\end{itemize}
+Sei $\sigma$ eine Variablenbelegung mit $\sigma(x) = -1$ und $\sigma(y) = 3$.
+\begin{enumerate}[a)]
+  \item Berechnen Sie $\llbracket f(f(x)) \rrbracket^\mathcal{M}_\sigma$.
+  \item Entscheiden Sie, ob $\mathcal{M}, \sigma \models p(f(c),\, y)$ gilt, und begründen Sie.
+  \item Entscheiden Sie, ob $\mathcal{M}, \sigma \models \forall x\; p(c, f(x))$ gilt, und begründen Sie.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a)}
+\[
+  \llbracket f(f(x))\rrbracket^\mathcal{M}_\sigma = f^\mathcal{M}(f^\mathcal{M}(\sigma(x))) = f^\mathcal{M}(f^\mathcal{M}(-1)) = f^\mathcal{M}(0) = 1
+\]
+
+\textbf{b)} $\llbracket f(c)\rrbracket^\mathcal{M}_\sigma = f^\mathcal{M}(c^\mathcal{M}) = f^\mathcal{M}(0) = 1$ und $\sigma(y)=3$.
+
+Es gilt $(1,3)\in p^\mathcal{M}$ genau dann wenn $1\leq 3$. Das ist wahr, also gilt $\mathcal{M},\sigma\models p(f(c),y)$.
+
+\textbf{c)} $\forall x\;p(c,f(x))$ bedeutet: für alle $d\in D=\mathbb{Z}$ gilt $0\leq d+1$, also $d\geq -1$.
+
+Das ist falsch, denn z.\,B. für $d=-2$: $0\leq -1$? Nein.
+
+Also gilt $\mathcal{M},\sigma\not\models\forall x\;p(c,f(x))$.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Ordnungen und Verbände}\\
+Betrachten Sie die Menge der Teiler von $12$:
+\[
+  D_{12} = \{1, 2, 3, 4, 6, 12\}
+\]
+geordnet durch die \textbf{Teilbarkeitsrelation} $a \sqsubseteq b :\Leftrightarrow a \mid b$.
+
+\begin{enumerate}[a)]
+  \item Zeichnen Sie das \textbf{Hasse-Diagramm} der Ordnung $(D_{12}, \sqsubseteq)$.
+  \item Bestimmen Sie:
+  \begin{itemize}
+    \item $\sup(\{2, 3\})$
+    \item $\inf(\{4, 6\})$
+    \item $\sup(\{4, 6\})$
+    \item $\inf(\{2, 3\})$
+  \end{itemize}
+  \item Ist $(D_{12}, \sqsubseteq)$ ein \textbf{Verband}? Begründen Sie!
+  \item Welche Operationen $\sqcap$ und $\sqcup$ entsprechen $\inf$ und $\sup$ in diesem Verband?
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Hasse-Diagramm:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.4cm, on grid]
+  \node (1)  {$1$};
+  \node (2)  [above left=of 1]  {$2$};
+  \node (3)  [above right=of 1] {$3$};
+  \node (4)  [above=of 2]       {$4$};
+  \node (6)  [above right=of 2] {$6$};
+  \node (12) [above right=of 4] {$12$};
+  \draw (1)--(2)--(4)--(12);
+  \draw (1)--(3)--(6)--(12);
+  \draw (2)--(6);
+\end{tikzpicture}
+\end{center}
+
+\textbf{b)}
+\begin{itemize}
+  \item $\sup(\{2,3\}) = 6$ \;(kleinstes gemeinsames Vielfaches: $\text{kgV}(2,3)=6$)
+  \item $\inf(\{4,6\}) = 2$ \;(größter gemeinsamer Teiler: $\text{ggT}(4,6)=2$)
+  \item $\sup(\{4,6\}) = 12$ \;($\text{kgV}(4,6)=12$)
+  \item $\inf(\{2,3\}) = 1$ \;($\text{ggT}(2,3)=1$)
+\end{itemize}
+
+\textbf{c)} Ja, $(D_{12},\sqsubseteq)$ ist ein Verband. Je zwei Elemente $a,b\in D_{12}$ besitzen ein Supremum ($\text{kgV}(a,b)$) und ein Infimum ($\text{ggT}(a,b)$), und beides liegt wieder in $D_{12}$, da jedes kgV und ggT von Teilern von 12 wieder ein Teiler von 12 ist.
+
+\textbf{d)} Es gilt $a\sqcap b = \text{ggT}(a,b)$ und $a\sqcup b = \text{kgV}(a,b)$.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$5$}{Korrektheit und Vollständigkeit}\\
+Sei $T$ eine Theorie und $\varphi$, $\psi$ Formeln der Prädikatenlogik erster Stufe.
+Entscheiden Sie, ob die folgenden Aussagen gelten, und begründen Sie Ihre Antwort!
+\begin{enumerate}[a)]
+  \item $T \vdash \varphi \;\Rightarrow\; T \models \varphi$ \quad (Korrektheit)
+  \item $T \models \varphi \;\Rightarrow\; T \vdash \varphi$ \quad (Vollständigkeit)
+  \item $T \models \varphi \;\Longleftrightarrow\; \neg\,\operatorname{Erf}(T \cup \{\neg\varphi\})$
+  \item Ist $T$ inkonsistent (d.\,h. $T \vdash \bot$), so gilt $T \models \varphi$ für alle Formeln $\varphi$.
+  \item Ist $T \models \varphi$ und $T \models \psi$, dann gilt $T \models \varphi \wedge \psi$.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Wahr.} Das ist die \textit{Korrektheit} des Kalküls des natürlichen Schließens (und des Sequenzenkalküls): Jede beweisbare Formel ist auch semantisch gültig. Dies wurde in der Vorlesung bewiesen.
+
+\textbf{b) Wahr.} Das ist die \textit{Vollständigkeit} (Gödel'scher Vollständigkeitssatz): Jede semantisch gültige Formel ist auch beweisbar. Dieser Satz gilt für die Prädikatenlogik erster Stufe.
+
+\textbf{c) Wahr.} Es gilt:
+\[
+  T\models\varphi \;\Leftrightarrow\; \text{jedes Modell von }T\text{ ist auch Modell von }\varphi \;\Leftrightarrow\; T\cup\{\neg\varphi\}\text{ hat kein Modell} \;\Leftrightarrow\; \neg\operatorname{Erf}(T\cup\{\neg\varphi\})
+\]
+
+\textbf{d) Wahr.} Ist $T$ inkonsistent, so hat $T$ kein Modell. Aus einer Theorie ohne Modell folgt semantisch alles (ex falso quodlibet): $T\models\varphi$ für alle $\varphi$.
+
+\textbf{e) Wahr.} Sei $\mathcal{M}$ ein Modell von $T$. Da $T\models\varphi$ gilt $\mathcal{M}\models\varphi$, und da $T\models\psi$ gilt $\mathcal{M}\models\psi$. Also gilt $\mathcal{M}\models\varphi\wedge\psi$ für alle Modelle $\mathcal{M}$ von $T$, d.\,h. $T\models\varphi\wedge\psi$.
+\end{loesung}
+
+% ============================================================
+\newpage
+\section*{Anhang -- Formelsammlung}
+
+% -----------------------------------------------------------
+\subsection*{A.1\quad Kalkül des natürlichen Schließens}
+
+\textit{Konvention:} $[A]^i$ bezeichnet eine Annahme, die bei der mit $i$ markierten Regel entlastet (geschlossen) wird. Die Entlastung bedeutet, dass $A$ nicht mehr als offene Annahme gilt.
+
+\medskip
+\noindent\textbf{Konjunktion $(\wedge)$:}
+\[
+\dfrac{A \qquad B}{A \wedge B}\;\wedge I
+\qquad\qquad\qquad
+\dfrac{A \wedge B}{A}\;\wedge E_l
+\qquad\qquad\qquad
+\dfrac{A \wedge B}{B}\;\wedge E_r
+\]
+
+\medskip
+\noindent\textbf{Disjunktion $(\vee)$:}
+\[
+\dfrac{A}{A \vee B}\;\vee I_l
+\qquad\qquad
+\dfrac{B}{A \vee B}\;\vee I_r
+\qquad\qquad
+\dfrac{A \vee B \qquad \begin{array}{c}[A]^i \\ \vdots \\ C\end{array} \qquad \begin{array}{c}[B]^j \\ \vdots \\ C\end{array}}{C}\;\vee E^{i,j}
+\]
+
+\medskip
+\noindent\textbf{Implikation $(\to)$:}
+\[
+\dfrac{\begin{array}{c}[A]^i \\ \vdots \\ B\end{array}}{A \to B}\;{\to I^i}
+\qquad\qquad\qquad\qquad\qquad
+\dfrac{A \qquad A \to B}{B}\;{\to E}
+\]
+
+\medskip
+\noindent\textbf{Negation und Falsum $(\neg,\, \bot)$:}
+\[
+\dfrac{\begin{array}{c}[A]^i \\ \vdots \\ \bot\end{array}}{\neg A}\;{\neg I^i}
+\qquad\qquad
+\dfrac{A \qquad \neg A}{\bot}\;{\neg E}
+\qquad\qquad
+\dfrac{\bot}{A}\;{\bot E}
+\qquad\qquad
+\dfrac{\neg\neg A}{A}\;{\neg\neg E}
+\]
+
+\medskip
+\noindent\textbf{Quantoren -- Prädikatenlogik:}
+\[
+\dfrac{A(y)}{\forall x\,A(x)}\;{\forall I^{*}}
+\qquad\quad
+\dfrac{\forall x\,A(x)}{A(t)}\;{\forall E}
+\qquad\quad
+\dfrac{A(t)}{\exists x\,A(x)}\;{\exists I}
+\qquad\quad
+\dfrac{\exists x\,A(x) \qquad \begin{array}{c}[A(y)]^i \\ \vdots \\ C\end{array}}{C}\;{\exists E^{i,*}}
+\]
+
+\noindent\textit{${}^*$: Bei $\forall I$ darf $y$ nicht frei in offenen Annahmen vorkommen. Bei $\exists E$ darf $y$ nicht frei in $\exists x\,A(x)$ oder $C$ vorkommen.}
+
+% -----------------------------------------------------------
+\subsection*{A.2\quad Sequenzenkalkül}
+
+\textit{Konvention:} $\Gamma, \Delta, \Pi, \Lambda$ sind Multimengen von Formeln. Die Sequenz $\Gamma \Rightarrow \Delta$ bedeutet: Konjunktion von $\Gamma$ impliziert Disjunktion von $\Delta$.
+
+\medskip
+\noindent\textbf{Axiom und Schnitt:}
+\[
+\dfrac{\phantom{X}}{A \Rightarrow A}\;\mathrm{Ax}
+\qquad\qquad\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\, A \qquad A,\, \Pi \Rightarrow \Lambda}{\Gamma,\,\Pi \Rightarrow \Delta,\,\Lambda}\;\mathrm{Cut}
+\]
+
+\medskip
+\noindent\textbf{Strukturregeln (Verwässerung):}
+\[
+\dfrac{\Gamma \Rightarrow \Delta}{A,\,\Gamma \Rightarrow \Delta}\;Wl
+\qquad\qquad\qquad\qquad
+\dfrac{\Gamma \Rightarrow \Delta}{\Gamma \Rightarrow \Delta,\,A}\;Wr
+\]
+
+\medskip
+\noindent\textbf{Konjunktion $(\wedge)$:}
+\[
+\dfrac{A,\,\Gamma \Rightarrow \Delta}{A \wedge B,\,\Gamma \Rightarrow \Delta}\;\wedge\Rightarrow_l
+\qquad
+\dfrac{B,\,\Gamma \Rightarrow \Delta}{A \wedge B,\,\Gamma \Rightarrow \Delta}\;\wedge\Rightarrow_r
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A \qquad \Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \wedge B}\;\Rightarrow\wedge
+\]
+
+\medskip
+\noindent\textbf{Disjunktion $(\vee)$:}
+\[
+\dfrac{A,\,\Gamma \Rightarrow \Delta \qquad B,\,\Gamma \Rightarrow \Delta}{A \vee B,\,\Gamma \Rightarrow \Delta}\;\vee\Rightarrow
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A}{\Gamma \Rightarrow \Delta,\,A \vee B}\;\Rightarrow\vee_l
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \vee B}\;\Rightarrow\vee_r
+\]
+
+\medskip
+\noindent\textbf{Implikation $(\to)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta,\,A \qquad B,\,\Pi \Rightarrow \Lambda}{A \to B,\,\Gamma,\,\Pi \Rightarrow \Delta,\,\Lambda}\;\to\Rightarrow
+\qquad\qquad\qquad
+\dfrac{A,\,\Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \to B}\;\Rightarrow\to
+\]
+
+\medskip
+\noindent\textbf{Negation $(\neg)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta,\,A}{\neg A,\,\Gamma \Rightarrow \Delta}\;\neg\Rightarrow
+\qquad\qquad\qquad\qquad
+\dfrac{A,\,\Gamma \Rightarrow \Delta}{\Gamma \Rightarrow \Delta,\,\neg A}\;\Rightarrow\neg
+\]
+
+\medskip
+\noindent\textbf{Quantoren -- Prädikatenlogik:}
+\[
+\dfrac{A(t),\,\Gamma \Rightarrow \Delta}{\forall x\,A(x),\,\Gamma \Rightarrow \Delta}\;\forall\Rightarrow
+\quad
+\dfrac{\Gamma \Rightarrow \Delta,\,A(y)}{\Gamma \Rightarrow \Delta,\,\forall x\,A(x)}\;\Rightarrow\forall^*
+\quad
+\dfrac{A(y),\,\Gamma \Rightarrow \Delta}{\exists x\,A(x),\,\Gamma \Rightarrow \Delta}\;\exists\Rightarrow^*
+\quad
+\dfrac{\Gamma \Rightarrow \Delta,\,A(t)}{\Gamma \Rightarrow \Delta,\,\exists x\,A(x)}\;\Rightarrow\exists
+\]
+
+\noindent\textit{${}^*$: $y$ darf nicht frei in $\Gamma, \Delta$ vorkommen ($y$ ist eine \emph{frische} Variable).}
+
+% -----------------------------------------------------------
+\newpage
+\subsection*{A.3\quad Relationen und ihre Eigenschaften}
+
+Sei $R \subseteq A \times A$ eine binäre Relation auf einer Menge $A$. Wir schreiben auch $aRb$ statt $(a,b)\in R$.
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{l X l}
+\textbf{Eigenschaft} & \textbf{Formale Definition} & \textbf{Charakterisierung} \\
+\hline
+Reflexiv         & $\forall a \in A:\; aRa$ & Jedes Element steht mit sich selbst in Relation \\
+Irreflexiv       & $\forall a \in A:\; \neg(aRa)$ & Kein Element mit sich selbst in Relation \\
+Symmetrisch      & $\forall a,b \in A:\; aRb \Rightarrow bRa$ & Relation gilt in beide Richtungen \\
+Antisymmetrisch  & $\forall a,b \in A:\; aRb \wedge bRa \Rightarrow a=b$ & Keine gegenläufigen Paare (außer $a=b$) \\
+Transitiv        & $\forall a,b,c \in A:\; aRb \wedge bRc \Rightarrow aRc$ & Verkettung bleibt in der Relation \\
+Total (linear)   & $\forall a,b \in A:\; aRb \vee bRa$ & Je zwei Elemente sind vergleichbar \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Spezielle Relationen:}
+\begin{itemize}
+  \item \textbf{Äquivalenzrelation:} reflexiv $+$ symmetrisch $+$ transitiv
+  \item \textbf{Partielle Ordnung} $(V,\sqsubseteq)$: reflexiv $+$ antisymmetrisch $+$ transitiv
+  \item \textbf{Totale (lineare) Ordnung:} partielle Ordnung $+$ total
+\end{itemize}
+
+% -----------------------------------------------------------
+\subsection*{A.4\quad Ordnungen -- Begriffe}
+
+Sei $(V, \sqsubseteq)$ eine partielle Ordnung und $W \subseteq V$.
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+Obere Schranke von $W$ & $s \in V$ mit $w \sqsubseteq s$ für alle $w \in W$ \\
+Untere Schranke von $W$ & $s \in V$ mit $s \sqsubseteq w$ für alle $w \in W$ \\
+Supremum $\sup(W)$ & kleinste obere Schranke von $W$ (eindeutig, falls existent) \\
+Infimum $\inf(W)$ & größte untere Schranke von $W$ (eindeutig, falls existent) \\
+Maximales Element von $W$ & $m \in W$, so dass kein $w \in W$ mit $m \sqsubset w$ existiert \\
+Minimales Element von $W$ & $m \in W$, so dass kein $w \in W$ mit $w \sqsubset m$ existiert \\
+Größtes Element von $W$ & $m \in W$ mit $w \sqsubseteq m$ für alle $w \in W$ (falls existent: eindeutig) \\
+Kleinstes Element von $W$ & $m \in W$ mit $m \sqsubseteq w$ für alle $w \in W$ (falls existent: eindeutig) \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Hasse-Diagramm:} Darstellung einer partiellen Ordnung als gerichteter azyklischer Graph:
+\begin{itemize}
+  \item Elemente als Knoten; $a$ liegt \emph{tiefer} als $b$, wenn $a \sqsubset b$ (d.h.\ $a \sqsubseteq b$ und $a \neq b$).
+  \item Eine Kante $a$--$b$ (mit $a$ tiefer) existiert genau dann, wenn $a \sqsubset b$ und kein $c$ mit $a \sqsubset c \sqsubset b$ existiert (keine Zwischenelemente).
+  \item $a \sqsubseteq b$ gilt genau dann, wenn ein aufsteigender Pfad von $a$ nach $b$ existiert.
+\end{itemize}
+
+% -----------------------------------------------------------
+\subsection*{A.5\quad Verbände}
+
+\noindent\textbf{Algebraische Definition:} Eine Menge $V$ mit Operationen $\sqcap, \sqcup : V \times V \to V$ ist ein \textbf{Verband}, wenn für alle $a,b,c \in V$ gilt:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l l l}
+\textbf{Assoziativität:} & $a \sqcap (b \sqcap c) = (a \sqcap b) \sqcap c$ & $a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$ \\
+\textbf{Kommutativität:} & $a \sqcap b = b \sqcap a$ & $a \sqcup b = b \sqcup a$ \\
+\textbf{Absorption:}     & $a \sqcap (a \sqcup b) = a$ & $a \sqcup (a \sqcap b) = a$ \\
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Ordnungstheoretische Definition:} Eine partielle Ordnung $(V,\sqsubseteq)$ ist ein Verband, wenn je zwei Elemente $a,b \in V$ ein Supremum $a \sqcup b := \sup(\{a,b\})$ und ein Infimum $a \sqcap b := \inf(\{a,b\})$ besitzen.
+
+\medskip
+\noindent\textbf{Weitere Eigenschaften von Verbänden} (ableitbar aus den Axiomen):
+\begin{itemize}
+  \item \textbf{Idempotenz:} $a \sqcap a = a$ und $a \sqcup a = a$
+  \item \textbf{Induzierte Ordnung:} $a \sqsubseteq b \;\Leftrightarrow\; a \sqcap b = a \;\Leftrightarrow\; a \sqcup b = b$
+\end{itemize}
+
+% \medskip
+% \noindent\textbf{Wichtige Beispiele:}
+% \begin{center}
+% \renewcommand{\arraystretch}{1.4}
+% \begin{tabular}{l l l l}
+% \textbf{Menge} & \textbf{Ordnung} & $\sqcap$ & $\sqcup$ \\
+% \hline
+% $\mathscr{P}(M)$ (Potenzmenge) & $\subseteq$ & $\cap$ & $\cup$ \\
+% $\mathbb{N}$ & $\leq$ & $\min$ & $\max$ \\
+% $D_n$ (Teiler von $n$) & $\mid$ (Teilbarkeit) & $\text{ggT}$ & $\text{kgV}$ \\
+% \end{tabular}
+% \end{center}
+
+\end{document}

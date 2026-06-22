@@ -1,0 +1,215 @@
+\documentclass[%
+  paper=a4,
+  fontsize=10pt,
+  ngerman
+  ]{scrartcl}
+
+% Basics für Codierung und Sprache
+% ===========================================================
+  \usepackage{scrtime}
+  \usepackage{etex}
+  \usepackage{shellesc}
+  \usepackage[final]{graphicx}
+  \usepackage[utf8]{inputenc}
+  \usepackage{babel}
+  \usepackage[german=quotes]{csquotes}
+  \usepackage{datetime2}
+  \usepackage{ifthen}
+  \usepackage{dingbat}
+% ===========================================================
+
+%% Fonts und Typographie
+%% ===========================================================
+  \usepackage{charter}
+  \usepackage{nimbusmononarrow}
+  \usepackage[babel=true,final,tracking=smallcaps]{microtype}
+  \DisableLigatures{encoding = T1, family = tt* }
+  \usepackage{ellipsis}
+% ===========================================================
+
+% Farben
+% ===========================================================
+  \usepackage[usenames,x11names,table]{xcolor}
+  \definecolor{fbblau}{HTML}{3078AB}
+  \definecolor{blackberry}{rgb}{0.53, 0.0, 0.25}
+% ===========================================================
+
+% Mathe-Pakete und -Einstellungen
+% ===========================================================
+  \usepackage{mathtools}
+  \usepackage{amssymb}
+  \usepackage[bigdelims]{newtxmath}
+  \allowdisplaybreaks
+  \usepackage{bm}
+  \usepackage{wasysym}
+  \usepackage{stmaryrd}
+% ===========================================================
+
+% TikZ
+% ===========================================================
+  \usepackage{tikz}
+  \usepackage{tikz-cd}
+  \usepackage{pgf}
+  \usetikzlibrary{matrix}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{arrows}
+  \usetikzlibrary{shapes}
+  \usetikzlibrary{automata}
+  \tikzset{>=Latex}
+  \usepackage[mode=image]{standalone}
+% ===========================================================
+
+% Seitenlayout, Kopf-/Fußzeile
+% ===========================================================
+  \usepackage{scrlayer-scrpage}
+  \usepackage[top=3cm, bottom=2.5cm, left=2.5cm, right=2cm]{geometry}
+  \pagestyle{scrheadings}
+  \clearscrheadfoot
+  \setheadsepline{0.4pt}
+  \setfootsepline{0.4pt}
+  \setkomafont{pagehead}{\normalfont\footnotesize}
+  \setkomafont{pagefoot}{\normalfont\footnotesize}
+  \lohead[]{Klausur zur Vorlesung \textit{Mathematik I -- Theoretische Informatik} -- Wintersemester 2025/2026}
+  \rohead[]{\textbf{Klausur}}
+  \cfoot[\thepage]{\thepage}
+  \raggedbottom
+  \usepackage{setspace}
+  \linespread{1.2}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0.5\baselineskip}
+  \usepackage[all]{nowidow}
+  \usepackage{lscape}
+% ===========================================================
+
+% Hyperref
+% ===========================================================
+  \usepackage[%
+    hidelinks,
+    pdfpagelabels,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    linkcolor=black,
+    urlcolor=fbblau,
+    plainpages=false,
+    pagebackref,
+    citecolor=black,
+    hypertexnames=true,
+    pdfborderstyle={/S/U},
+    linkbordercolor=fbblau,
+    colorlinks=false,
+    backref=false]{hyperref}
+  \hypersetup{final}
+  \makeatletter
+  \g@addto@macro{\UrlBreaks}{\UrlOrds}
+  \makeatother
+% ===========================================================
+
+% Listen und Tabellen
+% ===========================================================
+  \usepackage{multicol}
+  \usepackage{multirow}
+  \usepackage[shortlabels]{enumitem}
+  \setlist[enumerate]{font=\bfseries,itemsep=0.25\baselineskip}
+  \setlist[itemize]{label=$\triangleright$,itemsep=-0.25\baselineskip}
+  \usepackage{tabularx}
+  \usepackage{array}
+  \usepackage{listings}
+  \lstset{breaklines=true,
+    basicstyle=\ttfamily,
+    frame=tblr,
+    language=c,
+    numbers=left}
+  \newcommand{\qed}{\hfill \ensuremath{\Box}}
+  \newcommand{\cmd}[1]{\texttt{#1}}
+% ===========================================================
+
+% Sonstiges
+% ===========================================================
+  \usepackage[textsize=small,color=Red1!80!OrangeRed1!80]{todonotes}
+% ===========================================================
+
+% Shortcuts and Math Commands
+% ===========================================================
+  \newcommand{\BB}{\mathbb{B}}
+  \newcommand{\CC}{\mathbb{C}}
+  \newcommand{\NN}{\mathbb{N}}
+  \newcommand{\QQ}{\mathbb{Q}}
+  \newcommand{\RR}{\mathbb{R}}
+  \newcommand{\ZZ}{\mathbb{Z}}
+  \newcommand{\oh}{\mathcal{O}}
+  \newcommand{\ol}[1]{\overline{#1}}
+  \newcommand{\wt}[1]{\widetilde{#1}}
+  \newcommand{\wh}[1]{\widehat{#1}}
+  \newcommand{\entspricht}{\mathrel{\widehat{=}}}
+
+  \DeclarePairedDelimiter{\absolut}{\lvert}{\rvert}
+  \DeclarePairedDelimiter{\ceiling}{\lceil}{\rceil}
+  \DeclarePairedDelimiter{\Floor}{\lfloor}{\rfloor}
+  \DeclarePairedDelimiter{\Norm}{\lVert}{\rVert}
+  \DeclarePairedDelimiter{\sprod}{\langle}{\rangle}
+  \DeclarePairedDelimiter{\enbrace}{(}{)}
+  \DeclarePairedDelimiter{\benbrace}{\lbrack}{\rbrack}
+  \DeclarePairedDelimiter{\penbrace}{\{}{\}}
+  \newcommand{\Underbrace}[2]{{\underbrace{#1}_{#2}}}
+
+  \newcommand{\abs}[1]{\absolut*{#1}}
+  \newcommand{\ceil}[1]{\ceiling*{#1}}
+  \newcommand{\flo}[1]{\Floor*{#1}}
+  \newcommand{\no}[1]{\Norm*{#1}}
+  \newcommand{\sk}[1]{\sprod*{#1}}
+  \newcommand{\enb}[1]{\enbrace*{#1}}
+  \newcommand{\penb}[1]{\penbrace*{#1}}
+  \newcommand{\benb}[1]{\benbrace*{#1}}
+  \newcommand{\stack}[2]{\makebox[1cm][c]{$\stackrel{#1}{#2}$}}
+
+% Übungszettel-Krams
+% ===========================================================
+  \usepackage[tikz]{mdframed}
+  \newmdenv[%
+    backgroundcolor = gray!20,
+    linewidth=0pt,
+    skipabove = 0.5cm,
+    skipbelow = 0cm
+  ]{notes}
+
+  \newboolean{praesenzlsgn}
+  \setboolean{praesenzlsgn}{\printpraesenzlsg}
+  \newboolean{loesungen}
+  \setboolean{loesungen}{\printloesungen}
+  \newboolean{bewertungen}
+  \setboolean{bewertungen}{\printbewertungen}
+
+  \newcommand{\iforiginal}[1]{\ifthenelse{\boolean{praesenzlsgn}}{}{#1}}
+  \newcommand{\ifpraesenzlsg}[1]{\ifthenelse{\boolean{praesenzlsgn}}{#1}{}}
+  \newcommand{\ifloesung}[1]{\ifthenelse{\boolean{loesungen}}{#1}{}}
+  \newcommand{\ifbewertung}[1]{\ifthenelse{\boolean{bewertungen}}{#1}{}}
+
+  \newcommand{\umbruchoriginal}{\iforiginal{\newpage}}
+  \newcommand{\umbruchpraesenzlsg}{\ifpraesenzlsg{\newpage}}
+  \newcommand{\umbruchlsg}{\ifloesung{\newpage}}
+  \newcommand{\umbruchbewertung}{\ifbewertung{\newpage}}
+  \newcommand{\umbruchnurpraesenz}{\ifthenelse{\boolean{loesungen}}{}{\umbruchpraesenzlsg}}
+  \newcommand{\umbruchnurlsg}{\ifthenelse{\boolean{bewertungen}}{}{\umbruchlsg}}
+
+  \usepackage{comment}
+  \newenvironment{praesenzlsg}%
+    {\ifthenelse{\boolean{praesenzlsgn}}{\textbf{--- Präsenzaufgabe Anfang ---} \mbox{} \newline}{}}%
+	{\ifthenelse{\boolean{praesenzlsgn}}{\mbox{} \newline \textbf{--- Präsenzaufgabe Ende ---}}{}}
+  \newenvironment{loesung}%
+    {\ifthenelse{\boolean{loesungen}}{\textbf{--- Lösung Anfang ---} \mbox{} \newline}{}}%
+    {\ifthenelse{\boolean{loesungen}}{\mbox{} \newline \textbf{--- Lösung Ende ---} \ifthenelse{\boolean{bewertungen}}{}{\umbruchlsg}}{}}
+  \newenvironment{bewertung}%
+    {\ifthenelse{\boolean{bewertungen}}{\textbf{--- Bewertungsschema Anfang ---} \mbox{} \newline}{}}%
+    {\ifthenelse{\boolean{bewertungen}}{\mbox{} \newline \textbf{--- Bewertungsschema Ende ---} \umbruchlsg}{}}
+
+  \ifthenelse{\boolean{praesenzlsgn}}{}{\excludecomment{praesenzlsg}}
+  \ifthenelse{\boolean{loesungen}}{}{\excludecomment{loesung}}
+  \ifthenelse{\boolean{bewertungen}}{}{\excludecomment{bewertung}}
+
+  \newcounter{aufgabennummer}
+  \setcounter{aufgabennummer}{1}
+  \newcommand{\aufgabe}[1]{\textbf{Aufgabe \theaufgabennummer} \stepcounter{aufgabennummer} \hfill (#1 Punkte)}
+  \newcommand{\aufgabetitel}[2]{\iforiginal{\vspace{0.5cm}} \textbf{Aufgabe \theaufgabennummer \ (#2)} \stepcounter{aufgabennummer} \hfill (#1 Punkte)}
+
+\newcommand{\danger}{\raisebox{0.5mm}{\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax}}
+\newcommand{\ddanger}[1]{{\danger} \textbf{#1} {\danger}}
