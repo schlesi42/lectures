@@ -1,0 +1,437 @@
+% ============================================================================
+%  Instructor Guide --- Introduction to Machine Learning for Security
+%  Companion to ml_security_intro.tex (the Beamer deck).
+%  Contains: didactic storyboard, per-section teaching notes, live demos,
+%            think-pair-share tasks, MCQ rationale, and the red-thread board.
+%  Compile with:  pdflatex instructor_guide.tex   (run twice for the ToC)
+%  Style matches 6_Pentesting_RedTeaming/exercises.tex (article + tcolorbox).
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black}
+
+% palette echoes the deck
+\definecolor{mlink}{HTML}{172233}
+\definecolor{mlsig}{HTML}{E8833A}
+\definecolor{accent}{HTML}{1F6FB2}
+\definecolor{good}{HTML}{2E7D32}
+\definecolor{bad}{HTML}{C62828}
+\definecolor{codebg}{HTML}{F5F7FA}
+\definecolor{midgray}{HTML}{52606D}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  breaklines=true,
+  frame=leftline,
+  framerule=2pt,
+  rulecolor=\color{mlsig},
+  xleftmargin=1em,
+  showstringspaces=false,
+  commentstyle=\color{midgray}\itshape,
+  keywordstyle=\color{accent}\bfseries,
+}
+
+% callout boxes
+\newtcolorbox{demo}{colback=accent!6, colframe=accent, sharp corners,
+  boxrule=0.7pt, left=6pt, right=6pt, top=4pt, bottom=4pt}
+\newtcolorbox{think}{colback=good!6, colframe=good, sharp corners,
+  boxrule=0.7pt, left=6pt, right=6pt, top=4pt, bottom=4pt}
+\newtcolorbox{myth}{colback=bad!5, colframe=bad, sharp corners,
+  boxrule=0.7pt, left=6pt, right=6pt, top=4pt, bottom=4pt}
+\newtcolorbox{note}{colback=mlsig!8, colframe=mlsig, sharp corners,
+  boxrule=0.7pt, left=6pt, right=6pt, top=4pt, bottom=4pt}
+
+\titleformat{\section}{\large\bfseries\color{mlink}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{accent}}{\thesubsection}{0.5em}{}
+
+\pagestyle{fancy}\fancyhf{}
+\lhead{\small ML for Security --- Instructor Guide}
+\rhead{\small\thepage}
+\setlength{\headheight}{14pt}
+
+\newcommand{\obj}{\textbf{\color{accent}Learning goals}}
+\newcommand{\core}{\textbf{\color{accent}Core statements}}
+\newcommand{\viz}{\textbf{\color{accent}Visualisations \& whiteboard}}
+\newcommand{\ask}{\textbf{\color{accent}Interactive questions}}
+\newcommand{\disc}{\textbf{\color{accent}Short discussion}}
+\newcommand{\misc}{\textbf{\color{bad}Typical misconceptions}}
+\newcommand{\trans}{\textbf{\color{mlsig}Transition to next}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Introduction to Machine Learning for Security}\\[0.3em]
+  {\large Instructor Guide --- Storyboard, Teaching Notes, Demos \& Tasks}\\[0.4em]
+  Bachelor Business Informatics / Computer Science (5th--6th sem.) \hfill 90 minutes\\
+  Prof.\ Dr.-Ing.\ Sebastian Schlesinger, HWR Berlin \hfill \today
+\end{center}
+\vspace{0.4em}
+
+\begin{note}
+\textbf{Didactic idea (Feynman principle).} The audience already knows classical
+security cold (IDS, firewalls, YARA, crypto, cloud) but has \emph{no} systematic
+ML background. Do \emph{not} open with maths, datasets or algorithms. Tell a
+story: classical security worked for decades via rules and signatures; modern
+scale, novelty and evasion broke that model; ML is the \emph{natural
+continuation}, not a new toy. Every new term is introduced only \emph{after} the
+problem that motivates it. Target ``aha'' at the end: \emph{``Now I understand
+why ML became necessary in security.''}
+\end{note}
+
+\tableofcontents
+\bigskip
+
+% ============================================================================
+\section{Didactic storyboard (the 90-minute arc)}
+% ============================================================================
+
+The lecture has four acts: \emph{the problem} (why the old model breaks),
+\emph{the idea} (what ML actually is), \emph{the reality} (where it runs and why
+it is hard), and \emph{the wrap-up}. Slide numbers refer to
+\texttt{ml\_security\_intro.pdf}.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{@{}p{1.5cm} p{4.3cm} p{2.0cm} p{6.0cm}@{}}
+\toprule
+\textbf{Min} & \textbf{Segment} & \textbf{Slides} & \textbf{Mode / what happens}\\
+\midrule
+\endhead
+0--3    & Title \& framing              & 1--3   & Read learning goals; promise ``today is the \emph{why}''.\\
+3--15   & \textbf{Hook}: security that no longer scales & 5--7 & \emph{Interactive}. SOC night shift; the 450k/day number; three problems, one shape. Ask before revealing numbers.\\
+15--27  & Why classical methods hit a wall & 9--11 & Respect the toolbox (co-fill table); concrete YARA rule + ``defeat it''; co-develop the five limits.\\
+27--40  & Security \emph{is} pattern recognition & 13--15 & The pivot (\emph{slow down}); reframe the whole curriculum; two worked examples $\to$ ``read the rule off examples''.\\
+40--55  & Machine learning, intuitively & 17--20 & First say ``ML''. Classical vs learned; build spam feature vector on whiteboard; draw the boundary; training vs inference.\\
+55--65  & The three learning paradigms  & 22--25 & Supervised / unsupervised / reinforcement, each via a security example.\\
+65--73  & Where ML lives today          & 27--28 & Map EDR/XDR/SIEM/UEBA to paradigms; foundation models \& LLMs, hype-aware.\\
+73--82  & What makes ML special         & 30--32 & The adaptive adversary; six hazards; adversarial ML (seed the rest of the series).\\
+82--90  & Wrap-up                       & 34--39 & Red-thread board; \emph{one} think-pair-share; 3 MCQs; the one message.\\
+\bottomrule
+\end{longtable}
+
+\begin{note}
+\textbf{Time-pressure plan.} If you are behind at minute 60, drop to \emph{one}
+worked example (slide 15), run \emph{one} think-pair-share, and skip the MCQ
+(assign as homework). Never cut the hook or the pivot --- they carry the whole
+argument.
+\end{note}
+
+% ============================================================================
+\section{Section-by-section teaching notes}
+% ============================================================================
+
+\subsection{Hook --- security that no longer scales (slides 5--7)}
+\obj: students \emph{feel} the scale/novelty problem before any ML vocabulary.\\
+\core: (1) A SOC ingests $10^9$--$10^{10}$ events/day; one human reviews a few
+hundred. (2) $\approx$450{,}000 new malware samples/day make one-signature-per-threat
+impossible. (3) Spam, malware and zero-days share one shape: \emph{object $\to$
+fast good/bad decision at unmanageable scale/variability}.\\
+\viz: the SOC funnel (billions $\to$ 1 analyst); diverging curves (threat volume
+rises, hand-written signatures stay flat). Whiteboard: write ``\#events/day'' and
+collect shouted estimates, then reveal.\\
+\ask: ``How many events per day?''  ``Can we hand-write a signature for every new
+sample, forever?'' The obvious ``no'' is the thesis of the lecture.\\
+\disc: 60\,s --- ``what do you personally do when your inbox floods with spam
+you've never seen the exact wording of?''\\
+\misc: \emph{``AV already solved malware.''} It solves the \emph{known}; the
+problem is the daily flood of the \emph{unknown}.\\
+\trans: ``Before we fix this, let's respect the tools you already have --- and
+find exactly where they break.''
+
+\subsection{Why classical methods hit a wall (slides 9--11)}
+\obj: articulate \emph{structural} (not accidental) limits of rules/signatures.\\
+\core: signatures/rules/heuristics/firewalls/IDS/YARA all share one trait --- a
+\emph{human encodes ``bad'' in advance}. Five limits: scale, novelty (zero-day),
+evasion (polymorphism), combinatorics (bad = blend of many weak hints),
+maintenance (every rule is an FP risk and a forever cost).\\
+\viz: fill the ``method $\to$ how it decides $\to$ where you met it'' table
+\emph{with} the room; show the concrete YARA rule; ``rules vs adaptive adversary''
+diagram.\\
+\ask: on the YARA slide --- ``You are the attacker: name one trivial change that
+defeats this exact-match rule.'' (rename URL, XOR strings, reorder opcodes.)\\
+\disc: ``Why does adding \emph{more} rules not solve it?'' (more FPs, more
+maintenance, still zero coverage of the genuinely new).\\
+\misc: \emph{``Just write better/more rules.''} Confuses effort with
+generalisation --- rules only ever encode the past.\\
+\trans: ``So we can't enumerate `bad'. But look what all these tasks actually
+are\ldots''
+
+\subsection{Security is pattern recognition (slides 13--15) --- THE PIVOT}
+\obj: recognise that security tasks are \emph{classification} or \emph{anomaly
+detection} problems.\\
+\core: object $\to$ decision $\to$ action. Classification = ``which known
+category?''; anomaly detection = ``does this deviate from normal?'' (for when you
+can't enumerate bad, only usual --- ideal for zero-days). Signatures were always
+doing classification, with a hand-written rulebook.\\
+\viz: object $\to$ decision $\to$ action flow; the 9-row curriculum table (each:
+object / decision / why rules get hard); two worked examples (DNS tunnelling,
+UEBA).\\
+\ask: ``Give me the \emph{object} and the \emph{decision} for phishing detection.''
+Cold-call two students; let them populate a table row live.\\
+\disc: ``For UEBA, why is there no single global `normal'?'' (normal is
+\emph{per person}: 2\,a.m.\ login is fine for an admin, alarming for HR).\\
+\misc: \emph{``Anomaly = attack.''} No --- anomaly = \emph{unusual}, which is a
+\emph{superset} of attacks (also: new intern, marketing campaign). That gap is
+the false-positive problem, foreshadowing Part III.\\
+\trans: ``We have piles of examples but can't write the rule. What if the machine
+read the rule off the examples itself?'' --- hand-off into ML.
+
+\subsection{Machine learning, intuitively (slides 17--20)}
+\obj: define data/features/labels/training/inference/generalisation without maths.\\
+\core: ML = \emph{learn} the decision rule from examples instead of writing it.
+Features are the numeric clues per object (feature engineering \emph{is} the
+security expertise). Training = fit a boundary to labelled examples; inference =
+which side is a new object on; generalisation = works on unseen objects, does not
+just memorise.\\
+\viz: classical (humans write rules) vs ML (data+answers $\to$ learned rule); the
+spam feature-vector table; the 2-D scatter with a learned boundary and one
+``new?'' point; training-vs-inference pipeline (two clocks).\\
+\viz\ (whiteboard): build the spam feature vector live --- ask the room ``what
+would you \emph{measure} about an email to guess spam?'' and write each suggestion
+as a column (\#links, \%CAPS, has ``invoice''\ldots). This makes ``features''
+their idea, not yours.\\
+\ask: ``The orange dot is a brand-new email we've never seen. Which side of the
+boundary --- and what does the model predict?''\\
+\misc: \emph{``The model memorises all the malware.''} It stores a \emph{boundary},
+not the samples --- that is why it catches unseen variants. Also \emph{``the AI
+keeps learning live from every attack''} --- usually it trains periodically and
+only \emph{infers} live.\\
+\trans: ``There's more than one way to learn --- and each maps to a security job.''
+
+\subsection{The three learning paradigms (slides 22--25)}
+\obj: distinguish supervised / unsupervised / reinforcement by their security use.\\
+\core: supervised = labelled examples (spam/malware/phishing classifiers);
+unsupervised = no labels, find ``normal'' and flag deviations (UEBA, network
+anomaly), or cluster malware families; reinforcement = act, get reward, adapt
+(auto-response, adaptive honeypots, fuzzing agents).\\
+\viz: the three-box triad + the ``you give it\ldots / security example'' table;
+the anomaly ellipse with an outlier; the agent$\leftrightarrow$environment loop.\\
+\ask: ``You must catch \emph{insider} data theft with almost no labelled insider
+examples. Which paradigm?'' (unsupervised --- see TPS \#2).\\
+\disc: ``Why is supervised learning `only as good as its labels', and why are
+labels so hard in security?'' (attackers hide $\Rightarrow$ `benign' may be `not
+caught yet').\\
+\misc: \emph{``More data always = better model.''} Mislabelled/biased data makes
+it confidently wrong.\\
+\trans: ``You now hold the three keys. Watch how every security product is just
+these three, pointed at a different object.''
+
+\subsection{Where ML lives today (slides 27--28)}
+\obj: map buzzwords (EDR/XDR/SIEM/UEBA) to paradigms; place LLMs soberly.\\
+\core: every product category is one of three paradigms on a different object.
+Foundation models/LLMs are supervised learning at huge scale: useful for
+alert-summarisation and SOC copilots (defence) and for scaled phishing / prompt
+injection (offence). Principles \emph{and} pitfalls from today still apply --- amplified.\\
+\viz: the ``where / what the ML does / which paradigm'' table.\\
+\ask: ``Your EDR flags a never-before-seen process. Supervised or anomaly ---
+and why probably \emph{both}?''\\
+\misc: \emph{``AI will replace the SOC analyst.''} Today it \emph{augments}: it
+drafts, ranks, explains --- a human still decides and is accountable.\\
+\trans: ``If it's this useful, why isn't security solved? Because security ML is
+unlike any other ML\ldots''
+
+\subsection{What makes ML in security special (slides 30--32)}
+\obj: explain why an adaptive adversary changes everything; name the six hazards
+and adversarial ML; leave students curious for the series.\\
+\core: in normal ML the world is indifferent (cats don't restyle to fool you); in
+security the data is made by an adversary trying to defeat your model. Six
+hazards: adaptive adversary, data/concept drift, class imbalance \& base rate,
+FP/FN asymmetry, explainability, adversarial ML. Adversarial ML = evasion (fool
+what it sees) and poisoning (corrupt what it learns).\\
+\viz: cat-vs-malware contrast; the six-hazard two-column list; the
+adversary$\to$\{poison training, evade inference\} diagram.\\
+\viz\ (whiteboard, 60\,s): the base-rate fallacy --- 1 attack per 1{,}000{,}000
+events, 99.9\% accuracy $\Rightarrow$ $\sim$1{,}000 false alarms for the 1 real
+attack. This is the single most important number in the lecture (see Demo 3).\\
+\ask: ``Why is `99\% accuracy' a meaningless headline for a rare-attack
+detector?''\\
+\misc: \emph{``99\% accuracy = great detector.''} With extreme imbalance,
+accuracy is dominated by the majority class --- ask for false-positive rate and
+recall instead.\\
+\trans: ``Each of these hazards is a future lecture. Let's tie the whole hour
+together.''
+
+% ============================================================================
+\section{Three low-prep live demos}
+% ============================================================================
+
+All three run in the lecture hall with nothing but a browser (or a projector and
+a whiteboard). Each has an offline fallback so it never fails live.
+
+\subsection{Demo 1 --- ``The room is the classifier'' (no computer, 4 min)}
+\begin{demo}
+\textbf{Setup:} show 5--6 one-line emails on a slide, e.g.\
+\emph{``URGENT: your invoice is overdue, click http://bit.ly/x to pay''},
+\emph{``Lunch at 12:30?''}, \emph{``FREE!!! CLAIM YOUR PR1ZE NOW''}, etc.\\
+\textbf{Run:} for each email, the room votes spam/ham by show of hands. Tally.\\
+\textbf{Reveal:} ask ``\emph{what} made you vote spam?'' Write their answers as
+columns: \#links, ALL-CAPS, urgency words, mangled spelling, unknown sender.\\
+\textbf{Punchline:} ``You just did \emph{feature engineering} and ran a
+\emph{classifier} in your heads. A model does exactly this --- it just learns how
+much to weigh each clue, from thousands of examples.''
+\end{demo}
+This demo motivates slides 18--19 perfectly; run it immediately before them.
+
+\subsection{Demo 2 --- Learn a rule from 5 examples (Python, 6 min)}
+Paste into a Google Colab / Jupyter cell (or run locally). It trains a tiny
+model on the exact feature table from slide 18 and predicts a new email.
+\begin{lstlisting}[language=Python]
+from sklearn.tree import DecisionTreeClassifier, export_text
+
+# features: [num_links, percent_caps, has_"invoice"]  (1 = yes)
+X = [[9,40,1],[1,5,0],[12,60,1],[0,8,0],[7,33,1],[2,10,0]]
+y = ["spam","ham","spam","ham","spam","ham"]
+
+clf = DecisionTreeClassifier(max_depth=2).fit(X, y)
+
+# a brand-new email the model has never seen:
+new = [[8, 35, 1]]
+print("prediction:", clf.predict(new)[0])
+print(export_text(clf, feature_names=["links","caps","invoice"]))
+\end{lstlisting}
+\begin{demo}
+\textbf{Expected output (offline fallback --- read it out if no internet):}
+\begin{lstlisting}
+prediction: spam
+|--- caps <= 21.50
+|   |--- class: ham
+|--- caps >  21.50
+|   |--- class: spam
+\end{lstlisting}
+\textbf{Talking point:} the machine \emph{wrote its own rule} (``if \%CAPS $>$
+21.5 then spam''). Nobody hand-coded that threshold --- it was \emph{learned} from
+the examples. That is the whole idea of the lecture, in five lines.
+\end{demo}
+
+\subsection{Demo 3 --- The base-rate fallacy (Python or mental math, 4 min)}
+Run at the ``six hazards'' slide (31). Even a near-perfect detector drowns
+analysts when attacks are rare.
+\begin{lstlisting}[language=Python]
+events      = 1_000_000     # events in a day
+attacks     = 1             # true attacks among them
+accuracy    = 0.999         # "99.9% accurate" detector
+fp_rate     = 1 - accuracy  # 0.1% of benign events misflagged
+
+false_alarms = round((events - attacks) * fp_rate)
+print(f"real attacks:  {attacks}")
+print(f"false alarms:  {false_alarms}")
+print(f"an analyst chasing an alert is right ~{attacks/false_alarms:.2%} of the time")
+\end{lstlisting}
+\begin{demo}
+\textbf{Expected output:}
+\begin{lstlisting}
+real attacks:  1
+false alarms:  999
+an analyst chasing an alert is right ~0.10% of the time
+\end{lstlisting}
+\textbf{Punchline:} ``99.9\% accuracy'' produces $\sim$1000 false alarms for every
+real attack. \emph{This} is why raw accuracy is the wrong metric and why alert
+fatigue is a security-ML problem, not a laziness problem.
+\end{demo}
+
+% ============================================================================
+\section{Three think-pair-share tasks}
+% ============================================================================
+Format each: \emph{think} alone 1\,min $\to$ \emph{pair} 2\,min $\to$ \emph{share}
+1\,min. Run one live (slide 35); the others are backup or homework.
+
+\subsection*{TPS 1 --- Rule vs.\ model (robustness)}
+\begin{think}
+\textbf{Task.} For \emph{DNS tunnelling}: (a) write the \texttt{if\dots then}
+rule you would deploy; (b) list the \emph{features} you would hand a classifier.
+Which is more robust to an adversary, and why?
+\end{think}
+\textbf{Expected direction.} The rule (e.g.\ ``block queries $>$52 chars'') is
+trivially evaded by staying just under the threshold; the classifier weighs many
+soft features (length \emph{and} entropy \emph{and} query rate \emph{and} rare
+subdomains) so no single tweak defeats it --- but it costs interpretability and
+can false-positive on legit CDNs. Good answers name the trade-off, not a winner.
+
+\subsection*{TPS 2 --- Choose the paradigm}
+\begin{think}
+\textbf{Task.} Detect \emph{insider} data theft with almost no labelled examples
+of insiders. Supervised, unsupervised, or reinforcement --- one sentence why?
+\end{think}
+\textbf{Expected answer.} Unsupervised / anomaly detection: with (almost) no
+labels you cannot train a supervised classifier, so you model each user's
+\emph{normal} behaviour and flag deviations (UEBA). Bonus insight: you'll still
+face many false positives (normal changes), which is the base-rate problem again.
+
+\subsection*{TPS 3 --- Cost of errors sets the threshold}
+\begin{think}
+\textbf{Task.} Airport malware scanner vs.\ consumer email spam filter: which
+error is worse, a false positive or a false negative? Set the threshold.
+\end{think}
+\textbf{Expected answer.} Airport: a false \emph{negative} (missed malware) is
+catastrophic $\Rightarrow$ lower the threshold, accept more false positives /
+manual review. Spam filter: a false \emph{positive} (a real invoice in junk) is
+costly to the user $\Rightarrow$ raise the threshold, tolerate some spam. Point:
+the threshold is a \emph{business/risk} decision, not a maths constant.
+
+% ============================================================================
+\section{MCQ self-test (rationale)}
+% ============================================================================
+The three questions appear on deck slide 36; answers on slide 37. Rationale for
+the instructor:
+
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{0.7cm} p{1.1cm} p{12.8cm}@{}}
+\toprule
+\textbf{Q} & \textbf{Key} & \textbf{Why (and the tempting distractor)}\\
+\midrule
+Q1 & B & A signature encodes the \emph{past}; a zero-day is new, so nothing
+matches. Distractor A (``encrypted'') tempts students who conflate evasion
+mechanisms.\\
+Q2 & B & No labels $\Rightarrow$ model ``normal'' and flag deviations = anomaly
+detection. Distractor A (supervised) fails because there is nothing to label.\\
+Q3 & B & Base-rate fallacy: at 1-in-a-million, 0.1\% error $=$ 1{,}000 false
+positives per real attack. This is the concept from Demo 3; if the room misses it,
+re-run the calculation.\\
+\bottomrule
+\end{tabular}
+
+% ============================================================================
+\section{The red-thread board (summary sketch)}
+% ============================================================================
+Reproduce this on the whiteboard as the lecture proceeds (one box per act); reveal
+the complete version on deck slide 34. Read strictly left to right.
+
+\begin{center}
+\footnotesize
+\fbox{Classical security}~$\rightarrow$~\fbox{Hits a wall}~$\rightarrow$~%
+\fbox{Re-frame: object $\to$ decision}~$\rightarrow$~\fbox{Learn the rule}\\[0.5em]
+$\downarrow$\\[0.4em]
+\fbox{3 paradigms}~$\rightarrow$~\fbox{In production (EDR/XDR/SIEM/UEBA, LLMs)}~%
+$\rightarrow$~\fbox{But special: adversary, drift, FP/FN}\\[0.5em]
+{\color{bad}$\hookrightarrow$ the ``but special'' box \emph{feeds back} into
+``hits a wall'' --- which is why the lecture series continues.}
+\end{center}
+
+\noindent\textbf{Narration for the board.} ``The \emph{problem} forced the
+\emph{re-frame}; the re-frame invited \emph{learning}; learning brought
+\emph{new problems} --- and those new problems are the rest of this course.''
+
+\bigskip
+\begin{note}
+\textbf{The one message (closing, deck slide 39).} \emph{Machine learning does not
+replace classical security --- it extends it everywhere explicit rules are no
+longer enough.} Signatures for the known; learning for the new, the vast, and the
+changing. Together.
+\end{note}
+
+\end{document}
