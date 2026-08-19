@@ -1,0 +1,167 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{2}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+\aufgabetitel{$10$}{Extremalelemente und Schranken}\\
+Sei $(V,\sqsubseteq)$ eine (partielle) Ordnung und $W\subseteq V$. Zur Wiederholung:
+
+\begin{notes}\small
+\begin{itemize}
+  \item $w\in W$ heißt \textbf{minimales Element} von $W$, wenn es kein $w'\in W$ mit $w'\sqsubseteq w$ und $w'\neq w$ gibt (\enquote{unterhalb von $w$ liegt nichts aus $W$}). Anders ausgedrückt: $w$ ist minimales Element von $W$, wenn $\forall w':w'\sqsubseteq w \Rightarrow w'=w$.
+  \item $w\in W$ heißt \textbf{maximales Element} von $W$, wenn es kein $w'\in W$ mit $w\sqsubseteq w'$ und $w'\neq w$ gibt. Anders ausgedrückt: $w$ ist maximales Element von $W$, wenn $\forall w':w\sqsubseteq w' \Rightarrow w'=w$.
+  \item $w\in W$ heißt \textbf{kleinstes Element} von $W$, wenn $w\sqsubseteq w'$ für \emph{alle} $w'\in W$ gilt.
+  \item $w\in W$ heißt \textbf{größtes Element} von $W$, wenn $w'\sqsubseteq w$ für \emph{alle} $w'\in W$ gilt.
+  \item $s\in V$ heißt \textbf{obere Schranke} von $W$, wenn $w\sqsubseteq s$ für alle $w\in W$ gilt. Achtung: $s$ muss \emph{nicht} in $W$ liegen.
+  \item $s\in V$ heißt \textbf{untere Schranke} von $W$, wenn $s\sqsubseteq w$ für alle $w\in W$ gilt.
+  \item Das \textbf{Supremum} $\sup W$ ist die kleinste obere Schranke von $W$, also das kleinste Element der Menge aller oberen Schranken von $W$.
+  \item Das \textbf{Infimum} $\inf W$ ist die größte untere Schranke von $W$.
+\end{itemize}
+Minimale und maximale Elemente kann es mehrere geben; kleinstes und größtes Element sowie Supremum und Infimum sind eindeutig, \emph{falls} sie existieren -- existieren müssen sie aber nicht.
+\end{notes}
+
+Betrachtet die Ordnung $(V,\sqsubseteq)$ mit $V=\{a,b,c,d,e,f,g,h\}$, gegeben durch das folgende Hasse-Diagramm. (Gelesen wird von unten nach oben: eine Kante von $x$ nach oben zu $y$ bedeutet $x\sqsubset y$; Reflexivität und transitive Kanten sind nicht eingezeichnet.)
+
+\begin{center}
+\begin{tikzpicture}[
+    knoten/.style={circle, draw=fbblau, fill=fbblau!12, inner sep=0pt, minimum size=7mm, font=\small}
+  ]
+  \node[knoten] (a) at (0,0)      {$a$};
+  \node[knoten] (b) at (2.2,0)    {$b$};
+  \node[knoten] (c) at (-1.1,1.6) {$c$};
+  \node[knoten] (d) at (1.1,1.6)  {$d$};
+  \node[knoten] (e) at (3.3,1.6)  {$e$};
+  \node[knoten] (f) at (0,3.2)    {$f$};
+  \node[knoten] (g) at (2.2,3.2)  {$g$};
+  \node[knoten] (h) at (5.5,1.6)  {$h$};
+  \draw[thick] (a) -- (c);
+  \draw[thick] (a) -- (d);
+  \draw[thick] (b) -- (d);
+  \draw[thick] (b) -- (e);
+  \draw[thick] (c) -- (f);
+  \draw[thick] (d) -- (f);
+  \draw[thick] (d) -- (g);
+  \draw[thick] (e) -- (g);
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[a)]
+  \item Bestimmt alle minimalen und alle maximalen Elemente von $V$. Besitzt $V$ ein kleinstes bzw. ein größtes Element?
+  \item Bestimmt für $W_1=\{a,b\}$ die minimalen und maximalen Elemente, das kleinste und größte Element (falls vorhanden), die Menge \emph{aller} oberen und \emph{aller} unteren Schranken sowie $\sup W_1$ und $\inf W_1$ (falls vorhanden).
+  \item Dieselben Fragen für $W_2=\{c,d\}$.
+  \item Dieselben Fragen für $W_3=\{a,c,f\}$.
+  \item Dieselben Fragen für $W_4=\{a,h\}$. Begründet, warum es hier keine obere Schranke gibt.
+  \item Begründet allgemein: Besitzt $W$ ein größtes Element $w$, so gilt $\sup W = w$. Gilt auch die Umkehrung, d.h. ist $\sup W$ immer ein größtes Element von $W$? Findet ein Gegenbeispiel im obigen Diagramm.
+\end{enumerate}
+
+\aufgabetitel{$6$}{Teilerordnung, Supremum und Infimum}\\
+Auf der Menge $T_{36}=\{1,2,3,4,6,9,12,18,36\}$ der Teiler von $36$ betrachten wir die Ordnung
+$x\sqsubseteq y :\Leftrightarrow x \text{ teilt } y$. Das zugehörige Hasse-Diagramm sieht so aus:
+
+\begin{center}
+\begin{tikzpicture}[
+    knoten/.style={circle, draw=fbblau, fill=fbblau!12, inner sep=0pt, minimum size=8mm, font=\small}
+  ]
+  \node[knoten] (n1)  at (0,0)       {$1$};
+  \node[knoten] (n2)  at (-1.4,1.15) {$2$};
+  \node[knoten] (n3)  at (1.4,1.15)  {$3$};
+  \node[knoten] (n4)  at (-2.8,2.3)  {$4$};
+  \node[knoten] (n6)  at (0,2.3)     {$6$};
+  \node[knoten] (n9)  at (2.8,2.3)   {$9$};
+  \node[knoten] (n12) at (-1.4,3.45) {$12$};
+  \node[knoten] (n18) at (1.4,3.45)  {$18$};
+  \node[knoten] (n36) at (0,4.6)     {$36$};
+  \draw[thick] (n1) -- (n2);
+  \draw[thick] (n1) -- (n3);
+  \draw[thick] (n2) -- (n4);
+  \draw[thick] (n2) -- (n6);
+  \draw[thick] (n3) -- (n6);
+  \draw[thick] (n3) -- (n9);
+  \draw[thick] (n4) -- (n12);
+  \draw[thick] (n6) -- (n12);
+  \draw[thick] (n6) -- (n18);
+  \draw[thick] (n9) -- (n18);
+  \draw[thick] (n12) -- (n36);
+  \draw[thick] (n18) -- (n36);
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[a)]
+  \item Bestimmt alle minimalen und maximalen Elemente von $T_{36}$ sowie das kleinste und das größte Element.
+  \item Bestimmt für $W_1=\{4,6\}$, $W_2=\{4,9\}$ und $W_3=\{2,3,12\}$ jeweils alle oberen und alle unteren Schranken sowie $\sup W_i$ und $\inf W_i$. Welche dieser Mengen besitzt ein größtes Element?
+  \item Welchen Zusammenhang vermutet Ihr zwischen $\sup$ bzw. $\inf$ in dieser Ordnung und dem kleinsten gemeinsamen Vielfachen bzw. dem größten gemeinsamen Teiler? Überprüft Eure Vermutung an den Mengen aus b).
+  \item Betrachtet nun die Ordnung $(M,\sqsubseteq)$ mit $M=\{p,q,r,s\}$ aus dem folgenden Hasse-Diagramm (die Kanten $p$--$s$ und $q$--$r$ kreuzen sich nur zeichnerisch, der Kreuzungspunkt ist \emph{kein} Element):
+
+  \begin{center}
+  \begin{tikzpicture}[
+      knoten/.style={circle, draw=fbblau, fill=fbblau!12, inner sep=0pt, minimum size=7mm, font=\small}
+    ]
+    \node[knoten] (p) at (0,0)     {$p$};
+    \node[knoten] (q) at (2.2,0)   {$q$};
+    \node[knoten] (r) at (0,2.2)   {$r$};
+    \node[knoten] (s) at (2.2,2.2) {$s$};
+    \draw[thick] (p) -- (r);
+    \draw[thick] (p) -- (s);
+    \draw[thick] (q) -- (r);
+    \draw[thick] (q) -- (s);
+  \end{tikzpicture}
+  \end{center}
+
+  Bestimmt alle oberen Schranken von $\{p,q\}$ und begründet, warum $\sup\{p,q\}$ trotzdem \emph{nicht} existiert. Führt dieselbe Überlegung für die unteren Schranken von $\{r,s\}$ und $\inf\{r,s\}$ durch.
+\end{enumerate}
+
+ \aufgabetitel{$6$}{Verbände}\\
+Ein Verband ist eine Menge $V$ zusammen mit Operationen $\sqcap, \sqcup:V\times V\to V$, so dass gilt:
+\begin{itemize}
+  \item Assoziaivität: $a \sqcap (b \sqcap c) = (a \sqcap b) \sqcap c$ und $a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$ für alle $a,b,c \in V$.
+  \item Kommutativität: $a \sqcap b = b \sqcap a$ und $a \sqcup b = b \sqcup a$ für alle $a,b \in V$.
+  \item Verschmelzung: $a \sqcap (a \sqcup b) = a$ und $a \sqcup (a \sqcap b) = a$ für alle $a,b \in V$.
+\end{itemize}
+\begin{enumerate}[a)]
+  \item Zeigen Sie, dass die Potenzmenge einer Menge $M$ zusammen mit den Operationen $\sqcap = \cap$ und $\sqcup = \cup$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Potenzmenge der Menge $\{a,b,c\}$ und machen Sie sich die Operationen klar.
+  \item Zeigen Sie, dass die Menge der natürlichen Zahlen zusammen mit den Operationen $\sqcap = \min$ und $\sqcup = \max$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Menge $\{1,2,3\}$ und machen Sie sich die Operationen klar.
+  \item Zeigen Sie, dass die Menge der Teiler einer natürlichen Zahl $n$ zusammen mit den Operationen $\sqcap = \gcd$ und $\sqcup = lcm$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Menge der Teiler von $12$ und machen Sie sich die Operationen klar.
+\end{enumerate}
+
+\aufgabetitel{$3$}{Idempotenzgesetz}\\
+Zeigen Sie das Idempotenzgesetz für Verbände: $a \sqcap a = a$ und $a \sqcup a = a$ für alle $a \in V$.
+
+\aufgabetitel{$3$}{Beweis Zusammenhang inf und sup}\\
+Zeigen Sie $\forall u,v\in V: u\sqcap v = u \Leftrightarrow u\sqcup v = v$ in einem Verband $V$.
+
+\aufgabetitel{$10$}{Induzierter Verband}\\
+Sei $(V,\sqsubseteq)$ eine Ordnung, $W\subseteq V$. Macht Euch zunächst nochmal die folgenden Begriffe klar:
+\begin{itemize}
+  \item minimales Element, maximales Element von $W$
+  \item größtes Element, kleinstes Element von $W$
+  \item obere, untere Schranke von $W$
+  \item Supremum, Infimum von $W$
+\end{itemize}
+\begin{enumerate}[a)]
+  \item Zeigen Sie (bzw. macht Euch klar), dass für $w_1,...,w_n\in V$ gilt: $\inf(w_1,...,1_n)\sqsubseteq w_i$ für alle $i\in\{1,...,n\}$ und $w_i\sqsubseteq \sup(w_1,...,w_n)$ für alle $i\in\{1,...,n\}$.
+  \item Zeigen Sie, dass $(V,\sqcup,\sqcap)$ einen Verband bildet, wenn $\sqcup=\sup$ und $\sqcap=\inf$ gesetzt wird und je zwei Elemente ein Supremum und ein Infimum besitzen, also $\inf(u,v)=u\sqcap v$ und $\sup(u,v)=u\sqcup v$ für alle $u,v\in V$.
+\end{enumerate}
+
+\aufgabetitel{$5$}{Induzierte Ordnung}\\
+Sei $(V,\sqcap,\sqcup)$ ein Verband. Definiere eine Ordnung $\sqsubseteq$ auf $V$ durch $a\sqsubseteq b \Leftrightarrow a\sqcap b = a$. Zeigen Sie, dass $(V,\sqsubseteq)$ eine Ordnung ist.
+
+
+
+
+\end{document}
