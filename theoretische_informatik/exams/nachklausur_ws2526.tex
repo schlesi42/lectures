@@ -1,0 +1,799 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\klausurdatum}{}
+\newcommand{\klausurdauer}{2 Stunden}
+\newcommand{\klausuraufgaben}{7}
+\newcommand{\klausurpunkte}{48}
+\input{include/config.tex}
+\usepackage{bussproofs}
+
+% Kopf-/Fußzeile für die Nachklausur
+\lohead[]{Nachklausur zur Vorlesung \textit{Mathematik I -- Theoretische Informatik} -- Wintersemester 2025/2026}
+\rohead[]{\textbf{Nachklausur}}
+
+\begin{document}
+\input{include/kopf_nachklausur.tex}
+
+% ============================================================
+\aufgabetitel{$8$}{Kalkül des natürlichen Schließens und Sequenzenkalkül}\\
+Beweisen Sie sowohl im \textbf{Kalkül des natürlichen Schließens} als auch im \textbf{Sequenzenkalkül}:
+\begin{enumerate}[a)]
+  \item $A \wedge B \vdash B \wedge A$
+  \item $A \to B,\; B \to C \vdash A \to C$
+\end{enumerate}
+\textit{Hinweis:} Die Regeln beider Kalküle finden Sie im Anhang (A.1 und A.2).
+
+\begin{loesung}
+\textbf{a) $A\wedge B\vdash B\wedge A$ -- natürliches Schließen:}
+
+\begin{prooftree}
+  \AxiomC{$A\wedge B$}
+  \RightLabel{$\wedge E_r$}
+  \UnaryInfC{$B$}
+  \AxiomC{$A\wedge B$}
+  \RightLabel{$\wedge E_l$}
+  \UnaryInfC{$A$}
+  \RightLabel{$\wedge I$}
+  \BinaryInfC{$B\wedge A$}
+\end{prooftree}
+
+Aus der Annahme $A\wedge B$ erhält man mit $\wedge E_r$ die Formel $B$ und mit $\wedge E_l$ die Formel $A$. Beides zusammen ergibt mit $\wedge I$ die Formel $B\wedge A$. Es werden keine Annahmen entlastet; offen bleibt genau die Annahme $A\wedge B$.
+
+\textbf{a) Sequenzenkalkül:} (Die Blätter sind Axiome der Form $A\Rightarrow A$.)
+
+\begin{prooftree}
+  \AxiomC{$B\Rightarrow B$}
+  \RightLabel{$\wedge\Rightarrow_r$}
+  \UnaryInfC{$A\wedge B\Rightarrow B$}
+  \AxiomC{$A\Rightarrow A$}
+  \RightLabel{$\wedge\Rightarrow_l$}
+  \UnaryInfC{$A\wedge B\Rightarrow A$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$A\wedge B\Rightarrow B\wedge A$}
+\end{prooftree}
+
+Von unten gelesen: Die Regel $\Rightarrow\wedge$ zerlegt das rechte $B\wedge A$ in die beiden Teilziele $A\wedge B\Rightarrow B$ und $A\wedge B\Rightarrow A$. Diese werden jeweils mit einer der beiden $\wedge\Rightarrow$-Regeln auf ein Axiom zurückgeführt.
+
+\medskip
+\textbf{b) $A\to B,\;B\to C\vdash A\to C$ -- natürliches Schließen:}
+
+\begin{prooftree}
+  \AxiomC{$[A]^1$}
+  \AxiomC{$A\to B$}
+  \RightLabel{$\to E$}
+  \BinaryInfC{$B$}
+  \AxiomC{$B\to C$}
+  \RightLabel{$\to E$}
+  \BinaryInfC{$C$}
+  \RightLabel{$\to I^1$}
+  \UnaryInfC{$A\to C$}
+\end{prooftree}
+
+Wir nehmen $A$ an (Annahme 1). Mit $A\to B$ liefert $\to E$ die Formel $B$, mit $B\to C$ liefert $\to E$ die Formel $C$. Die Entlastung von Annahme 1 mit $\to I^1$ ergibt $A\to C$. Offen bleiben nur die Prämissen $A\to B$ und $B\to C$.
+
+\textbf{b) Sequenzenkalkül:}
+
+\begin{prooftree}
+  \AxiomC{$A\Rightarrow A$}
+  \AxiomC{$B\Rightarrow B$}
+  \AxiomC{$C\Rightarrow C$}
+  \RightLabel{$\to\Rightarrow$}
+  \BinaryInfC{$B\to C,\, B\Rightarrow C$}
+  \RightLabel{$\to\Rightarrow$}
+  \BinaryInfC{$A\to B,\, A,\, B\to C\Rightarrow C$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$A\to B,\, B\to C\Rightarrow A\to C$}
+\end{prooftree}
+
+Von unten gelesen: $\Rightarrow\to$ verschiebt das $A$ aus $A\to C$ nach links, es bleibt $A,\,A\to B,\,B\to C\Rightarrow C$ zu zeigen. Zweimalige Anwendung von $\to\Rightarrow$ (erst auf $A\to B$, dann auf $B\to C$) führt alle Zweige auf Axiome zurück.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Formale Sprachen -- DFA und regulärer Ausdruck}\\
+Sei $\Sigma = \{0, 1\}$ und
+\[
+  L = \{ w \in \Sigma^* \mid w \text{ beginnt mit } 1 \text{ und endet mit } 0 \}.
+\]
+\begin{enumerate}[a)]
+  \item Konstruieren Sie einen \textbf{DFA} $M$ mit $T(M) = L$.
+  \item Geben Sie einen \textbf{regulären Ausdruck} $r$ an mit $L(r) = L$.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) DFA:}
+
+% Die Zustände merken sich, ob die Eingabe korrekt (mit $1$) begonnen hat und welches das zuletzt gelesene Zeichen war:
+% \begin{itemize}
+%   \item $q_0$: Startzustand, noch kein Zeichen gelesen
+%   \item $q_1$: beginnt mit $1$, letztes Zeichen war $1$
+%   \item $q_2$: beginnt mit $1$, letztes Zeichen war $0$ (Endzustand)
+%   \item $q_t$: Fehlerzustand (Eingabe beginnt mit $0$), \enquote{Fangzustand}
+% \end{itemize}
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta$ & $0$ & $1$ \\
+  \hline
+  $\to q_0$ & $q_t$ & $q_1$ \\
+  $q_1$ & $q_2$ & $q_1$ \\
+  $q_2^*$ & $q_2$ & $q_1$ \\
+  $q_t$ & $q_t$ & $q_t$ \\
+\end{tabular}
+\end{center}
+
+Es ist $F = \{q_2\}$, also $M = (\{q_0,q_1,q_2,q_t\},\{0,1\},\delta,q_0,\{q_2\})$.
+
+\begin{center}
+\begin{tikzpicture}[->,shorten >=1pt,auto,node distance=2.6cm,semithick]
+  \node[state,initial]   (q0) {$q_0$};
+  \node[state]           (q1) [right=of q0] {$q_1$};
+  \node[state,accepting] (q2) [right=of q1] {$q_2$};
+  \node[state]           (qt) [below=1.8cm of q0] {$q_t$};
+  \path (q0) edge               node {$1$} (q1)
+             edge               node[swap] {$0$} (qt)
+        (q1) edge[loop above]   node {$1$} (q1)
+             edge[bend left]    node {$0$} (q2)
+        (q2) edge[loop above]   node {$0$} (q2)
+             edge[bend left]    node {$1$} (q1)
+        (qt) edge[loop below]   node {$0,1$} (qt);
+\end{tikzpicture}
+\end{center}
+
+% \textbf{Minimalität:} Alle vier Zustände sind erreichbar und paarweise unterscheidbar:
+% \begin{itemize}
+%   \item $q_2$ ist der einzige Endzustand, also von allen anderen durch das leere Wort $\varepsilon$ unterscheidbar.
+%   \item $q_0$ und $q_1$: Das Wort $0$ führt von $q_1$ in den Endzustand $q_2$, von $q_0$ aber nach $q_t$.
+%   \item $q_1$ und $q_t$: ebenso durch das Wort $0$.
+%   \item $q_0$ und $q_t$: Das Wort $10$ führt von $q_0$ nach $q_2$, von $q_t$ aber nach $q_t$.
+% \end{itemize}
+% Damit ist der DFA mit 4 Zuständen minimal.
+
+\textbf{b) Regulärer Ausdruck:}
+\[
+  r = 1 \cdot (0\mid 1)^* \cdot 0
+\]
+Ein Wort aus $L$ hat mindestens die Länge $2$, beginnt mit $1$, endet mit $0$ und ist dazwischen beliebig.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$7$}{NFA-zu-DFA-Umwandlung}\\
+Gegeben sei folgender NFA $M_\text{NFA} = (Q, \Sigma, \delta, q_0, F)$ mit $Q = \{q_0, q_1, q_2\}$, $\Sigma = \{a,b\}$, Startzustand $q_0$, $F = \{q_2\}$, und folgender Übergangstabelle:
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta$ & $a$ & $b$ \\
+  \hline
+  $q_0$ & $\{q_0, q_1\}$ & $\{q_0\}$ \\
+  $q_1$ & $\{q_2\}$ & $\emptyset$ \\
+  $q_2$ & $\{q_2\}$ & $\{q_2\}$ \\
+\end{tabular}
+\end{center}
+
+Dieser NFA erkennt alle Wörter über $\{a,b\}$, die das Teilwort $aa$ enthalten.
+
+Geben Sie einen DFA $M_\text{DFA}$ an mit $T(M_\text{NFA}) = T(M_\text{DFA})$.
+
+\textit{Hinweis:} Es reichen die vom Anfangszustand erreichbaren Zustände. Die Potenzmengenkonstruktion finden Sie im Anhang (A.6).
+
+\begin{loesung}
+Potenzmengenkonstruktion, ausgehend von $\{q_0\}$ (nur erreichbare Zustände, Endzustände mit $*$):
+
+\begin{center}
+\begin{tabular}{l|cc}
+  DFA-Zustand & $a$ & $b$ \\
+  \hline
+  $\to\{q_0\}$ & $\{q_0,q_1\}$ & $\{q_0\}$ \\
+  $\{q_0,q_1\}$ & $\{q_0,q_1,q_2\}^*$ & $\{q_0\}$ \\
+  $\{q_0,q_1,q_2\}^*$ & $\{q_0,q_1,q_2\}^*$ & $\{q_0,q_2\}^*$ \\
+  $\{q_0,q_2\}^*$ & $\{q_0,q_1,q_2\}^*$ & $\{q_0,q_2\}^*$ \\
+\end{tabular}
+\end{center}
+
+Nachrechnen der Übergänge (Vereinigung der NFA-Nachfolger):
+\begin{itemize}
+  \item $\{q_0\}\xrightarrow{a}\delta(q_0,a)=\{q_0,q_1\}$, \quad $\{q_0\}\xrightarrow{b}\{q_0\}$
+  \item $\{q_0,q_1\}\xrightarrow{a}\{q_0,q_1\}\cup\{q_2\}=\{q_0,q_1,q_2\}$, \quad $\{q_0,q_1\}\xrightarrow{b}\{q_0\}\cup\emptyset=\{q_0\}$
+  \item $\{q_0,q_1,q_2\}\xrightarrow{a}\{q_0,q_1\}\cup\{q_2\}\cup\{q_2\}=\{q_0,q_1,q_2\}$, \quad $\xrightarrow{b}\{q_0\}\cup\emptyset\cup\{q_2\}=\{q_0,q_2\}$
+  \item $\{q_0,q_2\}\xrightarrow{a}\{q_0,q_1\}\cup\{q_2\}=\{q_0,q_1,q_2\}$, \quad $\xrightarrow{b}\{q_0\}\cup\{q_2\}=\{q_0,q_2\}$
+\end{itemize}
+
+Der DFA hat also 4 erreichbare Zustände; Startzustand ist $\{q_0\}$, Endzustände sind alle Mengen, die $q_2$ enthalten, d.\,h. $\{q_0,q_1,q_2\}$ und $\{q_0,q_2\}$.
+
+\textit{Anmerkung:} Die beiden Endzustände sind äquivalent; der minimale DFA hätte 3 Zustände. Für die Aufgabe war die Minimierung jedoch nicht gefordert.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Minimierung eines DFA}\\
+Gegeben sei der DFA $M = (Q, \Sigma, \delta, q_0, F)$ mit $Q = \{q_0, q_1, q_2, q_3, q_4, q_5\}$, $\Sigma = \{a,b\}$, Startzustand $q_0$, $F = \{q_2, q_5\}$ und folgender Übergangstabelle:
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta$ & $a$ & $b$ \\
+  \hline
+  $\to q_0$ & $q_1$ & $q_3$ \\
+  $q_1$ & $q_4$ & $q_2$ \\
+  $q_2^*$ & $q_1$ & $q_3$ \\
+  $q_3$ & $q_4$ & $q_0$ \\
+  $q_4$ & $q_1$ & $q_2$ \\
+  $q_5^*$ & $q_2$ & $q_5$ \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[a)]
+  \item Bestimmen Sie die vom Startzustand aus \textbf{erreichbaren} Zustände.
+  \item Führen Sie den \textbf{Markierungsalgorithmus} (Tabellenverfahren) durch und geben Sie die Äquivalenzklassen der Zustände an. Begründen Sie jede Markierung kurz.
+  \item Geben Sie den \textbf{Minimalautomaten} $M'$ an (Übergangstabelle \emph{und} Zustandsdiagramm).
+  \item Welche Sprache erkennt $M$? Geben Sie einen regulären Ausdruck an.
+\end{enumerate}
+\textit{Hinweis:} Das Verfahren finden Sie im Anhang (A.7).
+
+\begin{loesung}
+\textbf{a) Erreichbare Zustände:}
+
+Ausgehend von $q_0$:
+\[
+  q_0 \xrightarrow{a} q_1,\quad q_0 \xrightarrow{b} q_3,\quad
+  q_1 \xrightarrow{a} q_4,\quad q_1 \xrightarrow{b} q_2,\quad
+  q_3 \xrightarrow{a} q_4,\quad q_3 \xrightarrow{b} q_0,\quad
+  q_4 \xrightarrow{a} q_1,\quad q_4 \xrightarrow{b} q_2,\quad
+  q_2 \xrightarrow{a} q_1,\quad q_2 \xrightarrow{b} q_3
+\]
+Erreichbar ist also $\{q_0, q_1, q_2, q_3, q_4\}$. Der Zustand $q_5$ ist \textbf{nicht erreichbar} (kein Übergang eines anderen Zustands führt nach $q_5$) und wird gestrichen -- auch wenn er ein Endzustand ist. Er trägt nichts zur akzeptierten Sprache bei.
+
+\textbf{b) Markierungsalgorithmus:}
+
+Initial werden alle Paare markiert, bei denen genau ein Zustand Endzustand ist. Endzustand unter den erreichbaren Zuständen ist nur $q_2$, also werden $\{q_0,q_2\}, \{q_1,q_2\}, \{q_3,q_2\}, \{q_4,q_2\}$ markiert (Markierung $\times_0$).
+
+Danach wird ein Paar $\{p,q\}$ markiert, sobald es ein $x\in\Sigma$ gibt, für das $\{\delta(p,x), \delta(q,x)\}$ bereits markiert ist:
+\begin{itemize}
+  \item $\{q_0,q_1\}$: mit $b$ nach $\{q_3,q_2\}$ -- markiert $\Rightarrow$ markieren.
+  \item $\{q_0,q_4\}$: mit $b$ nach $\{q_3,q_2\}$ -- markiert $\Rightarrow$ markieren.
+  \item $\{q_1,q_3\}$: mit $b$ nach $\{q_2,q_0\}$ -- markiert $\Rightarrow$ markieren.
+  \item $\{q_3,q_4\}$: mit $b$ nach $\{q_0,q_2\}$ -- markiert $\Rightarrow$ markieren.
+\end{itemize}
+(Markierung $\times_1$, Runde 1.) In Runde 2 kommt nichts Neues hinzu:
+\begin{itemize}
+  \item $\{q_0,q_3\}$: mit $a$ nach $\{q_1,q_4\}$ (unmarkiert), mit $b$ nach $\{q_3,q_0\}$ (dasselbe Paar) -- keine Markierung.
+  \item $\{q_1,q_4\}$: mit $a$ nach $\{q_4,q_1\}$ (dasselbe Paar), mit $b$ nach $\{q_2,q_2\}$ (identisch) -- keine Markierung.
+\end{itemize}
+Der Algorithmus terminiert. Tabelle:
+
+\begin{center}
+\begin{tabular}{c|cccc}
+   & $q_0$ & $q_1$ & $q_2$ & $q_3$ \\
+  \hline
+  $q_1$ & $\times_1$ & & & \\
+  $q_2$ & $\times_0$ & $\times_0$ & & \\
+  $q_3$ & --- & $\times_1$ & $\times_0$ & \\
+  $q_4$ & $\times_1$ & --- & $\times_0$ & $\times_1$ \\
+\end{tabular}
+\end{center}
+\noindent\footnotesize $\times_0$: Markierung im Initialschritt, $\times_1$: Markierung in Runde 1, ---: unmarkiert, d.\,h.\ äquivalent.\normalsize
+
+\medskip
+Die unmarkierten Paare sind $\{q_0,q_3\}$ und $\{q_1,q_4\}$. Die Äquivalenzklassen sind damit
+\[
+  [q_0] = \{q_0, q_3\}, \qquad [q_1] = \{q_1, q_4\}, \qquad [q_2] = \{q_2\}.
+\]
+
+\textbf{c) Minimalautomat:}
+
+$M' = (\{[q_0],[q_1],[q_2]\}, \{a,b\}, \delta', [q_0], \{[q_2]\})$ mit $\delta'([q],x) = [\delta(q,x)]$:
+
+\begin{center}
+\begin{tabular}{c|cc}
+  $\delta'$ & $a$ & $b$ \\
+  \hline
+  $\to [q_0]$ & $[q_1]$ & $[q_0]$ \\
+  $[q_1]$ & $[q_1]$ & $[q_2]$ \\
+  $[q_2]^*$ & $[q_1]$ & $[q_0]$ \\
+\end{tabular}
+\end{center}
+
+Die Definition ist wohldefiniert, d.\,h.\ unabhängig vom gewählten Repräsentanten, z.\,B.\ $\delta(q_0,b) = q_3 \in [q_0]$ und $\delta(q_3,b) = q_0 \in [q_0]$.
+
+\begin{center}
+\begin{tikzpicture}[->,shorten >=1pt,auto,node distance=3cm,semithick]
+  \node[state,initial]   (A) {$[q_0]$};
+  \node[state]           (B) [right=of A] {$[q_1]$};
+  \node[state,accepting] (C) [right=of B] {$[q_2]$};
+  \path (A) edge[loop above] node {$b$} (A)
+             edge            node {$a$} (B)
+        (B) edge[loop above] node {$a$} (B)
+             edge[bend left] node {$b$} (C)
+        (C) edge[bend left]  node {$a$} (B)
+             edge[bend left=40] node[swap] {$b$} (A);
+\end{tikzpicture}
+\end{center}
+
+Der Minimalautomat hat 3 Zustände (statt ursprünglich 6).
+
+\textbf{d) Erkannte Sprache:}
+\[
+  T(M) = \{w \in \{a,b\}^* \mid w \text{ endet auf } ab\}, \qquad r = (a\mid b)^* \, a\, b
+\]
+Am Minimalautomaten abzulesen: $[q_0]$ bedeutet \enquote{kein passender Suffix}, $[q_1]$ \enquote{das zuletzt gelesene Zeichen ist $a$} und $[q_2]$ \enquote{die Eingabe endet auf $ab$}.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$4$}{Strukturen und Formeln}\\
+Gegeben sei die Sprache $\mathcal{S} = \{c, f, p\}$ mit Konstante $c$, einstelligem Funktionssymbol $f$ und zweistelligem Prädikatensymbol $p$. Sei $\mathcal{M}$ die Struktur mit:
+\begin{itemize}
+  \item Trägermenge $D = \mathbb{Z}$,
+  \item $c^\mathcal{M} = 1$,\quad $f^\mathcal{M}: x \mapsto 2x$,\quad $p^\mathcal{M} = \{(a,b) \mid a < b\}$.
+\end{itemize}
+Sei $\sigma$ eine Variablenbelegung mit $\sigma(x) = 2$ und $\sigma(y) = 3$.
+\begin{enumerate}[a)]
+  \item Berechnen Sie $\llbracket f(f(x)) \rrbracket^\mathcal{M}_\sigma$.
+  \item Entscheiden Sie, ob $\mathcal{M}, \sigma \models p(f(c),\, y)$ gilt, und begründen Sie.
+  \item Entscheiden Sie, ob $\mathcal{M}, \sigma \models \forall x\; p(x,\, f(x))$ gilt, und begründen Sie.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a)}
+\[
+  \llbracket f(f(x))\rrbracket^\mathcal{M}_\sigma = f^\mathcal{M}(f^\mathcal{M}(\sigma(x))) = f^\mathcal{M}(f^\mathcal{M}(2)) = f^\mathcal{M}(4) = 8
+\]
+
+\textbf{b)} $\llbracket f(c)\rrbracket^\mathcal{M}_\sigma = f^\mathcal{M}(c^\mathcal{M}) = f^\mathcal{M}(1) = 2$ und $\sigma(y)=3$.
+
+Es gilt $(2,3)\in p^\mathcal{M}$ genau dann, wenn $2 < 3$. Das ist wahr, also gilt $\mathcal{M},\sigma\models p(f(c),y)$.
+
+\textbf{c)} $\forall x\;p(x,f(x))$ bedeutet: für alle $d\in D=\mathbb{Z}$ gilt $d < 2d$, also $0 < d$.
+
+Das ist falsch, denn z.\,B. für $d=0$: $0 < 0$? Nein. (Ebenso scheitert jedes $d\leq 0$.)
+
+Also gilt $\mathcal{M},\sigma\not\models\forall x\;p(x,f(x))$. Man beachte, dass die Belegung $\sigma(x)=2$ hier keine Rolle spielt, da $x$ durch den Quantor gebunden ist.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Ordnungen und Verbände}\\
+Betrachten Sie die Menge der Teiler von $18$:
+\[
+  D_{18} = \{1, 2, 3, 6, 9, 18\}
+\]
+geordnet durch die \textbf{Teilbarkeitsrelation} $a \sqsubseteq b :\Leftrightarrow a \mid b$.
+
+\begin{enumerate}[a)]
+  \item Zeichnen Sie das \textbf{Hasse-Diagramm} der Ordnung $(D_{18}, \sqsubseteq)$.
+  \item Bestimmen Sie:
+  \begin{itemize}
+    \item $\sup(\{2, 3\})$
+    \item $\inf(\{6, 9\})$
+    \item $\sup(\{6, 9\})$
+    \item $\inf(\{2, 9\})$
+  \end{itemize}
+  \item Ist $(D_{18}, \sqsubseteq)$ ein \textbf{Verband}? Begründen Sie!
+  \item Welche Operationen $\sqcap$ und $\sqcup$ entsprechen $\inf$ und $\sup$ in diesem Verband?
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Hasse-Diagramm:}
+
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+  \node (1)  at (0,0)  {$1$};
+  \node (2)  at (-1,1) {$2$};
+  \node (3)  at (1,1)  {$3$};
+  \node (6)  at (0,2)  {$6$};
+  \node (9)  at (2,2)  {$9$};
+  \node (18) at (1,3)  {$18$};
+  \draw (1)--(2) (1)--(3) (2)--(6) (3)--(6) (3)--(9) (6)--(18) (9)--(18);
+\end{tikzpicture}
+\end{center}
+
+Kanten entsprechen der \enquote{direkten} Teilbarkeit ohne Zwischenelement; die Kante $2$--$18$ fehlt z.\,B., weil $2\mid 6\mid 18$ gilt.
+
+\textbf{b)}
+\begin{itemize}
+  \item $\sup(\{2,3\}) = 6$ \;(kleinstes gemeinsames Vielfaches: $\text{kgV}(2,3)=6$)
+  \item $\inf(\{6,9\}) = 3$ \;(größter gemeinsamer Teiler: $\text{ggT}(6,9)=3$)
+  \item $\sup(\{6,9\}) = 18$ \;($\text{kgV}(6,9)=18$)
+  \item $\inf(\{2,9\}) = 1$ \;($\text{ggT}(2,9)=1$)
+\end{itemize}
+
+\textbf{c)} Ja, $(D_{18},\sqsubseteq)$ ist ein Verband. Je zwei Elemente $a,b\in D_{18}$ besitzen ein Supremum ($\text{kgV}(a,b)$) und ein Infimum ($\text{ggT}(a,b)$), und beides liegt wieder in $D_{18}$: Sind $a$ und $b$ Teiler von $18$, so sind auch $\text{ggT}(a,b)$ und $\text{kgV}(a,b)$ Teiler von $18$.
+
+\textbf{d)} Es gilt $a\sqcap b = \text{ggT}(a,b)$ und $a\sqcup b = \text{kgV}(a,b)$. Das kleinste Element ist $1$, das größte Element ist $18$.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$5$}{Korrektheit und Vollständigkeit}\\
+Sei $T$ eine Theorie und $\varphi$, $\psi$ Formeln der Prädikatenlogik erster Stufe.
+Entscheiden Sie, ob die folgenden Aussagen gelten, und begründen Sie Ihre Antwort!
+\begin{enumerate}[a)]
+  \item $T \vdash \varphi \;\Rightarrow\; T \models \varphi$ \quad (Korrektheit)
+  \item $T \models \varphi \;\Rightarrow\; T \vdash \varphi$ \quad (Vollständigkeit)
+  \item Ist $T \cup \{\neg\varphi\}$ unerfüllbar, so gilt $T \vdash \varphi$.
+  \item Gilt $T \models \varphi \vee \psi$, so gilt $T \models \varphi$ oder $T \models \psi$.
+  \item Ist $T$ inkonsistent (d.\,h. $T \vdash \bot$), so ist $T$ unerfüllbar.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Wahr.} Das ist die \textit{Korrektheit} des Kalküls des natürlichen Schließens (und des Sequenzenkalküls): Jede beweisbare Formel ist auch semantisch gültig. Dies wurde in der Vorlesung bewiesen (Induktion über den Aufbau der Ableitung: jede Regel erhält die Gültigkeit).
+
+\textbf{b) Wahr.} Das ist die \textit{Vollständigkeit} (Gödel'scher Vollständigkeitssatz): Jede semantisch gültige Formel ist auch beweisbar. Dieser Satz gilt für die Prädikatenlogik erster Stufe.
+
+\textbf{c) Wahr.} Ist $T\cup\{\neg\varphi\}$ unerfüllbar, so hat kein Modell von $T$ die Eigenschaft $\neg\varphi$, d.\,h.\ jedes Modell von $T$ erfüllt $\varphi$, also $T\models\varphi$. Mit der Vollständigkeit aus b) folgt daraus $T\vdash\varphi$.
+
+\textbf{d) Falsch.} Gegenbeispiel: Sei $T=\emptyset$, $\varphi = A$ und $\psi=\neg A$ für ein Atom $A$. Dann gilt $T\models A\vee\neg A$ (Tertium non datur), aber weder $T\models A$ (Modell mit $A$ falsch) noch $T\models\neg A$ (Modell mit $A$ wahr).
+
+\textbf{e) Wahr.} Aus $T\vdash\bot$ folgt mit der Korrektheit aus a) $T\models\bot$. Hätte $T$ ein Modell $\mathcal{M}$, so wäre $\mathcal{M}\models\bot$ -- ein Widerspruch, da $\bot$ in keiner Struktur gilt. Also hat $T$ kein Modell, ist somit unerfüllbar.
+\end{loesung}
+
+% ============================================================
+\newpage
+\section*{Anhang -- Formelsammlung}
+
+% -----------------------------------------------------------
+\subsection*{A.1\quad Kalkül des natürlichen Schließens}
+
+\textit{Konvention:} $[A]^i$ bezeichnet eine Annahme, die bei der mit $i$ markierten Regel entlastet (geschlossen) wird. Die Entlastung bedeutet, dass $A$ nicht mehr als offene Annahme gilt.
+
+\medskip
+\noindent\textbf{Konjunktion $(\wedge)$:}
+\[
+\dfrac{A \qquad B}{A \wedge B}\;\wedge I
+\qquad\qquad\qquad
+\dfrac{A \wedge B}{A}\;\wedge E_l
+\qquad\qquad\qquad
+\dfrac{A \wedge B}{B}\;\wedge E_r
+\]
+
+\medskip
+\noindent\textbf{Disjunktion $(\vee)$:}
+\[
+\dfrac{A}{A \vee B}\;\vee I_l
+\qquad\qquad
+\dfrac{B}{A \vee B}\;\vee I_r
+\qquad\qquad
+\dfrac{A \vee B \qquad \begin{array}{c}[A]^i \\ \vdots \\ C\end{array} \qquad \begin{array}{c}[B]^j \\ \vdots \\ C\end{array}}{C}\;\vee E^{i,j}
+\]
+
+\medskip
+\noindent\textbf{Implikation $(\to)$:}
+\[
+\dfrac{\begin{array}{c}[A]^i \\ \vdots \\ B\end{array}}{A \to B}\;{\to I^i}
+\qquad\qquad\qquad\qquad\qquad
+\dfrac{A \qquad A \to B}{B}\;{\to E}
+\]
+
+\medskip
+\noindent\textbf{Negation und Falsum $(\neg,\, \bot)$:}
+\[
+\dfrac{\begin{array}{c}[A]^i \\ \vdots \\ \bot\end{array}}{\neg A}\;{\neg I^i}
+\qquad\qquad
+\dfrac{A \qquad \neg A}{\bot}\;{\neg E}
+\qquad\qquad
+\dfrac{\bot}{A}\;{\bot E}
+\qquad\qquad
+\dfrac{\neg\neg A}{A}\;{\neg\neg E}
+\]
+
+\medskip
+\noindent\textbf{Quantoren -- Prädikatenlogik:}
+\[
+\dfrac{A(y)}{\forall x\,A(x)}\;{\forall I^{*}}
+\qquad\quad
+\dfrac{\forall x\,A(x)}{A(t)}\;{\forall E}
+\qquad\quad
+\dfrac{A(t)}{\exists x\,A(x)}\;{\exists I}
+\qquad\quad
+\dfrac{\exists x\,A(x) \qquad \begin{array}{c}[A(y)]^i \\ \vdots \\ C\end{array}}{C}\;{\exists E^{i,*}}
+\]
+
+\noindent\textit{${}^*$: Bei $\forall I$ darf $y$ nicht frei in offenen Annahmen vorkommen. Bei $\exists E$ darf $y$ nicht frei in $\exists x\,A(x)$ oder $C$ vorkommen.}
+
+% -----------------------------------------------------------
+\subsection*{A.2\quad Sequenzenkalkül}
+
+\textit{Konvention:} $\Gamma, \Delta, \Pi, \Lambda$ sind Multimengen von Formeln. Die Sequenz $\Gamma \Rightarrow \Delta$ bedeutet: Konjunktion von $\Gamma$ impliziert Disjunktion von $\Delta$.
+
+\medskip
+\noindent\textbf{Axiom und Schnitt:}
+\[
+\dfrac{\phantom{X}}{A \Rightarrow A}\;\mathrm{Ax}
+\qquad\qquad\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\, A \qquad A,\, \Pi \Rightarrow \Lambda}{\Gamma,\,\Pi \Rightarrow \Delta,\,\Lambda}\;\mathrm{Cut}
+\]
+
+\medskip
+\noindent\textbf{Strukturregeln (Verwässerung):}
+\[
+\dfrac{\Gamma \Rightarrow \Delta}{A,\,\Gamma \Rightarrow \Delta}\;Wl
+\qquad\qquad\qquad\qquad
+\dfrac{\Gamma \Rightarrow \Delta}{\Gamma \Rightarrow \Delta,\,A}\;Wr
+\]
+
+\medskip
+\noindent\textbf{Konjunktion $(\wedge)$:}
+\[
+\dfrac{A,\,\Gamma \Rightarrow \Delta}{A \wedge B,\,\Gamma \Rightarrow \Delta}\;\wedge\Rightarrow_l
+\qquad
+\dfrac{B,\,\Gamma \Rightarrow \Delta}{A \wedge B,\,\Gamma \Rightarrow \Delta}\;\wedge\Rightarrow_r
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A \qquad \Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \wedge B}\;\Rightarrow\wedge
+\]
+
+\medskip
+\noindent\textbf{Disjunktion $(\vee)$:}
+\[
+\dfrac{A,\,\Gamma \Rightarrow \Delta \qquad B,\,\Gamma \Rightarrow \Delta}{A \vee B,\,\Gamma \Rightarrow \Delta}\;\vee\Rightarrow
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A}{\Gamma \Rightarrow \Delta,\,A \vee B}\;\Rightarrow\vee_l
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \vee B}\;\Rightarrow\vee_r
+\]
+
+\medskip
+\noindent\textbf{Implikation $(\to)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta,\,A \qquad B,\,\Pi \Rightarrow \Lambda}{A \to B,\,\Gamma,\,\Pi \Rightarrow \Delta,\,\Lambda}\;\to\Rightarrow
+\qquad\qquad\qquad
+\dfrac{A,\,\Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \to B}\;\Rightarrow\to
+\]
+
+\medskip
+\noindent\textbf{Negation $(\neg)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta,\,A}{\neg A,\,\Gamma \Rightarrow \Delta}\;\neg\Rightarrow
+\qquad\qquad\qquad\qquad
+\dfrac{A,\,\Gamma \Rightarrow \Delta}{\Gamma \Rightarrow \Delta,\,\neg A}\;\Rightarrow\neg
+\]
+
+\medskip
+\noindent\textbf{Quantoren -- Prädikatenlogik:}
+\[
+\dfrac{A(t),\,\Gamma \Rightarrow \Delta}{\forall x\,A(x),\,\Gamma \Rightarrow \Delta}\;\forall\Rightarrow
+\quad
+\dfrac{\Gamma \Rightarrow \Delta,\,A(y)}{\Gamma \Rightarrow \Delta,\,\forall x\,A(x)}\;\Rightarrow\forall^*
+\quad
+\dfrac{A(y),\,\Gamma \Rightarrow \Delta}{\exists x\,A(x),\,\Gamma \Rightarrow \Delta}\;\exists\Rightarrow^*
+\quad
+\dfrac{\Gamma \Rightarrow \Delta,\,A(t)}{\Gamma \Rightarrow \Delta,\,\exists x\,A(x)}\;\Rightarrow\exists
+\]
+
+\noindent\textit{${}^*$: $y$ darf nicht frei in $\Gamma, \Delta$ vorkommen ($y$ ist eine \emph{frische} Variable).}
+
+% -----------------------------------------------------------
+\newpage
+\subsection*{A.3\quad Relationen und ihre Eigenschaften}
+
+Sei $R \subseteq A \times A$ eine binäre Relation auf einer Menge $A$. Wir schreiben auch $aRb$ statt $(a,b)\in R$.
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{l X l}
+\textbf{Eigenschaft} & \textbf{Formale Definition} & \textbf{Charakterisierung} \\
+\hline
+Reflexiv         & $\forall a \in A:\; aRa$ & Jedes Element steht mit sich selbst in Relation \\
+Irreflexiv       & $\forall a \in A:\; \neg(aRa)$ & Kein Element mit sich selbst in Relation \\
+Symmetrisch      & $\forall a,b \in A:\; aRb \Rightarrow bRa$ & Relation gilt in beide Richtungen \\
+Antisymmetrisch  & $\forall a,b \in A:\; aRb \wedge bRa \Rightarrow a=b$ & Keine gegenläufigen Paare (außer $a=b$) \\
+Transitiv        & $\forall a,b,c \in A:\; aRb \wedge bRc \Rightarrow aRc$ & Verkettung bleibt in der Relation \\
+Total (linear)   & $\forall a,b \in A:\; aRb \vee bRa$ & Je zwei Elemente sind vergleichbar \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Spezielle Relationen:}
+\begin{itemize}
+  \item \textbf{Äquivalenzrelation:} reflexiv $+$ symmetrisch $+$ transitiv
+  \item \textbf{Partielle Ordnung} $(V,\sqsubseteq)$: reflexiv $+$ antisymmetrisch $+$ transitiv
+  \item \textbf{Totale (lineare) Ordnung:} partielle Ordnung $+$ total
+\end{itemize}
+
+% -----------------------------------------------------------
+\subsection*{A.4\quad Ordnungen -- Begriffe}
+
+Sei $(V, \sqsubseteq)$ eine partielle Ordnung und $W \subseteq V$.
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+Obere Schranke von $W$ & $s \in V$ mit $w \sqsubseteq s$ für alle $w \in W$ \\
+Untere Schranke von $W$ & $s \in V$ mit $s \sqsubseteq w$ für alle $w \in W$ \\
+Supremum $\sup(W)$ & kleinste obere Schranke von $W$ (eindeutig, falls existent) \\
+Infimum $\inf(W)$ & größte untere Schranke von $W$ (eindeutig, falls existent) \\
+Maximales Element von $W$ & $m \in W$, so dass kein $w \in W$ mit $m \sqsubset w$ existiert \\
+Minimales Element von $W$ & $m \in W$, so dass kein $w \in W$ mit $w \sqsubset m$ existiert \\
+Größtes Element von $W$ & $m \in W$ mit $w \sqsubseteq m$ für alle $w \in W$ (falls existent: eindeutig) \\
+Kleinstes Element von $W$ & $m \in W$ mit $m \sqsubseteq w$ für alle $w \in W$ (falls existent: eindeutig) \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Hasse-Diagramm:} Darstellung einer partiellen Ordnung als gerichteter azyklischer Graph:
+\begin{itemize}
+  \item Elemente als Knoten; $a$ liegt \emph{tiefer} als $b$, wenn $a \sqsubset b$ (d.h.\ $a \sqsubseteq b$ und $a \neq b$).
+  \item Eine Kante $a$--$b$ (mit $a$ tiefer) existiert genau dann, wenn $a \sqsubset b$ und kein $c$ mit $a \sqsubset c \sqsubset b$ existiert (keine Zwischenelemente).
+  \item $a \sqsubseteq b$ gilt genau dann, wenn ein aufsteigender Pfad von $a$ nach $b$ existiert.
+\end{itemize}
+
+% -----------------------------------------------------------
+\subsection*{A.5\quad Verbände}
+
+\noindent\textbf{Algebraische Definition:} Eine Menge $V$ mit Operationen $\sqcap, \sqcup : V \times V \to V$ ist ein \textbf{Verband}, wenn für alle $a,b,c \in V$ gilt:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l l l}
+\textbf{Assoziativität:} & $a \sqcap (b \sqcap c) = (a \sqcap b) \sqcap c$ & $a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$ \\
+\textbf{Kommutativität:} & $a \sqcap b = b \sqcap a$ & $a \sqcup b = b \sqcup a$ \\
+\textbf{Absorption:}     & $a \sqcap (a \sqcup b) = a$ & $a \sqcup (a \sqcap b) = a$ \\
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Ordnungstheoretische Definition:} Eine partielle Ordnung $(V,\sqsubseteq)$ ist ein Verband, wenn je zwei Elemente $a,b \in V$ ein Supremum $a \sqcup b := \sup(\{a,b\})$ und ein Infimum $a \sqcap b := \inf(\{a,b\})$ besitzen.
+
+\medskip
+\noindent\textbf{Weitere Eigenschaften von Verbänden} (ableitbar aus den Axiomen):
+\begin{itemize}
+  \item \textbf{Idempotenz:} $a \sqcap a = a$ und $a \sqcup a = a$
+  \item \textbf{Induzierte Ordnung:} $a \sqsubseteq b \;\Leftrightarrow\; a \sqcap b = a \;\Leftrightarrow\; a \sqcup b = b$
+\end{itemize}
+
+
+% -----------------------------------------------------------
+\subsection*{A.6\quad Vom NFA zum DFA -- Potenzmengenkonstruktion}
+
+Ein \textbf{NFA} $M=(Q,\Sigma,\delta,q_0,F)$ unterscheidet sich vom DFA nur in der Übergangsfunktion:
+\[
+  \text{NFA:}\quad \delta : Q\times\Sigma \longrightarrow \mathcal{P}(Q)
+  \qquad\qquad\qquad
+  \text{DFA:}\quad \delta : Q\times\Sigma \longrightarrow Q
+\]
+Ein Wort $w$ wird vom NFA akzeptiert, wenn \emph{mindestens ein} Pfad von $q_0$ aus mit Beschriftung $w$ in einem Endzustand endet. Formal mit der Fortsetzung auf Mengen und Wörter:
+\[
+  \hat{\delta}(S,\varepsilon)=S,\qquad
+  \hat{\delta}(S,xw)=\hat{\delta}\Big(\textstyle\bigcup_{q\in S}\delta(q,x),\;w\Big),\qquad
+  T(M)=\{\,w\in\Sigma^* \mid \hat{\delta}(\{q_0\},w)\cap F \neq \emptyset\,\}
+\]
+
+\medskip
+\noindent\textbf{Satz (Rabin--Scott):} Zu jedem NFA $M$ gibt es einen DFA $M'$ mit $T(M')=T(M)$. Beide Modelle erkennen also genau dieselbe Sprachklasse (die regulären Sprachen); Nichtdeterminismus erhöht die Ausdrucksstärke nicht.
+
+\medskip
+\noindent\textbf{Konstruktion:} $M' = \big(\mathcal{P}(Q),\;\Sigma,\;\delta',\;\{q_0\},\;F'\big)$ mit
+\[
+  \delta'(S,x) \;=\; \bigcup_{q\in S}\delta(q,x),
+  \qquad\qquad
+  F' \;=\; \{\, S\subseteq Q \;\mid\; S\cap F \neq \emptyset \,\}
+\]
+Die Zustände des DFA sind also \emph{Mengen} von NFA-Zuständen (daher \enquote{Potenzmengenkonstruktion}).
+
+\medskip
+\noindent\textbf{Verfahren} (Konstruktion nur der erreichbaren Zustände):
+\begin{enumerate}[1.]
+  \item \textbf{Start:} Der Startzustand des DFA ist $S_0 = \{q_0\}$. Setze ihn auf die Liste der noch unbearbeiteten Zustände.
+  \item \textbf{Übergänge:} Wähle einen unbearbeiteten DFA-Zustand $S$ und berechne für jedes $x\in\Sigma$
+  \[
+    \delta'(S,x) \;=\; \bigcup_{q\in S}\delta(q,x)
+  \]
+  also die \emph{Vereinigung} aller NFA-Nachfolger der Zustände aus $S$. Trage das Ergebnis in die Übergangstabelle ein.
+  \item \textbf{Neue Zustände:} Jede dabei erstmals auftretende Menge wird zu einem neuen DFA-Zustand und kommt auf die Liste.
+  \item \textbf{Abbruch:} Wiederhole 2.--3., bis keine neuen Mengen mehr entstehen. Das terminiert stets, da es höchstens $2^{|Q|}$ Teilmengen gibt.
+  \item \textbf{Endzustände:} Endzustand ist jede Menge $S$, die \emph{mindestens einen} Endzustand des NFA enthält, d.\,h.\ $S\cap F \neq \emptyset$.
+\end{enumerate}
+
+\medskip
+\noindent\textbf{Hinweise:}
+\begin{itemize}
+  \item Die leere Menge $\emptyset$ ist ein zulässiger DFA-Zustand (\enquote{Fang-} oder \enquote{Müllzustand}): $\delta'(\emptyset,x)=\emptyset$ für alle $x\in\Sigma$, und $\emptyset\notin F'$. Sie entsteht genau dann, wenn der NFA \enquote{steckenbleibt}.
+  \item Der resultierende DFA ist \emph{nicht} notwendig minimal; gegebenenfalls anschließend das Verfahren aus A.7 anwenden.
+  \item \textit{Bei $\varepsilon$-Übergängen} ($\varepsilon$-NFA): Verwende die $\varepsilon$-Hülle $E(S)$ (alle Zustände, die von $S$ aus über beliebig viele $\varepsilon$-Kanten erreichbar sind, inkl.\ $S$ selbst). Startzustand ist dann $E(\{q_0\})$ und
+  \[
+    \delta'(S,x) \;=\; E\Big(\textstyle\bigcup_{q\in S}\delta(q,x)\Big)
+  \]
+\end{itemize}
+
+% -----------------------------------------------------------
+\subsection*{A.7\quad Minimierung eines DFA}
+
+Sei $M = (Q,\Sigma,\delta,q_0,F)$ ein DFA. Zwei Zustände $p,q \in Q$ heißen \textbf{äquivalent} ($p \sim q$), wenn für alle $w \in \Sigma^*$ gilt:
+\[
+  \hat{\delta}(p,w) \in F \quad\Longleftrightarrow\quad \hat{\delta}(q,w) \in F
+\]
+Dabei ist $\hat{\delta}$ die Fortsetzung von $\delta$ auf Wörter. Zu jedem DFA gibt es einen bis auf Isomorphie eindeutigen \textbf{Minimalautomaten} (Satz von Myhill-Nerode).
+
+\medskip
+\noindent\textbf{Verfahren:}
+\begin{enumerate}[1.]
+  \item \textbf{Erreichbarkeit:} Entferne alle Zustände, die von $q_0$ aus nicht erreichbar sind.
+  \item \textbf{Markierungsalgorithmus (Tabellenverfahren):}
+  \begin{itemize}
+    \item Lege eine Tabelle aller ungeordneten Paare $\{p,q\}$ mit $p \neq q$ an.
+    \item Markiere jedes Paar $\{p,q\}$ mit $p \in F$ und $q \notin F$ (oder umgekehrt).
+    \item Wiederhole, bis sich nichts mehr ändert: Markiere ein noch unmarkiertes Paar $\{p,q\}$, falls es ein $x \in \Sigma$ gibt, für das $\{\delta(p,x), \delta(q,x)\}$ bereits markiert ist.
+    \item Die unmarkierten Paare sind genau die äquivalenten Zustandspaare.
+  \end{itemize}
+  \item \textbf{Quotientenautomat:} $M' = (Q/{\sim},\, \Sigma,\, \delta',\, [q_0],\, F')$ mit
+  \[
+    Q/{\sim} = \{[q] \mid q \in Q\},\qquad
+    \delta'([q],x) = [\delta(q,x)],\qquad
+    F' = \{[q] \mid q \in F\}
+  \]
+\end{enumerate}
+
+
+% -----------------------------------------------------------
+\newpage
+\subsection*{A.8\quad Grundbegriffe der Logik}
+
+Sei $T$ eine Menge von Formeln (eine \textbf{Theorie}) und seien $\varphi,\psi$ Formeln. Mit $\mathcal{M}$ bezeichnen wir eine \textbf{Struktur} (Interpretation, im Aussagenlogik-Fall: eine Belegung der Atome). $\mathcal{M}\models\varphi$ heißt \enquote{$\varphi$ gilt in $\mathcal{M}$}; $\mathcal{M}$ ist dann ein \textbf{Modell} von $\varphi$. Entsprechend ist $\mathcal{M}\models T$, wenn $\mathcal{M}\models\chi$ für \emph{alle} $\chi\in T$ gilt.
+
+\medskip
+\noindent\textbf{Semantische Begriffe} -- Symbol $\models$, es geht um \emph{Modelle}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+$\varphi$ \textbf{erfüllbar} & $\varphi$ hat \emph{mindestens ein} Modell: $\exists\,\mathcal{M}:\ \mathcal{M}\models\varphi$ \\
+$\varphi$ \textbf{unerfüllbar} & $\varphi$ hat \emph{kein} Modell (z.\,B. $A\wedge\neg A$ oder $\bot$) \\
+$\varphi$ \textbf{gültig / allgemeingültig} & $\varphi$ gilt in \emph{allen} Strukturen: $\models\varphi$; auch \textbf{Tautologie} (z.\,B. $A\vee\neg A$) \\
+$\varphi$ \textbf{falsifizierbar} & Es gibt ein $\mathcal{M}$ mit $\mathcal{M}\not\models\varphi$ (d.\,h.\ $\varphi$ ist nicht allgemeingültig) \\
+$T$ \textbf{erfüllbar} & Es gibt ein $\mathcal{M}$, das \emph{alle} Formeln aus $T$ zugleich erfüllt \\
+$T\models\varphi$ \quad(\textbf{Folgerung}) & \emph{Jedes} Modell von $T$ ist auch ein Modell von $\varphi$ \\
+$\varphi\equiv\psi$ \quad(\textbf{äquivalent}) & $\varphi\models\psi$ und $\psi\models\varphi$, d.\,h.\ $\varphi$ und $\psi$ haben dieselben Modelle \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Syntaktische Begriffe} -- Symbol $\vdash$, es geht um \emph{Beweise} in einem Kalkül (A.1 bzw.\ A.2):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+$T\vdash\varphi$ \quad(\textbf{herleitbar}) & Es gibt eine endliche Ableitung von $\varphi$, deren offene Annahmen sämtlich aus $T$ stammen. Synonym: \emph{beweisbar}, \emph{ableitbar} \\
+$\vdash\varphi$ \quad(\textbf{Theorem}) & $\varphi$ ist ohne jede offene Annahme herleitbar \\
+$T$ \textbf{inkonsistent} & $T\vdash\bot$; gleichwertig: es gibt ein $\varphi$ mit $T\vdash\varphi$ \emph{und} $T\vdash\neg\varphi$ (\emph{widersprüchlich}) \\
+$T$ \textbf{konsistent} & $T\nvdash\bot$, d.\,h.\ aus $T$ lässt sich kein Widerspruch herleiten (\emph{widerspruchsfrei}) \\
+$T$ \textbf{deduktiv abgeschlossen} & Aus $T\vdash\varphi$ folgt bereits $\varphi\in T$ \\
+$T$ \textbf{vollständige Theorie} & Für jede Formel $\varphi$ gilt $T\vdash\varphi$ oder $T\vdash\neg\varphi$ \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Merkhilfe:} $\models$ ist \emph{semantisch} (\enquote{was ist wahr in allen Modellen?}), $\vdash$ ist \emph{syntaktisch} (\enquote{was lässt sich mit den Regeln aufschreiben?}). \emph{Erfüllbarkeit} und \emph{Konsistenz} sind die semantische bzw.\ die syntaktische Version derselben Idee \enquote{$T$ ist widerspruchsfrei}.
+
+\medskip
+\noindent\textbf{Brücke zwischen $\vdash$ und $\models$:}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{l l X}
+\textbf{Satz} & \textbf{Aussage} & \textbf{Lesart} \\
+\hline
+\textbf{Korrektheit} & $T\vdash\varphi \;\Rightarrow\; T\models\varphi$ & Was beweisbar ist, ist auch wahr (der Kalkül \enquote{lügt} nicht) \\
+\textbf{Vollständigkeit} & $T\models\varphi \;\Rightarrow\; T\vdash\varphi$ & Was wahr ist, ist auch beweisbar (Gödel'scher Vollständigkeitssatz) \\
+\textbf{Adäquatheit} & $T\vdash\varphi \;\Longleftrightarrow\; T\models\varphi$ & Beide Sätze zusammen: $\vdash$ und $\models$ fallen zusammen \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Wichtige Zusammenhänge:}
+\begin{itemize}\itemsep2pt
+  \item $\varphi$ ist allgemeingültig $\;\Longleftrightarrow\;$ $\neg\varphi$ ist unerfüllbar.
+  \item $\varphi$ ist erfüllbar $\;\Longleftrightarrow\;$ $\neg\varphi$ ist nicht allgemeingültig.
+  \item $T\models\varphi \;\Longleftrightarrow\; T\cup\{\neg\varphi\}$ ist unerfüllbar \quad(Grundlage des Widerspruchsbeweises).
+  \item $T\vdash\varphi \;\Longleftrightarrow\; T\cup\{\neg\varphi\}$ ist inkonsistent.
+  \item \textbf{Modellexistenzsatz:} $T$ ist konsistent $\;\Longleftrightarrow\;$ $T$ ist erfüllbar (hat ein Modell). \\
+        Richtung \enquote{$\Leftarrow$} folgt aus der Korrektheit, Richtung \enquote{$\Rightarrow$} ist der Kern des Vollständigkeitsbeweises.
+  \item \textbf{Deduktionstheorem:} $T\cup\{\varphi\}\vdash\psi \;\Longleftrightarrow\; T\vdash\varphi\to\psi$.
+  \item \textbf{Kompaktheitssatz:} $T$ ist erfüllbar $\;\Longleftrightarrow\;$ jede \emph{endliche} Teilmenge von $T$ ist erfüllbar.
+  \item \textbf{Achtung:} Aus $T\models\varphi\vee\psi$ folgt \emph{nicht} $T\models\varphi$ oder $T\models\psi$ (verschiedene Modelle dürfen verschiedene Disjunkte wahr machen).
+\end{itemize}
+
+\end{document}
