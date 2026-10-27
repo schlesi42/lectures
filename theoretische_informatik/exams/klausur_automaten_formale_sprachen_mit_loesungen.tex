@@ -1,0 +1,400 @@
+%!TEX TS-program = pdflatex
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=22mm]{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\newif\ifloesungen
+\loesungentrue % Für die Ausgabe ohne Musterlösungen: \loesungenfalse
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Theoretische Informatik}
+\fancyhead[R]{Formale Sprachen und Automaten}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlist[enumerate]{leftmargin=*,itemsep=6pt}
+\renewcommand{\arraystretch}{1.15}
+\newcommand{\punkte}[1]{\hfill\mbox{\textbf{(#1 Punkte)}}}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries Klausur: Formale Sprachen und Automaten}\\[6pt]
+{\large\ifloesungen Aufgaben und separate Musterlösungen\else Aufgaben\fi}\\[5pt]
+Bearbeitungszeit: 90 Minuten \quad Gesamtpunktzahl: 60
+\end{center}
+\textbf{Name:} \hrulefill\quad\textbf{Matrikelnummer:} \hrulefill
+
+\textbf{Hinweise.} Bearbeiten Sie alle drei Aufgaben auf separatem Papier.
+Begründen Sie Ihre Antworten und dokumentieren Sie die Rechenschritte.
+DFA sind vollständig anzugeben. Bei NFA dürfen Übergangsmengen leer sein.
+Ein Tupel mit Übergangstabelle genügt; ein Zustandsgraph ist nicht erforderlich.
+$\to$ kennzeichnet den Startzustand, $*$ einen Endzustand.
+$\mathbb N_0=\{0,1,2,\ldots\}$.
+
+\section*{Aufgabe 1: Von der Sprache zum minimalen DFA \hfill 30 Punkte}
+Gegeben sind $\Sigma=\{a,b\}$ und die Sprache
+\[
+ L=\{w\in\Sigma^*\mid w\text{ endet auf }aba,\ bba\text{ oder }bab\}.
+\]
+Gemeint sind die \emph{letzten drei Zeichen}: Ein bloßes Vorkommen eines
+Musters im Wort reicht nicht aus. Wörter der Länge kleiner als drei gehören
+nicht zu $L$.
+
+\begin{enumerate}[label=\alph*)]
+\item \textbf{NFA konstruieren.} Bauen Sie einen NFA ohne
+$\varepsilon$-Übergänge für $L$ nach folgendem Konstruktionsprinzip:
+Verwenden Sie einen Startzustand $q_0$, in dem ein beliebiges Präfix gelesen
+werden kann. Für jedes der drei Endmuster soll vom Startzustand eine
+\emph{eigene Kette mit drei Übergängen} abzweigen. Verwenden Sie für diese
+Ketten jeweils drei neue Zustände; teilen Sie keine Kettenzustände und
+fassen Sie noch keine Zustände zusammen.
+
+Geben Sie das vollständige Tupel und die Übergangstabelle an.
+Erklären Sie den Nichtdeterminismus sowie kurz, warum Ihr NFA genau $L$
+erkennt. \punkte{10}
+
+\item \textbf{DFA konstruieren.} Wandeln Sie Ihren NFA aus a) mit der
+Potenzmengenkonstruktion in einen vollständigen DFA um. Geben Sie alle
+\emph{erreichbaren} Zustandsmengen, ihre Übergänge, Start- und Endzustände an.
+Nennen Sie für jede Zustandsmenge ein Wort, durch das sie erreicht wird.
+Rechnen Sie einen Übergang als Vereinigung von Übergangsmengen vor.
+Minimieren Sie hier noch nicht. \punkte{12}
+
+\item \textbf{DFA minimieren.} Minimieren Sie den DFA aus b) mit dem
+Tabellenalgorithmus. Dokumentieren Sie die Anfangsmarkierungen und die
+weiteren Markierungsrunden in der Zustandspaartabelle. Geben Sie die
+Äquivalenzklassen sowie die Übergangstabelle des minimalen DFA an.
+Begründen Sie Erreichbarkeit und Minimalität. \punkte{8}
+\end{enumerate}
+
+\textit{Hinweis:} Die Bauvorgabe in a) sorgt für eine vergleichbare Ausgangsbasis
+für b) und c). Nichtdeterministische Entscheidungen dürfen auch bei
+gleichem Eingabezeichen vom selben Zustand ausgehen.
+
+\newpage
+\section*{Aufgabe 2: Pumping-Lemma \hfill 12 Punkte}
+Betrachten Sie die Sprache über dem einelementigen Alphabet $\Sigma=\{a\}$
+\[
+ K=\{a^{n^2}\mid n\in\mathbb N_0\}.
+\]
+Ein Wort gehört also genau dann zu $K$, wenn seine Länge eine Quadratzahl
+ist; insbesondere ist $\varepsilon\in K$.
+\begin{enumerate}[label=\alph*)]
+\item Beweisen Sie mit dem Pumping-Lemma für reguläre Sprachen, dass $K$
+nicht regulär ist. Wählen Sie ein geeignetes Wort in Abhängigkeit von der
+Pumping-Länge $p$. Argumentieren Sie für \emph{jede} zulässige Zerlegung
+und begründen Sie, warum die gepumpte Wortlänge keine Quadratzahl ist.
+\punkte{8}
+\item Jemand wählt $w=a^{p^2}$, legt die Zerlegung
+$x=\varepsilon$, $y=a^p$, $z=a^{p^2-p}$ fest und zeigt, dass
+$xy^2z\notin K$ gilt. Warum ist damit allein noch kein vollständiger
+Nichtregularitätsbeweis geführt? Geben Sie die Quantorenreihenfolge für
+Pumping-Länge, Wort, Zerlegung und Pumpfaktor an, die ein solcher
+Widerspruchsbeweis erfüllen muss. \punkte{4}
+\end{enumerate}
+
+\section*{Aufgabe 3: Verständnisfragen \hfill 18 Punkte}
+\begin{enumerate}[label=\alph*)]
+\item \textbf{Operationen auf Sprachen.} Gilt für beliebige Sprachen $A,B$
+stets $AB=BA$? Begründen Sie Ihre Antwort durch einen Beweis oder ein
+Gegenbeispiel. Entscheiden Sie außerdem, ob die Vereinigung einer regulären
+und einer nicht regulären Sprache regulär sein kann. Geben Sie ein
+konkretes Beispiel mit Begründung an. \punkte{4}
+
+\item \textbf{Chomsky-Hierarchie.} Beurteilen Sie die folgenden Aussagen
+und begründen oder widerlegen Sie jede davon:
+\begin{enumerate}[label=\roman*),itemsep=2pt]
+\item ,,Eine Sprache, die durch eine kontextfreie Grammatik erzeugt wird,
+kann nicht regulär sein.''
+\item ,,Jede kontextsensitive Sprache ist auch kontextfrei.''
+\item ,,Für jede Sprache vom Typ 0 gibt es eine Turingmaschine, die auf
+jeder Eingabe hält und die Zugehörigkeit zur Sprache entscheidet.''
+\end{enumerate}
+\punkte{6}
+
+\item \textbf{Komplementieren.} Bei einem vollständigen DFA werden
+Endzustände und Nichtendzustände vertauscht. Welche Sprache erkennt der
+neue Automat? Funktioniert dasselbe Verfahren für beliebige NFA?
+Begründen Sie beide Antworten; geben Sie im NFA-Fall gegebenenfalls ein
+konkretes Gegenbeispiel an. \punkte{4}
+
+\item \textbf{Zustandsäquivalenz.} Wann sind zwei Zustände eines DFA
+äquivalent? Reicht es aus, dass beide keine Endzustände sind?
+Begründen Sie Ihre Antwort durch ein Beispiel mit unterscheidender
+Fortsetzung. Können zwei äquivalente, vollständige und minimale DFA
+unterschiedlich viele Zustände haben? Begründen Sie kurz. \punkte{4}
+\end{enumerate}
+
+\ifloesungen
+\newpage
+\begingroup\small
+\setlength{\parskip}{4pt}
+\begin{center}{\LARGE\bfseries Musterlösungen}\end{center}
+\section*{Lösung 1a: NFA}
+Wir wählen $N=(Q,\Sigma,\delta_N,q_0,F_N)$ mit
+$Q=\{q_0,\ldots,q_9\}$, $\Sigma=\{a,b\}$ und $F_N=\{q_3,q_6,q_9\}$.
+Die drei Ketten lesen $aba$ über $q_1,q_2,q_3$, $bba$ über $q_4,q_5,q_6$
+und $bab$ über $q_7,q_8,q_9$.
+\begin{center}
+\begin{tabular}{c|cc}
+ & $a$ & $b$\\\hline
+$\to q_0$ & $\{q_0,q_1\}$ & $\{q_0,q_4,q_7\}$\\
+$q_1$ & $\varnothing$ & $\{q_2\}$\\
+$q_2$ & $\{q_3\}$ & $\varnothing$\\
+$*q_3$ & $\varnothing$ & $\varnothing$\\
+$q_4$ & $\varnothing$ & $\{q_5\}$\\
+$q_5$ & $\{q_6\}$ & $\varnothing$\\
+$*q_6$ & $\varnothing$ & $\varnothing$\\
+$q_7$ & $\{q_8\}$ & $\varnothing$\\
+$q_8$ & $\varnothing$ & $\{q_9\}$\\
+$*q_9$ & $\varnothing$ & $\varnothing$
+\end{tabular}
+\end{center}
+In $q_0$ gibt es bei $a$ zwei und bei $b$ drei mögliche Folgezustände.
+Der NFA rät dort den Beginn eines Endmusters. Jeder akzeptierende Lauf
+liest zuerst ein beliebiges Präfix in $q_0$ und danach genau eines der drei
+Muster. Da die Endzustände keine ausgehenden Übergänge haben, muss damit
+die Eingabe enden. Umgekehrt lässt sich jedes Wort aus $L$ genau so lesen.
+
+\textit{Bewertung (10):} Zustände, Alphabet, Start- und Endzustände 2;
+Übergänge gemäß Bauvorgabe 5; Nichtdeterminismus 1; Korrektheit in beiden
+Richtungen 2.
+
+\section*{Lösung 1b: Potenzmengenkonstruktion}
+Es gilt $\delta_D(T,c)=\bigcup_{q\in T}\delta_N(q,c)$.
+Startmenge ist $\{q_0\}$; eine Menge akzeptiert genau dann, wenn sie
+$F_N$ schneidet. Es ergeben sich genau die folgenden neun Zustände:
+\begin{center}\small
+\begin{tabular}{c|l|cc|l}
+ & Zustandsmenge & $a$ & $b$ & erreichbar durch\\\hline
+$\to D_0$ & $\{q_{0}\}$ & $D_1$ & $D_2$ & $\varepsilon$\\
+$D_1$ & $\{q_{0},q_{1}\}$ & $D_1$ & $D_3$ & $a$\\
+$D_2$ & $\{q_{0},q_{4},q_{7}\}$ & $D_4$ & $D_5$ & $b$\\
+$D_3$ & $\{q_{0},q_{2},q_{4},q_{7}\}$ & $D_6$ & $D_5$ & $ab$\\
+$D_4$ & $\{q_{0},q_{1},q_{8}\}$ & $D_1$ & $D_7$ & $ba$\\
+$D_5$ & $\{q_{0},q_{4},q_{5},q_{7}\}$ & $D_8$ & $D_5$ & $bb$\\
+$*D_6$ & $\{q_{0},q_{1},q_{3},q_{8}\}$ & $D_1$ & $D_7$ & $aba$\\
+$*D_7$ & $\{q_{0},q_{2},q_{4},q_{7},q_{9}\}$ & $D_6$ & $D_5$ & $bab$\\
+$*D_8$ & $\{q_{0},q_{1},q_{6},q_{8}\}$ & $D_1$ & $D_7$ & $bba$\\
+\end{tabular}
+\end{center}
+Beispielsweise ist
+$\delta_D(\{q_0,q_2,q_4,q_7\},a)
+=\{q_0,q_1\}\cup\{q_3\}\cup\varnothing\cup\{q_8\}
+=\{q_0,q_1,q_3,q_8\}=D_6$.
+Die Tabelle ist unter beiden Übergängen abgeschlossen. Da $q_0$ stets
+enthalten ist, wird die leere Menge nicht erreicht.
+Der DFA hat Startzustand $D_0$ und Endzustandsmenge $\{D_6,D_7,D_8\}$.
+
+\textit{Bewertung (12):} Zustandsmengen 3; Übergänge 4; Start- und
+Endzustände 2; Erreichbarkeitswörter 2; vorgerechnete Vereinigung 1.
+
+\newpage
+\section*{Lösung 1c: Minimierung}
+Alle neun Zustände sind erreichbar, wie die Wörter in Lösung 1b belegen.
+Wir markieren synchron: In Runde $r$ werden nur Markierungen aus den
+Runden $0,\ldots,r-1$ verwendet.
+
+\textbf{Anfangsmarkierung ($\times_0$).} Markiert werden die 18 Paare mit
+einem Zustand aus $\{D_0,\ldots,D_5\}$ und einem aus $\{D_6,D_7,D_8\}$.
+Sie werden durch $\varepsilon$ unterschieden.
+
+\textbf{Runde 1 ($\times_1$).} Bei den nichtakzeptierenden Zuständen bilden
+$\{D_0,D_1,D_2\}$, $\{D_3,D_5\}$ und $\{D_4\}$ drei Gruppen:
+Aus der ersten Gruppe erreicht kein einzelnes Zeichen einen Endzustand,
+aus der zweiten tut dies $a$, aus der dritten $b$. Alle elf Paare zwischen
+diesen Gruppen werden markiert. Bei den Endzuständen werden außerdem
+$\{D_6,D_7\}$ und $\{D_7,D_8\}$ markiert, etwa mit dem Zeichen $a$.
+Es gibt somit 13 neue Markierungen.
+
+\textbf{Runde 2 ($\times_2$).} Die drei Paare innerhalb
+$\{D_0,D_1,D_2\}$ werden markiert:
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Paar & Zeichen & bereits markiertes Folgepaar & unterscheidendes Wort\\\hline
+$\{D_0,D_1\}$ & $b$ & $\{D_2,D_3\}$ & $ba$\\
+$\{D_0,D_2\}$ & $a$ & $\{D_1,D_4\}$ & $ab$\\
+$\{D_1,D_2\}$ & $a$ & $\{D_1,D_4\}$ & $ab$
+\end{tabular}
+\end{center}
+\begin{center}
+\begin{tabular}{c|cccccccc}
+ & $D_0$ & $D_1$ & $D_2$ & $D_3$ & $D_4$ & $D_5$ & $D_6$ & $D_7$\\\hline
+$D_1$ & $\times_{2}$ &  &  &  &  &  &  & \\
+$D_2$ & $\times_{2}$ & $\times_{2}$ &  &  &  &  &  & \\
+$D_3$ & $\times_{1}$ & $\times_{1}$ & $\times_{1}$ &  &  &  &  & \\
+$D_4$ & $\times_{1}$ & $\times_{1}$ & $\times_{1}$ & $\times_{1}$ &  &  &  & \\
+$D_5$ & $\times_{1}$ & $\times_{1}$ & $\times_{1}$ & $-$ & $\times_{1}$ &  &  & \\
+$D_6$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ &  & \\
+$D_7$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{1}$ & \\
+$D_8$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $\times_{0}$ & $-$ & $\times_{1}$\\
+\end{tabular}
+\end{center}
+Das Zeichen $-$ bedeutet unmarkiert. Nur die Felder unterhalb der Diagonale
+stehen für Paare. Übrig bleiben $D_3\sim D_5$ und $D_6\sim D_8$:
+Die jeweiligen Partner haben denselben Akzeptanzstatus und identische
+Übergänge. Weitere Markierungen entstehen nicht.
+
+Die Äquivalenzklassen sind
+\[
+\begin{gathered}
+K_0=\{D_0\},\ K_1=\{D_1\},\ K_2=\{D_2\},\ K_3=\{D_3,D_5\},\\
+K_4=\{D_4\},\ K_5=\{D_6,D_8\},\ K_6=\{D_7\}.
+\end{gathered}
+\]
+\begin{center}
+\begin{tabular}{c|cc@{\qquad}l}
+ & $a$ & $b$ & erreichbar durch\\\hline
+$\to K_0$ & $K_1$ & $K_2$ & $\varepsilon$\\
+$K_1$ & $K_1$ & $K_3$ & $a$\\
+$K_2$ & $K_4$ & $K_3$ & $b$\\
+$K_3$ & $K_5$ & $K_3$ & $ab$\\
+$K_4$ & $K_1$ & $K_6$ & $ba$\\
+$*K_5$ & $K_1$ & $K_6$ & $aba$\\
+$*K_6$ & $K_5$ & $K_3$ & $bab$
+\end{tabular}
+\end{center}
+Der Quotientenautomat ist vollständig, hat Startzustand $K_0$ und
+Endzustandsmenge $\{K_5,K_6\}$. Alle sieben Klassen sind erreichbar.
+Zwischen verschiedenen Klassen sind sämtliche Paare markiert, also durch
+eine Fortsetzung unterscheidbar. Damit ist der DFA minimal.
+
+\textit{Bewertung (8):} Markierungstabelle mit Runden 4; Klassen 1;
+minimaler DFA 2; Erreichbarkeit und Minimalität 1.
+
+\newpage
+\section*{Lösung 2: Pumping-Lemma}
+\subsection*{a) Nichtregularität}
+Angenommen, $K$ sei regulär. Dann gibt es eine Pumping-Länge $p\geq1$,
+sodass jedes $w\in K$ mit $|w|\geq p$ eine Zerlegung $w=xyz$ besitzt mit
+\[
+ |xy|\leq p,\qquad |y|\geq1,\qquad
+ \forall i\in\mathbb N_0:\ xy^iz\in K.
+\]
+Wir wählen
+\[
+ w=a^{p^2}\in K,\qquad |w|=p^2\geq p.
+\]
+Sei $w=xyz$ eine \emph{beliebige} Zerlegung mit $|xy|\leq p$ und
+$|y|\geq1$. Da das Alphabet nur aus $a$ besteht, gilt $y=a^k$ für ein
+$1\leq k\leq p$. Für $i=2$ erhalten wir
+\[
+ xy^2z=a^{p^2+k}.
+\]
+Die Länge dieses Wortes liegt strikt zwischen zwei aufeinanderfolgenden
+Quadratzahlen:
+\[
+ p^2<p^2+k\leq p^2+p<p^2+2p+1=(p+1)^2.
+\]
+Also ist $p^2+k$ keine Quadratzahl und $xy^2z\notin K$.
+Dies gilt für jede zulässige Zerlegung und widerspricht dem Pumping-Lemma.
+Folglich ist $K$ nicht regulär. \hfill$\square$
+
+Entscheidend ist, dass zwischen den benachbarten Quadratzahlen genug Platz
+liegt: Der pumpbare Abschnitt hat höchstens Länge $p$, während die nächste
+Quadratzahl den Abstand $2p+1$ besitzt.
+
+\textit{Bewertung (8):} Widerspruchsannahme und Pumping-Länge 1;
+geeignetes Wort mit Zugehörigkeit und Länge 2; beliebige Zerlegung und
+Schranke für $|y|$ 2; Pumpfaktor und Ausschluss einer Quadratzahl 2; Schluss 1.
+Andere vollständige Pumping-Lemma-Beweise sind ebenfalls anzuerkennen.
+
+\subsection*{b) Quantoren und Wahl der Zerlegung}
+Die angegebene Zerlegung ist zulässig: $|xy|=p$ und $|y|=p\geq1$.
+Auch $p^2+p$ liegt zwischen $p^2$ und $(p+1)^2$.
+Trotzdem wurde nur \emph{eine} Zerlegung widerlegt. Für eine reguläre Sprache
+muss das Pumping-Lemma lediglich die Existenz \emph{einer geeigneten}
+Zerlegung garantieren. Es könnte also eine andere Zerlegung geben, für die
+alle Pumpfaktoren funktionieren. Genau das muss der Beweis ausschließen.
+
+Die nötige Quantorenreihenfolge für den Widerspruch zur Pumping-Eigenschaft
+lautet:
+\[
+ \forall p\geq1\ \exists w\in K,\ |w|\geq p\
+ \forall\text{ zulässigen Zerlegungen }w=xyz\
+ \exists i\in\mathbb N_0:\ xy^iz\notin K.
+\]
+Das Wort darf von $p$ abhängen; der Pumpfaktor darf von der Zerlegung
+abhängen. In a) funktioniert sogar einheitlich $i=2$.
+Die Zerlegung selbst darf man nicht auf einen günstigen Spezialfall
+beschränken.
+
+\textit{Bewertung (4):} Unterschied zwischen einer und allen zulässigen
+Zerlegungen 2; richtige Quantorenreihenfolge einschließlich der
+Zulässigkeitsbedingungen (wie in a) definiert) 2.
+
+\newpage
+\section*{Lösung 3: Verständnisfragen}
+\subsection*{a) Operationen auf Sprachen (4 Punkte)}
+\textbf{Konkatenation ist nicht kommutativ.} Für $A=\{a\}$ und $B=\{b\}$
+gilt $AB=\{ab\}$, aber $BA=\{ba\}$; diese Sprachen sind verschieden.
+\textit{(2 Punkte)}
+
+\textbf{Die Vereinigung kann regulär sein.} Über $\Sigma=\{a,b\}$ wählen wir
+$R=\Sigma^*$ und $N=\{a^nb^n\mid n\in\mathbb N_0\}$.
+$R$ ist regulär, $N$ ist bekanntlich nicht regulär, aber
+$R\cup N=\Sigma^*$ ist regulär. Nichtregularität eines Operanden erzwingt
+also nicht die Nichtregularität der Vereinigung. \textit{(2 Punkte)}
+
+\subsection*{b) Chomsky-Hierarchie (6 Punkte)}
+\textbf{i) Falsch.} Jede reguläre Sprache ist auch kontextfrei.
+Beispielsweise ist $S\to aS\mid\varepsilon$ eine kontextfreie Grammatik
+für die reguläre Sprache $a^*$. Dass eine Grammatik kontextfrei ist,
+schließt eine reguläre Beschreibung ihrer Sprache nicht aus.
+\textit{(2 Punkte)}
+
+\textbf{ii) Falsch.} Die Inklusion verläuft umgekehrt: Jede kontextfreie
+Sprache ist kontextsensitiv (mit der üblichen Sonderkonvention für
+$\varepsilon$), aber nicht jede kontextsensitive Sprache ist kontextfrei.
+Ein Gegenbeispiel ist $\{a^nb^nc^n\mid n\geq1\}$.
+\textit{(2 Punkte)}
+
+\textbf{iii) Falsch.} Typ-0-Sprachen sind rekursiv aufzählbar bzw.\
+semi-entscheidbar. Eine erkennende Turingmaschine akzeptiert jedes Wort der
+Sprache, darf bei Wörtern außerhalb aber unendlich weiterlaufen.
+Nicht jede solche Sprache ist entscheidbar; ein Beispiel ist die Sprache
+des Halteproblems. \textit{(2 Punkte)}
+
+\subsection*{c) Komplementieren (4 Punkte)}
+\textbf{DFA:} Der neue Automat erkennt $\Sigma^*\setminus L(M)$.
+Für jedes Wort gibt es genau einen vollständigen Lauf. Dessen letzter
+Zustand ist nach dem Vertauschen genau dann akzeptierend, wenn er vorher
+nicht akzeptierend war. Vollständigkeit sichert, dass der Lauf für jedes
+Wort existiert. \textit{(2 Punkte)}
+
+\textbf{NFA:} Das Verfahren funktioniert im Allgemeinen nicht. Ein NFA
+akzeptiert, sobald \emph{mindestens ein} Lauf akzeptiert. Zum Verwerfen
+müssen hingegen \emph{alle} Läufe nichtakzeptierend sein.
+Als Gegenbeispiel wähle man $Q=\{s,f\}$, $\Sigma=\{a\}$, Startzustand $s$,
+$F=\{f\}$ sowie $\delta(s,a)=\{s,f\}$ und $\delta(f,a)=\{f\}$.
+Das Wort $a$ wird über den Lauf nach $f$ akzeptiert. Nach dem Vertauschen
+ist $F'=\{s\}$; dann wird $a$ über den Lauf nach $s$ weiterhin akzeptiert.
+Das kann nicht das Komplement sein. \textit{(2 Punkte)}
+
+\subsection*{d) Zustandsäquivalenz (4 Punkte)}
+Zwei Zustände $q,r$ sind äquivalent, wenn für jede Fortsetzung
+$v\in\Sigma^*$ gilt
+\[
+ \delta^*(q,v)\in F\quad\Longleftrightarrow\quad\delta^*(r,v)\in F.
+\]
+Hier bezeichnet $\delta^*$ die auf Wörter erweiterte Übergangsfunktion.
+\textit{(1 Punkt)}
+
+Gleicher Akzeptanzstatus allein genügt nicht: Im DFA über $\{a\}$ mit
+Zuständen $q,r,f$, Startzustand $q$, $F=\{f\}$ und Übergängen
+$q\xrightarrow{a}r$, $r\xrightarrow{a}f$, $f\xrightarrow{a}f$
+sind $q$ und $r$ beide nichtakzeptierend. Die Fortsetzung $a$ führt von
+$q$ in einen Nichtendzustand, von $r$ dagegen in einen Endzustand.
+\textit{(2 Punkte)}
+
+Zwei äquivalente, vollständige und minimale DFA über demselben Alphabet
+haben gleich viele Zustände: Beide haben die kleinstmögliche Zustandszahl
+für dieselbe Sprache. Sie sind sogar bis auf Umbenennung der Zustände
+isomorph. \textit{(1 Punkt)}
+\endgroup
+\fi
+\end{document}

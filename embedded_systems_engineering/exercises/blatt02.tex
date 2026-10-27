@@ -82,4 +82,130 @@ Erstellt strukturierte Spezifikationen für folgende weitere TSG Funktionen:
 \end{itemize}
 Verwendet dieselbe Tabellenstruktur wie im Beispiel.
 \end{enumerate}
+
+\ifloesung{\clearpage}
+\begin{loesung}
+\textbf{Zu 1: Funktionale und nichtfunktionale Anforderungen}
+
+\emph{Funktionale Anforderungen} beschreiben das beobachtbare Verhalten:
+\begin{enumerate}[label=F\arabic*.]
+  \item \textbf{Fensterheber:} Die Scheibe fährt beim Drücken des jeweiligen Tasters auf bzw.\ zu. Beim Loslassen oder Erreichen der Zielposition stoppt der Motor.
+  \item \textbf{Einklemmschutz:} Während des Schließens wird die Scheibenbewegung überwacht. Bei einer als Hindernis erkannten Verlangsamung wird das Schließen sofort abgebrochen und die Scheibe vollständig geöffnet, auch ohne weiter gedrückten Taster.
+  \item \textbf{Laufzeitbegrenzung:} Dauert eine Motoransteuerung länger als $3\,\mathrm{s}$, ohne dass die Zielposition erkannt wurde, wird die Bewegung unterbrochen.
+  \item \textbf{Automatische Beleuchtung:} Bei offener Fahrzeugtür leuchtet die Innenbeleuchtung höchstens $10\,\mathrm{min}$ nach dem Öffnen. Nach dem Schließen aller Türen leuchtet sie noch $30\,\mathrm{s}$. Aktivierte Zündung beendet die automatische Beleuchtung.
+  \item \textbf{Verriegelung:} Schlüssel und Funksender ermöglichen Ver- und Entriegelung. Nach der Beispielspezifikation setzt Verriegeln geschlossene Türen voraus; Entriegeln hat Vorrang. Wird eine Tür während des Verriegelns geöffnet, werden alle Türen entriegelt.
+  \item \textbf{Entriegelung von innen:} Das Öffnen einer Tür von innen entriegelt das verriegelte Fahrzeug.
+  \item \textbf{Schnittstellen:} Das TSG verarbeitet lokale Sensoren und Taster, steuert die angeschlossenen Aktoren und tauscht erforderliche Fahrzeugzustände und Befehle über den Bus aus. Die Bedienung des Außenspiegels ist gefordert, aber im Text nicht näher spezifiziert.
+\end{enumerate}
+
+\emph{Nichtfunktionale Anforderungen und Randbedingungen:}
+\begin{itemize}
+  \item \textbf{Nebenläufigkeit:} Fensterüberwachung, Beleuchtungs-Timer, Türbedienung und Buskommunikation müssen gleichzeitig bearbeitet werden können. Ein laufender Beleuchtungs-Timer darf beispielsweise den Einklemmschutz nicht blockieren. Dies verlangt keine bestimmte Anzahl an Prozessoren oder Threads.
+  \item \textbf{Harte Echtzeit:} Einklemmschutz und sicherheitsrelevante Abschaltungen benötigen garantierte obere Reaktionszeitgrenzen. ,,Sofort`` ist dafür nicht messbar genug: Abtastintervall, Erkennungsgrenze und maximale Zeit bis zum Motorstopp müssen noch festgelegt werden. Die $3\,\mathrm{s}$ sind eine Laufzeitgrenze, keine zulässige Reaktionszeit des Einklemmschutzes.
+  \item \textbf{Weiche Echtzeit:} Komfortfunktionen wie die Lichtnachlaufzeit sind typischerweise weich echtzeitkritisch; kleine Abweichungen beeinträchtigen vor allem den Komfort. Zulässige Toleranzen für $30\,\mathrm{s}$ und $10\,\mathrm{min}$ fehlen. Die sicherheitsbezogene Abschaltung bei Zündung benötigt eine gesondert festzulegende Frist.
+  \item \textbf{Sicherheit (Safety):} Einklemmen verhindern, unkontrollierte Motorbewegungen vermeiden und das Entriegeln von innen sicherstellen. Für Sensor-, Bus- und Aktorausfälle fehlen Vorgaben zum sicheren Verhalten; diese wären für eine vollständige Spezifikation zu ergänzen.
+  \item \textbf{Variantenfähigkeit:} Das TSG muss an verschiedenen Türen einsetzbar sein, etwa über eine Konfiguration von Türposition und Ausstattung.
+\end{itemize}
+Eine Zeitangabe allein entscheidet nicht über harte oder weiche Echtzeit; entscheidend sind die Folgen einer Fristverletzung. Konkrete Laufzeiten und Prioritäten sind zugleich Teil des funktionalen Verhaltens.
+
+\clearpage
+\textbf{Zu 2: Strukturierte Spezifikationen}
+
+Die folgenden Tabellen sind eine mögliche Präzisierung. Zusätzliche Festlegungen sind als \emph{Annahmen} gekennzeichnet und müssten mit dem Auftraggeber abgestimmt werden. Die Zeile ,,Aktoren`` wird wie im Aufgabenbeispiel für beteiligte Akteure verwendet; technische Aktoren stehen zusätzlich bei den geregelten Variablen.
+
+\textbf{Funktion 1: Fahrgast öffnet/schließt Fenster}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|p{3.3cm}|X|}
+\hline
+\textbf{Funktion} & \textbf{Fenster öffnen/schließen} \\ \hline
+\textbf{Aktoren} & Fahrgast, Türsteuergerät \\ \hline
+\textbf{Absicht} & Fenster auf Wunsch bewegen; beim Schließen Einklemmen verhindern. \\ \hline
+\textbf{Preconditions} & TSG betriebsbereit; Positions- und Bewegungserfassung verfügbar. Für eine normale Fahrt: genau ein Richtungstaster gedrückt, Zielposition noch nicht erreicht. \\ \hline
+\textbf{Überwachte Variablen} & Taster Auf/Zu, Scheibenposition bzw.\ Endlagen, Bewegungsgeschwindigkeit, Dauer der aktuellen Motoransteuerung. \\ \hline
+\textbf{Geregelte Variablen} & Fensterhebermotor: Aus, Öffnen, Schließen. \\ \hline
+\textbf{Verlauf} &
+1. TSG erfasst den Richtungstaster, startet den Motor und die Laufzeitmessung.
+\par 2. Während der Fahrt prüft es Taster, Zielposition und Laufzeit; beim Schließen zusätzlich die Bewegung auf Hindernisse.
+\par 3. Beim Loslassen des Tasters oder Erreichen der Zielposition schaltet es den Motor aus.
+\par 4. Bei Hindernis oder Zeitüberschreitung gilt der entsprechende Sonderfall. \\ \hline
+\textbf{Regeln} &
+Öffnen und Schließen dürfen nie gleichzeitig angesteuert werden. Einklemmschutz hat Vorrang vor Tasterbefehlen. Die Laufzeitbegrenzung gilt auch für die Schutzöffnung.
+\par \emph{Annahme:} Jede neue Fahrt beginnt mit einer neuen Laufzeitmessung, auch die Schutzöffnung nach einem Hindernis. Ein Richtungswechsel erfolgt über Motor Aus. \\ \hline
+\textbf{Sonderfälle} &
+A) Hindernis beim Schließen: Schließansteuerung sofort beenden, anschließend bis zur vollständig geöffneten Endlage öffnen; Loslassen des Tasters beendet diese Schutzöffnung nicht.
+\par B) Ansteuerung länger als $3\,\mathrm{s}$ ohne erkannte Zielposition: Motor aus, auch bei Schutzöffnung. Vollständiges Öffnen ist in diesem Fehlerfall nicht garantiert.
+\par C) \emph{Annahme:} Beide Taster gleichzeitig stoppen eine normale Fahrt; Schutzöffnung bleibt vorrangig. Nach Zeitüberschreitung erfolgt kein automatischer Neustart durch einen gehaltenen Taster; zunächst müssen beide Taster losgelassen werden. \\ \hline
+\textbf{Postconditions} & Motor aus. Zielposition erreicht oder Zwischenposition nach Loslassen, widersprüchlicher Eingabe bzw.\ Zeitüberschreitung; nach erfolgreicher Schutzöffnung Scheibe vollständig offen. \\ \hline
+\end{tabularx}
+\endgroup
+
+\clearpage
+\textbf{Funktion 2: Innenbeleuchtung automatisch steuern}
+
+\emph{Annahmen zur Timer-Semantik:} Eine Beleuchtungsphase beginnt beim Übergang von ,,alle Türen geschlossen`` zu ,,mindestens eine Tür offen``. Weitere Türöffnungen verlängern die laufende $10$-Minuten-Frist nicht. Die Frist ist eine Obergrenze für die gesamte Phase und hat Vorrang vor dem $30$-Sekunden-Nachlauf. Erneutes Öffnen während des Nachlaufs startet eine neue Phase. Nach Ablauf der Obergrenze bei offener Tür bleibt das Licht aus, bis alle Türen geschlossen und erneut geöffnet wurden. Diese Prioritäten sind im Ausgangstext nicht eindeutig festgelegt.
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|p{3.3cm}|X|}
+\hline
+\textbf{Funktion} & \textbf{Innenbeleuchtung automatisch steuern} \\ \hline
+\textbf{Aktoren} & Fahrgast, Türsteuergerät \\ \hline
+\textbf{Absicht} & Innenraum beim Ein-/Aussteigen beleuchten; unnötige Leuchtdauer und Sichtbehinderung vermeiden. \\ \hline
+\textbf{Preconditions} & Automatischer Modus gewählt; Zustände aller Fahrzeugtüren und der Zündung verfügbar. \\ \hline
+\textbf{Überwachte Variablen} & Beleuchtungsmodus, Türkontakte aller Türen (lokal/Bus), Zündung, Zeit seit Phasenbeginn, Zeit seit Schließen der letzten offenen Tür. \\ \hline
+\textbf{Geregelte Variablen} & Automatischer Schaltbefehl der Innenbeleuchtung: Ein/Aus. \\ \hline
+\textbf{Verlauf} &
+1. Bei ausgeschalteter Zündung startet das Öffnen einer Tür eine Beleuchtungsphase: Licht ein, $10$-Minuten-Timer starten.
+\par 2. Solange mindestens eine Tür offen ist, bleibt das Licht bis zur Obergrenze an.
+\par 3. Beim Schließen der letzten offenen Tür beginnt der $30$-Sekunden-Nachlauf.
+\par 4. Licht ausschalten, sobald Nachlauf oder Obergrenze ablaufen. Die Phase ist damit beendet. \\ \hline
+\textbf{Regeln} &
+Zündung Ein hat Vorrang: automatisches Licht aus und laufende Phase beenden. Der Nachlauf verlängert die Obergrenze nicht. Weitere Türöffnungen innerhalb einer durchgehend offenen Türgruppe setzen den Timer nicht zurück. \\ \hline
+\textbf{Sonderfälle} &
+A) Tür öffnet während des Nachlaufs: Nachlauf abbrechen und neue Phase beginnen.
+\par B) Nach $10\,\mathrm{min}$ noch eine Tür offen: Licht aus; anschließendes Schließen löst kein erneutes Nachleuchten aus.
+\par C) \emph{Annahme:} Bei Aktivierung des Automatikmodus oder Ausschalten der Zündung mit bereits offener Tür beginnt eine neue Phase. Sind alle Türen geschlossen, bleibt das automatische Licht aus.
+\par D) Automatikmodus verlassen: automatische Timer beenden und Steuerung an den gewählten Modus übergeben; dessen Verhalten ist nicht beschrieben. \\ \hline
+\textbf{Postconditions} & Automatisches Licht aus bei aktivierter Zündung, abgelaufenem Nachlauf oder erreichter Obergrenze. Während einer gültigen Phase leuchtet es. \\ \hline
+\end{tabularx}
+\endgroup
+
+\clearpage
+\textbf{Funktion 3: Tür entriegeln}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|p{3.3cm}|X|}
+\hline
+\textbf{Funktion} & \textbf{Tür entriegeln} \\ \hline
+\textbf{Aktoren} & Fahrgast bzw.\ Insasse, Türsteuergerät, weitere Türsteuergeräte über den Fahrzeugbus \\ \hline
+\textbf{Absicht} & Fahrzeug von außen zugänglich machen bzw.\ Insassen das Verlassen ermöglichen. \\ \hline
+\textbf{Preconditions} & TSG betriebsbereit; eine Entriegelungsanforderung liegt vor. Türen dürfen offen oder geschlossen sein; mindestens eine verriegelte Tür erfordert eine Zustandsänderung. \\ \hline
+\textbf{Überwachte Variablen} & Schlüsselstellung, Entriegelungsbefehl des Funkempfängers, Betätigung der inneren Türöffnung, Tür- und Verriegelungszustände, gleichzeitige Verriegelungsanforderung. \\ \hline
+\textbf{Geregelte Variablen} & Türriegel bzw.\ Entriegelungsaktoren; Entriegelungsbefehle über den Bus für die übrigen Türen. \\ \hline
+\textbf{Verlauf} &
+1. Fahrgast fordert Entriegelung per Schlüssel oder Funksender an, oder ein Insasse betätigt die Türöffnung von innen.
+\par 2. TSG priorisiert das Entriegeln gegenüber einer Verriegelung und steuert die Entriegelung an.
+\par 3. Die übrigen Türen erhalten den Entriegelungsbefehl über den Bus.
+\par 4. Die verfügbaren Zustandsrückmeldungen werden geprüft. \\ \hline
+\textbf{Regeln} &
+Entriegeln hat stets Vorrang vor Verriegeln. Eine Tür muss von innen geöffnet werden können, auch wenn das Fahrzeug verriegelt ist; die Entriegelung darf nicht erst eine bereits vollständig offene Tür voraussetzen.
+\par \emph{Annahme:} ,,Fahrzeug entriegeln`` bedeutet entsprechend dem Verriegelungsbeispiel, alle Türen zu entriegeln. Eine selektive Entriegelung nur der Fahrertür ist nicht vorgesehen. \\ \hline
+\textbf{Sonderfälle} &
+A) Türen bereits entriegelt: Zustand bleibt unverändert.
+\par B) Gleichzeitige Ver-/Entriegelungsanforderung: entriegeln; eine laufende Verriegelung abbrechen.
+\par C) Tür öffnet während des Verriegelns: alle Türen entriegeln.
+\par D) Rückmeldung bleibt aus oder Aktor/Bus fällt aus: erfolgreiche Entriegelung ist nicht bestätigt. Fehlerreaktion und maximale Wartezeit sind noch zu spezifizieren. \\ \hline
+\textbf{Postconditions} & Im Erfolgsfall sind alle Türen entriegelt. Entriegeln allein öffnet keine Tür; bei fehlender Rückmeldung bleibt der tatsächliche Zustand unbestätigt. \\ \hline
+\end{tabularx}
+\endgroup
+
+\textbf{Noch zu klären:} Hindernis-Erkennungsschwelle und Reaktionsfristen, Timer-Prioritäten, Verhalten bei widersprüchlichen Eingaben und Ausfällen sowie die konkrete Außenspiegelsteuerung. Eine strukturierte Spezifikation macht solche Lücken sichtbar; sie ersetzt keine Abstimmung über die gewählten Annahmen.
+\end{loesung}
+
 \end{document}

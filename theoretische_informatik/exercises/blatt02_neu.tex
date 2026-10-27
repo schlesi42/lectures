@@ -2,7 +2,7 @@
 %!TEX TS-options = -shell-escape
 % % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
 \newcommand{\printpraesenzlsg}{false}
-\newcommand{\printloesungen}{false}
+\newcommand{\printloesungen}{true}
 \newcommand{\printbewertungen}{false}
 % % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
 \newcommand{\blattnummer}{2}
@@ -70,6 +70,88 @@ Betrachtet die Ordnung $(V,\sqsubseteq)$ mit $V=\{a,b,c,d,e,f,g,h\}$, gegeben du
   \item Begründet allgemein: Besitzt $W$ ein größtes Element $w$, so gilt $\sup W = w$. Gilt auch die Umkehrung, d.h. ist $\sup W$ immer ein größtes Element von $W$? Findet ein Gegenbeispiel im obigen Diagramm.
 \end{enumerate}
 
+\begin{loesung}
+Zunächst lesen wir aus dem Hasse-Diagramm (mit Reflexivität und Transitivität) für jedes $x$ die Menge der \emph{darüberliegenden} Elemente $\uparrow\! x=\{y\in V\mid x\sqsubseteq y\}$ und der \emph{darunterliegenden} Elemente $\downarrow\! x=\{y\in V\mid y\sqsubseteq x\}$ ab:
+
+\begin{center}\small
+\begin{tabular}{c|c|c|c|c|c|c|c|c}
+$x$ & $a$ & $b$ & $c$ & $d$ & $e$ & $f$ & $g$ & $h$\\\hline
+$\uparrow\! x$ & $a,c,d,f,g$ & $b,d,e,f,g$ & $c,f$ & $d,f,g$ & $e,g$ & $f$ & $g$ & $h$\\\hline
+$\downarrow\! x$ & $a$ & $b$ & $a,c$ & $a,b,d$ & $b,e$ & $a,b,c,d,f$ & $a,b,d,e,g$ & $h$
+\end{tabular}
+\end{center}
+
+Damit ist alles Weitere reines Nachschlagen: Die oberen Schranken von $W$ sind genau $\bigcap_{w\in W}\uparrow\! w$, die unteren Schranken genau $\bigcap_{w\in W}\downarrow\! w$.
+
+\begin{enumerate}[a)]
+  \item \textbf{Minimale Elemente von $V$:} $a$, $b$ und $h$ (unter ihnen liegt jeweils nur sie selbst).\\
+  \textbf{Maximale Elemente von $V$:} $f$, $g$ und $h$.\\
+  $h$ ist gleichzeitig minimal und maximal, weil $h$ mit keinem anderen Element vergleichbar ist.
+
+  Ein \emph{kleinstes} Element gibt es \textbf{nicht}: es müsste unterhalb \emph{aller} Elemente liegen, insbesondere unterhalb von $a$, $b$ und $h$; das einzige Element unterhalb von $a$ ist aber $a$ selbst, und $a\sqsubseteq h$ gilt nicht. Genauso gibt es \textbf{kein größtes} Element ($f$, $g$, $h$ sind paarweise unvergleichbar).
+
+  \item[] \textbf{Übersicht zu b)--e):}
+  \begin{center}\small
+  \begin{tabular}{l|c|c|c|c}
+   & $W_1=\{a,b\}$ & $W_2=\{c,d\}$ & $W_3=\{a,c,f\}$ & $W_4=\{a,h\}$\\\hline
+  minimale Elemente & $a,b$ & $c,d$ & $a$ & $a,h$\\
+  maximale Elemente & $a,b$ & $c,d$ & $f$ & $a,h$\\
+  kleinstes Element & --- & --- & $a$ & ---\\
+  größtes Element & --- & --- & $f$ & ---\\
+  obere Schranken & $\{d,f,g\}$ & $\{f\}$ & $\{f\}$ & $\emptyset$\\
+  untere Schranken & $\emptyset$ & $\{a\}$ & $\{a\}$ & $\emptyset$\\
+  $\sup W_i$ & $d$ & $f$ & $f$ & existiert nicht\\
+  $\inf W_i$ & existiert nicht & $a$ & $a$ & existiert nicht
+  \end{tabular}
+  \end{center}
+
+  \item $W_1=\{a,b\}$: $a$ und $b$ sind unvergleichbar, also sind \emph{beide} minimal und \emph{beide} maximal; ein kleinstes bzw. größtes Element gibt es nicht.
+
+  Obere Schranken: $\uparrow\! a\cap\uparrow\! b=\{a,c,d,f,g\}\cap\{b,d,e,f,g\}=\{d,f,g\}$.\\
+  Untere Schranken: $\downarrow\! a\cap\downarrow\! b=\{a\}\cap\{b\}=\emptyset$.
+
+  $\sup W_1$ ist das kleinste Element von $\{d,f,g\}$; wegen $d\sqsubseteq f$ und $d\sqsubseteq g$ ist das $d$, also $\sup W_1=d$. Beachtet: $d\notin W_1$ -- das Supremum muss nicht in $W$ liegen.\\
+  $\inf W_1$ existiert \textbf{nicht}, denn die Menge der unteren Schranken ist leer.
+
+  \item $W_2=\{c,d\}$: $c$ und $d$ sind unvergleichbar, also beide minimal und beide maximal; kein kleinstes, kein größtes Element.
+
+  Obere Schranken: $\{c,f\}\cap\{d,f,g\}=\{f\}$, also $\sup W_2=f$.\\
+  Untere Schranken: $\{a,c\}\cap\{a,b,d\}=\{a\}$, also $\inf W_2=a$.
+
+  (Besteht die Schrankenmenge aus genau einem Element, so ist dieses automatisch das Supremum bzw.\ Infimum.)
+
+  \item $W_3=\{a,c,f\}$: Hier gilt $a\sqsubset c\sqsubset f$, $W_3$ ist also eine Kette. Einziges minimales Element ist $a$, einziges maximales Element ist $f$; da $a$ unter allen und $f$ über allen Elementen von $W_3$ liegt, ist $a$ sogar das kleinste und $f$ das größte Element.
+
+  Obere Schranken: $\uparrow\! a\cap\uparrow\! c\cap\uparrow\! f=\{a,c,d,f,g\}\cap\{c,f\}\cap\{f\}=\{f\}$, also $\sup W_3=f$.\\
+  Untere Schranken: $\{a\}\cap\{a,c\}\cap\{a,b,c,d,f\}=\{a\}$, also $\inf W_3=a$.
+
+  Das passt zu Teil f): $W_3$ hat ein größtes Element $f$, und tatsächlich ist $\sup W_3=f$.
+
+  \item $W_4=\{a,h\}$: $a$ und $h$ sind unvergleichbar, also beide minimal und beide maximal; kein kleinstes, kein größtes Element.
+
+  Obere Schranken: $\uparrow\! a\cap\uparrow\! h=\{a,c,d,f,g\}\cap\{h\}=\emptyset$.\\
+  Untere Schranken: $\downarrow\! a\cap\downarrow\! h=\{a\}\cap\{h\}=\emptyset$.
+
+  Also existieren weder $\sup W_4$ noch $\inf W_4$.
+
+  \textbf{Begründung für die fehlende obere Schranke:} $h$ ist ein isolierter Knoten, im Hasse-Diagramm läuft keine Kante zu $h$ hin oder von $h$ weg. Wegen Reflexivität ist $h$ nur mit sich selbst vergleichbar, d.h.\ $\uparrow\! h=\{h\}$. Eine obere Schranke $s$ von $W_4$ müsste $h\sqsubseteq s$ erfüllen, also $s=h$ sein; gleichzeitig müsste $a\sqsubseteq h$ gelten, was nicht der Fall ist. Es gibt daher keine obere Schranke -- und ohne obere Schranken erst recht keine kleinste, also kein Supremum.
+
+  \item \textbf{Behauptung:} Ist $w$ größtes Element von $W$, so ist $\sup W=w$.
+
+  \emph{Beweis.} Zu zeigen ist, dass $w$ die kleinste obere Schranke von $W$ ist. Wir zeigen beides:
+  \begin{itemize}
+    \item $w$ \emph{ist} obere Schranke: Nach Definition des größten Elements gilt $w'\sqsubseteq w$ für alle $w'\in W$ -- genau das ist die Definition einer oberen Schranke.
+    \item $w$ ist die \emph{kleinste} obere Schranke: Sei $s$ eine beliebige obere Schranke von $W$. Da $w$ größtes Element ist, gilt insbesondere $w\in W$, und weil $s$ obere Schranke ist, folgt $w\sqsubseteq s$. Also liegt $w$ unterhalb jeder oberen Schranke, ist somit das kleinste Element der Menge der oberen Schranken. \qed
+  \end{itemize}
+
+  \textbf{Die Umkehrung gilt nicht.} Das Supremum ist ein Element von $V$ und muss überhaupt nicht in $W$ liegen; ein größtes Element hingegen liegt per Definition in $W$.
+
+  \emph{Gegenbeispiel:} $W_1=\{a,b\}$ aus Teil b). Es ist $\sup W_1=d$, aber $d\notin W_1$, und $W_1$ besitzt kein größtes Element ($a$ und $b$ sind unvergleichbar). Ebenso taugt $W_2=\{c,d\}$ mit $\sup W_2=f\notin W_2$.
+
+  Merksatz: \emph{Existiert} das größte Element, so stimmt es mit dem Supremum überein. Umgekehrt ist das Supremum genau dann größtes Element, wenn es zufällig in $W$ liegt.
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$6$}{Teilerordnung, Supremum und Infimum}\\
 Auf der Menge $T_{36}=\{1,2,3,4,6,9,12,18,36\}$ der Teiler von $36$ betrachten wir die Ordnung
 $x\sqsubseteq y :\Leftrightarrow x \text{ teilt } y$. Das zugehörige Hasse-Diagramm sieht so aus:
@@ -126,6 +208,68 @@ $x\sqsubseteq y :\Leftrightarrow x \text{ teilt } y$. Das zugehörige Hasse-Diag
   Bestimmt alle oberen Schranken von $\{p,q\}$ und begründet, warum $\sup\{p,q\}$ trotzdem \emph{nicht} existiert. Führt dieselbe Überlegung für die unteren Schranken von $\{r,s\}$ und $\inf\{r,s\}$ durch.
 \end{enumerate}
 
+\begin{loesung}
+In der Teilerordnung ist $x\sqsubseteq y$ gleichbedeutend mit \enquote{$x$ teilt $y$}. Daher gilt:
+\begin{itemize}
+  \item obere Schranken von $W$ $=$ die \emph{gemeinsamen Vielfachen} der Elemente von $W$, die in $T_{36}$ liegen,
+  \item untere Schranken von $W$ $=$ die \emph{gemeinsamen Teiler} der Elemente von $W$.
+\end{itemize}
+
+\begin{enumerate}[a)]
+  \item $1$ teilt jedes Element von $T_{36}$, also ist $1$ das \textbf{kleinste Element} und damit insbesondere das einzige minimale Element. Jedes Element von $T_{36}$ teilt $36$, also ist $36$ das \textbf{größte Element} und damit das einzige maximale Element.
+
+  (Merke: Sobald ein kleinstes Element existiert, ist es automatisch das einzige minimale Element -- ein weiteres minimales Element müsste ja über dem kleinsten liegen und wäre dann nicht mehr minimal.)
+
+  \item Wir bestimmen jeweils Vielfache und Teiler \emph{innerhalb} von $T_{36}$:
+
+  \textbf{$W_1=\{4,6\}$:}\\
+  Vielfache von $4$ in $T_{36}$: $\{4,12,36\}$; Vielfache von $6$: $\{6,12,18,36\}$.\\
+  Obere Schranken: $\{4,12,36\}\cap\{6,12,18,36\}=\{12,36\}$. Wegen $12\mid 36$ ist $12$ das kleinste davon: $\sup W_1=12$.\\
+  Teiler von $4$: $\{1,2,4\}$; Teiler von $6$: $\{1,2,3,6\}$.\\
+  Untere Schranken: $\{1,2\}$, das größte davon ist $2$: $\inf W_1=2$.\\
+  Größtes Element: \textbf{nein}, denn $4\nmid 6$ und $6\nmid 4$, die beiden Elemente sind unvergleichbar.
+
+  \textbf{$W_2=\{4,9\}$:}\\
+  Obere Schranken: $\{4,12,36\}\cap\{9,18,36\}=\{36\}$, also $\sup W_2=36$.\\
+  Untere Schranken: $\{1,2,4\}\cap\{1,3,9\}=\{1\}$, also $\inf W_2=1$.\\
+  Größtes Element: \textbf{nein} ($4$ und $9$ sind unvergleichbar).
+
+  \textbf{$W_3=\{2,3,12\}$:}\\
+  Vielfache von $2$: $\{2,4,6,12,18,36\}$, von $3$: $\{3,6,9,12,18,36\}$, von $12$: $\{12,36\}$.\\
+  Obere Schranken: $\{12,36\}$, also $\sup W_3=12$.\\
+  Teiler von $2$: $\{1,2\}$, von $3$: $\{1,3\}$, von $12$: $\{1,2,3,4,6,12\}$.\\
+  Untere Schranken: $\{1\}$, also $\inf W_3=1$.\\
+  Größtes Element: \textbf{ja}, nämlich $12$, denn $2\mid 12$, $3\mid 12$ und $12\in W_3$. Passend dazu ist $\sup W_3=12$ (vgl.\ Aufgabe~1\,f)).
+
+  \item \textbf{Vermutung:} $\sup W=\operatorname{kgV}(W)$ und $\inf W=\operatorname{ggT}(W)$.
+
+  \emph{Warum das plausibel ist:} Die oberen Schranken sind genau die gemeinsamen Vielfachen. \enquote{Kleinstes Element} bedeutet in dieser Ordnung aber nicht \enquote{kleinste Zahl}, sondern \enquote{Teiler aller anderen} -- und genau das leistet das kleinste gemeinsame Vielfache, denn jedes gemeinsame Vielfache ist ein Vielfaches des kgV. Dual dazu sind die unteren Schranken die gemeinsamen Teiler, und jeder gemeinsame Teiler teilt den ggT; der ggT ist also das größte Element bezüglich $\sqsubseteq$.
+
+  \emph{Kontrolle an b):}
+  \begin{center}\small
+  \begin{tabular}{l|c|c|c}
+   & $W_1=\{4,6\}$ & $W_2=\{4,9\}$ & $W_3=\{2,3,12\}$\\\hline
+  $\sup W_i$ & $12$ & $36$ & $12$\\
+  $\operatorname{kgV}$ & $\operatorname{kgV}(4,6)=12$ & $\operatorname{kgV}(4,9)=36$ & $\operatorname{kgV}(2,3,12)=12$\\\hline
+  $\inf W_i$ & $2$ & $1$ & $1$\\
+  $\operatorname{ggT}$ & $\operatorname{ggT}(4,6)=2$ & $\operatorname{ggT}(4,9)=1$ & $\operatorname{ggT}(2,3,12)=1$
+  \end{tabular}
+  \end{center}
+
+  Die Vermutung bestätigt sich. Ein Hinweis noch: Dass $\sup$ und $\inf$ hier \emph{immer} existieren, liegt daran, dass $T_{36}$ mit $\operatorname{kgV}$ und $\operatorname{ggT}$ abgeschlossen ist -- sind $x,y$ Teiler von $36$, so auch $\operatorname{ggT}(x,y)$ und $\operatorname{kgV}(x,y)$. $(T_{36},\sqsubseteq)$ ist also ein Verband (vgl.\ Aufgabe~3\,c)). In $T_{36}$ ohne die $36$ wäre das falsch: dann hätte $\{4,9\}$ überhaupt keine obere Schranke mehr.
+
+  \item \textbf{Obere Schranken von $\{p,q\}$:} Gesucht sind alle $x\in M$ mit $p\sqsubseteq x$ und $q\sqsubseteq x$. Über $p$ liegen $p,r,s$, über $q$ liegen $q,r,s$; der Schnitt ist $\{r,s\}$. Die oberen Schranken sind also genau $r$ und $s$.
+
+  $\sup\{p,q\}$ wäre das \emph{kleinste} Element der Schrankenmenge $\{r,s\}$. Es gilt aber weder $r\sqsubseteq s$ noch $s\sqsubseteq r$ -- im Hasse-Diagramm gibt es keine Kante zwischen $r$ und $s$, sie liegen \enquote{nebeneinander}. Damit besitzt $\{r,s\}$ kein kleinstes Element (beide sind zwar minimal in $\{r,s\}$, aber keines liegt unter dem anderen), und $\sup\{p,q\}$ \textbf{existiert nicht}.
+
+  \textbf{Untere Schranken von $\{r,s\}$:} Unter $r$ liegen $r,p,q$, unter $s$ liegen $s,p,q$; der Schnitt ist $\{p,q\}$. Die unteren Schranken sind also genau $p$ und $q$.
+
+  $\inf\{r,s\}$ wäre das \emph{größte} Element von $\{p,q\}$. Auch $p$ und $q$ sind unvergleichbar, $\{p,q\}$ hat also kein größtes Element und $\inf\{r,s\}$ \textbf{existiert nicht}.
+
+  Fazit: Schranken zu haben genügt nicht -- es kommt darauf an, dass die Schrankenmenge selbst ein kleinstes (bzw.\ größtes) Element besitzt. $(M,\sqsubseteq)$ ist deshalb \emph{kein} Verband, obwohl die Ordnung nur vier Elemente hat.
+\end{enumerate}
+\end{loesung}
+
  \aufgabetitel{$6$}{Verbände}\\
 Ein Verband ist eine Menge $V$ zusammen mit Operationen $\sqcap, \sqcup:V\times V\to V$, so dass gilt:
 \begin{itemize}
@@ -139,11 +283,165 @@ Ein Verband ist eine Menge $V$ zusammen mit Operationen $\sqcap, \sqcup:V\times 
   \item Zeigen Sie, dass die Menge der Teiler einer natürlichen Zahl $n$ zusammen mit den Operationen $\sqcap = \gcd$ und $\sqcup = lcm$ einen Verband bildet. Zeichnen Sie auch das Hasse-Diagramm für die Menge der Teiler von $12$ und machen Sie sich die Operationen klar.
 \end{enumerate}
 
+\begin{loesung}
+Zu prüfen sind jeweils vier Dinge: dass die Operationen die Menge nicht verlassen (\emph{Wohldefiniertheit}, $\sqcap,\sqcup:V\times V\to V$) sowie Assoziativität, Kommutativität und Verschmelzung (Absorption).
+
+\begin{enumerate}[a)]
+  \item \textbf{$(\mathcal{P}(M),\cap,\cup)$ ist ein Verband.}
+
+  \emph{Wohldefiniertheit:} Sind $A,B\subseteq M$, so sind auch $A\cap B\subseteq M$ und $A\cup B\subseteq M$, also $\cap,\cup:\mathcal{P}(M)\times\mathcal{P}(M)\to\mathcal{P}(M)$.
+
+  Alle drei Gesetze folgen elementweise aus den entsprechenden Gesetzen für $\wedge$ und $\vee$:
+
+  \emph{Assoziativität:}
+  \begin{align*}
+    x\in A\cap(B\cap C) &\Leftrightarrow x\in A\wedge(x\in B\wedge x\in C)\\
+      &\Leftrightarrow (x\in A\wedge x\in B)\wedge x\in C \Leftrightarrow x\in (A\cap B)\cap C,
+  \end{align*}
+  analog mit $\vee$ für $\cup$.
+
+  \emph{Kommutativität:} $x\in A\cap B\Leftrightarrow x\in A\wedge x\in B\Leftrightarrow x\in B\wedge x\in A\Leftrightarrow x\in B\cap A$; analog für $\cup$.
+
+  \emph{Verschmelzung:} $A\cap(A\cup B)=A$:
+  \enquote{$\subseteq$} Ist $x\in A\cap(A\cup B)$, so insbesondere $x\in A$.
+  \enquote{$\supseteq$} Ist $x\in A$, so ist auch $x\in A\cup B$, also $x\in A\cap(A\cup B)$.\\
+  $A\cup(A\cap B)=A$:
+  \enquote{$\supseteq$} klar, da $A\subseteq A\cup(A\cap B)$.
+  \enquote{$\subseteq$} Ist $x\in A\cup(A\cap B)$, so ist $x\in A$ oder $x\in A\cap B\subseteq A$; in beiden Fällen $x\in A$. \qed
+
+  \emph{Hasse-Diagramm von $\mathcal{P}(\{a,b,c\})$} (geordnet durch $\subseteq$):
+  \begin{center}
+  \begin{tikzpicture}[
+      knoten/.style={draw=fbblau, fill=fbblau!12, rounded corners=2pt, inner sep=3pt, font=\small}
+    ]
+    \node[knoten] (leer)  at (0,0)      {$\emptyset$};
+    \node[knoten] (a)     at (-2.6,1.5) {$\{a\}$};
+    \node[knoten] (b)     at (0,1.5)    {$\{b\}$};
+    \node[knoten] (c)     at (2.6,1.5)  {$\{c\}$};
+    \node[knoten] (ab)    at (-2.6,3)   {$\{a,b\}$};
+    \node[knoten] (ac)    at (0,3)      {$\{a,c\}$};
+    \node[knoten] (bc)    at (2.6,3)    {$\{b,c\}$};
+    \node[knoten] (abc)   at (0,4.5)    {$\{a,b,c\}$};
+    \draw[thick] (leer) -- (a);
+    \draw[thick] (leer) -- (b);
+    \draw[thick] (leer) -- (c);
+    \draw[thick] (a) -- (ab);
+    \draw[thick] (a) -- (ac);
+    \draw[thick] (b) -- (ab);
+    \draw[thick] (b) -- (bc);
+    \draw[thick] (c) -- (ac);
+    \draw[thick] (c) -- (bc);
+    \draw[thick] (ab) -- (abc);
+    \draw[thick] (ac) -- (abc);
+    \draw[thick] (bc) -- (abc);
+  \end{tikzpicture}
+  \end{center}
+
+  Anschaulich: $A\cup B$ ist der \emph{tiefste gemeinsame Punkt oberhalb} von $A$ und $B$, $A\cap B$ der \emph{höchste gemeinsame Punkt unterhalb}. Beispiel: $\{a\}\cup\{b\}=\{a,b\}$ und $\{a,b\}\cap\{b,c\}=\{b\}$ -- beides direkt am Diagramm ablesbar. Es ist also $\cup=\sup$ und $\cap=\inf$ (vgl.\ Aufgabe~6).
+
+  \item \textbf{$(\NN,\min,\max)$ ist ein Verband.}
+
+  \emph{Wohldefiniertheit:} $\min(a,b)$ und $\max(a,b)$ sind stets eines der beiden Argumente, liegen also wieder in $\NN$.
+
+  \emph{Assoziativität:} $\min(a,\min(b,c))$ ist die kleinste der drei Zahlen $a,b,c$ -- und ebenso $\min(\min(a,b),c)$. Beide Ausdrücke sind also gleich. Genauso ist $\max(a,\max(b,c))=\max(\max(a,b),c)$ die größte der drei Zahlen.
+
+  \emph{Kommutativität:} $\min$ und $\max$ hängen nur von der \emph{Menge} $\{a,b\}$ ab, nicht von der Reihenfolge.
+
+  \emph{Verschmelzung:} Es ist stets $a\leq\max(a,b)$, also $\min(a,\max(a,b))=a$. Ebenso ist $\min(a,b)\leq a$, also $\max(a,\min(a,b))=a$. \qed
+
+  Da $\leq$ auf $\NN$ eine \emph{totale} Ordnung ist (je zwei Zahlen sind vergleichbar), ist das Hasse-Diagramm eine Kette; für $\{1,2,3\}$:
+  \begin{center}
+  \begin{tikzpicture}[
+      knoten/.style={circle, draw=fbblau, fill=fbblau!12, inner sep=0pt, minimum size=7mm, font=\small}
+    ]
+    \node[knoten] (e1) at (0,0)   {$1$};
+    \node[knoten] (e2) at (0,1.3) {$2$};
+    \node[knoten] (e3) at (0,2.6) {$3$};
+    \draw[thick] (e1) -- (e2);
+    \draw[thick] (e2) -- (e3);
+  \end{tikzpicture}
+  \end{center}
+  $\min$ bedeutet \enquote{das tiefere der beiden Elemente}, $\max$ \enquote{das höhere}: $\min(2,3)=2$, $\max(1,2)=2$. Auch hier ist $\max=\sup$ und $\min=\inf$.
+
+  \item \textbf{$(T_n,\operatorname{ggT},\operatorname{kgV})$ ist ein Verband}, wobei $T_n=\{d\in\NN\mid d\text{ teilt } n\}$.
+
+  \emph{Wohldefiniertheit:} Seien $a,b\in T_n$. Dann gilt $\operatorname{ggT}(a,b)\mid a\mid n$, also $\operatorname{ggT}(a,b)\in T_n$. Und da $a\mid n$ und $b\mid n$ gilt, ist $n$ ein gemeinsames Vielfaches von $a$ und $b$; jedes gemeinsame Vielfache ist Vielfaches des kgV, also $\operatorname{kgV}(a,b)\mid n$ und damit $\operatorname{kgV}(a,b)\in T_n$.
+
+  \emph{Die Gesetze} führen wir auf b) zurück. Schreibe $a=\prod_p p^{\alpha_p}$ und $b=\prod_p p^{\beta_p}$ als Primfaktorzerlegungen (mit Exponent $0$, falls die Primzahl nicht vorkommt). Dann ist
+  \[\operatorname{ggT}(a,b)=\prod_p p^{\min(\alpha_p,\beta_p)},\qquad \operatorname{kgV}(a,b)=\prod_p p^{\max(\alpha_p,\beta_p)}.\]
+  $\operatorname{ggT}$ und $\operatorname{kgV}$ sind also nichts anderes als $\min$ bzw.\ $\max$, \emph{exponentenweise} angewendet. Assoziativität, Kommutativität und Verschmelzung übertragen sich damit unmittelbar aus b): Zwei Zahlen sind genau dann gleich, wenn alle ihre Primfaktorexponenten übereinstimmen, und für die Exponenten gelten die Gesetze nach b).
+
+  Beispielhaft die Verschmelzung: Der $p$-Exponent von $\operatorname{ggT}(a,\operatorname{kgV}(a,b))$ ist $\min(\alpha_p,\max(\alpha_p,\beta_p))=\alpha_p$, also $\operatorname{ggT}(a,\operatorname{kgV}(a,b))=a$. Analog $\operatorname{kgV}(a,\operatorname{ggT}(a,b))=a$. \qed
+
+  (Ohne Primfaktoren geht es genauso schnell: $a\mid\operatorname{kgV}(a,b)$ liefert direkt $\operatorname{ggT}(a,\operatorname{kgV}(a,b))=a$, und $\operatorname{ggT}(a,b)\mid a$ liefert $\operatorname{kgV}(a,\operatorname{ggT}(a,b))=a$.)
+
+  \emph{Hasse-Diagramm von $T_{12}=\{1,2,3,4,6,12\}$:}
+  \begin{center}
+  \begin{tikzpicture}[
+      knoten/.style={circle, draw=fbblau, fill=fbblau!12, inner sep=0pt, minimum size=8mm, font=\small}
+    ]
+    \node[knoten] (t1)  at (0,0)       {$1$};
+    \node[knoten] (t2)  at (-1.3,1.3)  {$2$};
+    \node[knoten] (t3)  at (1.3,1.3)   {$3$};
+    \node[knoten] (t4)  at (-2.6,2.6)  {$4$};
+    \node[knoten] (t6)  at (0,2.6)     {$6$};
+    \node[knoten] (t12) at (-1.3,3.9)  {$12$};
+    \draw[thick] (t1) -- (t2);
+    \draw[thick] (t1) -- (t3);
+    \draw[thick] (t2) -- (t4);
+    \draw[thick] (t2) -- (t6);
+    \draw[thick] (t3) -- (t6);
+    \draw[thick] (t4) -- (t12);
+    \draw[thick] (t6) -- (t12);
+  \end{tikzpicture}
+  \end{center}
+  Beispiele am Diagramm: $\operatorname{kgV}(4,6)=12$ (tiefster gemeinsamer Punkt oberhalb von $4$ und $6$), $\operatorname{ggT}(4,6)=2$ (höchster gemeinsamer Punkt unterhalb), $\operatorname{ggT}(4,3)=1$, $\operatorname{kgV}(2,6)=6$.
+
+  In allen drei Beispielen fällt dasselbe Muster auf: $\sqcup$ ist die \enquote{kleinste gemeinsame Obermenge/Oberschranke}, $\sqcap$ die \enquote{größte gemeinsame Unterschranke}. Genau dieser Zusammenhang zwischen Ordnungen und Verbänden wird in den Aufgaben~6 und 7 allgemein bewiesen.
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$3$}{Idempotenzgesetz}\\
 Zeigen Sie das Idempotenzgesetz für Verbände: $a \sqcap a = a$ und $a \sqcup a = a$ für alle $a \in V$.
 
+\begin{loesung}
+Erlaubt sind nur die drei Verbandsaxiome. Der Trick besteht darin, die \emph{beiden} Verschmelzungsgesetze hintereinander anzuwenden -- das zweite liefert einen Ausdruck, den man in das erste einsetzen kann.
+
+\textbf{Zu $a\sqcap a=a$:}\\
+Verschmelzung in der Form $a\sqcup(a\sqcap b)=a$, angewendet mit $b:=a$, ergibt
+\begin{equation*}a\sqcup(a\sqcap a)=a. \tag{$*$}\end{equation*}
+Verschmelzung in der Form $a\sqcap(a\sqcup b)=a$, angewendet mit $b:=a\sqcap a$, ergibt
+\[a=a\sqcap\bigl(a\sqcup(a\sqcap a)\bigr)\overset{(*)}{=}a\sqcap a.\]
+Also $a\sqcap a=a$.
+
+\textbf{Zu $a\sqcup a=a$ (dual, d.h.\ dieselbe Rechnung mit vertauschten Rollen von $\sqcap$ und $\sqcup$):}\\
+Verschmelzung in der Form $a\sqcap(a\sqcup b)=a$ mit $b:=a$ ergibt
+\begin{equation*}a\sqcap(a\sqcup a)=a. \tag{$**$}\end{equation*}
+Verschmelzung in der Form $a\sqcup(a\sqcap b)=a$ mit $b:=a\sqcup a$ ergibt
+\[a=a\sqcup\bigl(a\sqcap(a\sqcup a)\bigr)\overset{(**)}{=}a\sqcup a.\]
+Also $a\sqcup a=a$. \qed
+
+Beachtet: Assoziativität und Kommutativität wurden gar nicht gebraucht -- die beiden Verschmelzungsgesetze allein genügen.
+\end{loesung}
+
 \aufgabetitel{$3$}{Beweis Zusammenhang inf und sup}\\
 Zeigen Sie $\forall u,v\in V: u\sqcap v = u \Leftrightarrow u\sqcup v = v$ in einem Verband $V$.
+
+\begin{loesung}
+Seien $u,v\in V$ beliebig. Wir zeigen beide Richtungen einzeln; benutzt werden jeweils nur Kommutativität und ein Verschmelzungsgesetz.
+
+\enquote{$\Rightarrow$}: Gelte $u\sqcap v=u$. Dann ist
+\[u\sqcup v \;=\; (u\sqcap v)\sqcup v \;=\; v\sqcup(u\sqcap v) \;=\; v\sqcup(v\sqcap u) \;=\; v,\]
+wobei im ersten Schritt die Voraussetzung eingesetzt wurde, danach zweimal Kommutativität (einmal für $\sqcup$, einmal für $\sqcap$) und zum Schluss die Verschmelzung $v\sqcup(v\sqcap u)=v$.
+
+\enquote{$\Leftarrow$}: Gelte $u\sqcup v=v$. Dann ist
+\[u\sqcap v \;=\; u\sqcap(u\sqcup v) \;=\; u,\]
+wobei zuerst die Voraussetzung rückwärts eingesetzt und dann die Verschmelzung $u\sqcap(u\sqcup v)=u$ verwendet wurde. \qed
+
+\textbf{Bedeutung.} Nach Aufgabe~7 definiert $u\sqsubseteq v:\Leftrightarrow u\sqcap v=u$ eine Ordnung auf $V$. Die gerade bewiesene Äquivalenz besagt also: Man kann diese Ordnung wahlweise über $\sqcap$ oder über $\sqcup$ definieren,
+\[u\sqsubseteq v \iff u\sqcap v=u \iff u\sqcup v=v,\]
+und erhält beide Male dieselbe Relation. Anschaulich: \enquote{$u$ liegt unter $v$} heißt gleichermaßen \enquote{das Infimum der beiden ist $u$} wie \enquote{das Supremum der beiden ist $v$}.
+\end{loesung}
 
 \aufgabetitel{$10$}{Induzierter Verband}\\
 Sei $(V,\sqsubseteq)$ eine Ordnung, $W\subseteq V$. Macht Euch zunächst nochmal die folgenden Begriffe klar:
@@ -154,12 +452,85 @@ Sei $(V,\sqsubseteq)$ eine Ordnung, $W\subseteq V$. Macht Euch zunächst nochmal
   \item Supremum, Infimum von $W$
 \end{itemize}
 \begin{enumerate}[a)]
-  \item Zeigen Sie (bzw. macht Euch klar), dass für $w_1,...,w_n\in V$ gilt: $\inf(w_1,...,1_n)\sqsubseteq w_i$ für alle $i\in\{1,...,n\}$ und $w_i\sqsubseteq \sup(w_1,...,w_n)$ für alle $i\in\{1,...,n\}$.
+  \item Zeigen Sie (bzw. macht Euch klar), dass für $w_1,...,w_n\in V$ gilt: $\inf(w_1,...,w_n)\sqsubseteq w_i$ für alle $i\in\{1,...,n\}$ und $w_i\sqsubseteq \sup(w_1,...,w_n)$ für alle $i\in\{1,...,n\}$.
   \item Zeigen Sie, dass $(V,\sqcup,\sqcap)$ einen Verband bildet, wenn $\sqcup=\sup$ und $\sqcap=\inf$ gesetzt wird und je zwei Elemente ein Supremum und ein Infimum besitzen, also $\inf(u,v)=u\sqcap v$ und $\sup(u,v)=u\sqcup v$ für alle $u,v\in V$.
 \end{enumerate}
 
+\begin{loesung}
+Vorbemerkung: Supremum und Infimum sind \emph{eindeutig}, sofern sie existieren. Denn $\sup W$ ist das kleinste Element der Menge der oberen Schranken, und kleinste Elemente sind eindeutig: sind $s,s'$ beide kleinste Elemente, so gilt $s\sqsubseteq s'$ und $s'\sqsubseteq s$, wegen Antisymmetrie also $s=s'$. Nur deshalb sind $\sqcup=\sup$ und $\sqcap=\inf$ überhaupt \emph{Abbildungen} $V\times V\to V$.
+
+\begin{enumerate}[a)]
+  \item Setze $W=\{w_1,\dots,w_n\}$ und $s=\sup W$.
+
+  Nach Definition ist $\sup W$ das kleinste Element der Menge der oberen Schranken von $W$ -- insbesondere ist $\sup W$ \emph{selbst eine} obere Schranke von $W$ (das kleinste Element einer Menge ist ja ein Element dieser Menge). Eine obere Schranke $s$ erfüllt aber definitionsgemäß $w\sqsubseteq s$ für alle $w\in W$. Also gilt $w_i\sqsubseteq\sup(w_1,\dots,w_n)$ für alle $i$.
+
+  Genauso ist $\inf W$ die größte untere Schranke, also insbesondere eine untere Schranke, und damit $\inf(w_1,\dots,w_n)\sqsubseteq w_i$ für alle $i$. \qed
+
+  Diese beiden Eigenschaften charakterisieren $\sup$ und $\inf$ zusammen mit der Minimalitäts- bzw.\ Maximalitätsbedingung vollständig; wir benutzen sie in b) ständig in der Form:
+  \begin{center}\small
+  \begin{tabular}{ll}
+  (S1) & $u\sqsubseteq u\sqcup v$ und $v\sqsubseteq u\sqcup v$\\
+  (S2) & aus $u\sqsubseteq t$ und $v\sqsubseteq t$ folgt $u\sqcup v\sqsubseteq t$ \quad(\enquote{kleinste} obere Schranke)\\
+  (I1) & $u\sqcap v\sqsubseteq u$ und $u\sqcap v\sqsubseteq v$\\
+  (I2) & aus $t\sqsubseteq u$ und $t\sqsubseteq v$ folgt $t\sqsubseteq u\sqcap v$
+  \end{tabular}
+  \end{center}
+
+  \item Sei nun vorausgesetzt, dass je zwei Elemente ein Supremum und ein Infimum besitzen, und sei $u\sqcup v:=\sup(u,v)$, $u\sqcap v:=\inf(u,v)$. Zu zeigen sind die drei Verbandsaxiome.
+
+  \textbf{Kommutativität.} $\sup(u,v)$ ist definiert über die Menge $\{u,v\}$, und es ist $\{u,v\}=\{v,u\}$. Die Menge der oberen Schranken ist also für beide Reihenfolgen dieselbe, damit auch ihr kleinstes Element: $u\sqcup v=v\sqcup u$. Analog $u\sqcap v=v\sqcap u$.
+
+  \textbf{Assoziativität.} Wir zeigen, dass \emph{beide} Klammerungen gleich $\sup\{u,v,w\}$ sind; wegen der Eindeutigkeit des Supremums folgt daraus die Gleichheit.
+
+  Sei $s:=u\sqcup(v\sqcup w)$.
+  \begin{itemize}
+    \item \emph{$s$ ist obere Schranke von $\{u,v,w\}$:} Nach (S1) ist $u\sqsubseteq s$. Ebenfalls nach (S1) ist $v\sqsubseteq v\sqcup w$ und $v\sqcup w\sqsubseteq s$, mit Transitivität also $v\sqsubseteq s$; genauso $w\sqsubseteq s$.
+    \item \emph{$s$ ist die kleinste:} Sei $t$ eine beliebige obere Schranke von $\{u,v,w\}$. Aus $v\sqsubseteq t$ und $w\sqsubseteq t$ folgt mit (S2) $v\sqcup w\sqsubseteq t$. Zusammen mit $u\sqsubseteq t$ liefert (S2) erneut $u\sqcup(v\sqcup w)\sqsubseteq t$, also $s\sqsubseteq t$.
+  \end{itemize}
+  Damit ist $s=\sup\{u,v,w\}$. Dieselbe Argumentation mit vertauschten Rollen zeigt $(u\sqcup v)\sqcup w=\sup\{u,v,w\}$. Also
+  \[u\sqcup(v\sqcup w)=\sup\{u,v,w\}=(u\sqcup v)\sqcup w.\]
+  Der Beweis für $\sqcap$ verläuft vollkommen dual (alle $\sqsubseteq$ umdrehen, (S1)/(S2) durch (I1)/(I2) ersetzen): beide Klammerungen sind $\inf\{u,v,w\}$.
+
+  \textbf{Verschmelzung.} Zu zeigen: $u\sqcap(u\sqcup v)=u$, d.h.\ $u$ ist die \emph{größte untere Schranke} von $\{u,\;u\sqcup v\}$.
+  \begin{itemize}
+    \item \emph{$u$ ist untere Schranke:} $u\sqsubseteq u$ (Reflexivität) und $u\sqsubseteq u\sqcup v$ nach (S1).
+    \item \emph{$u$ ist die größte:} Ist $t$ irgendeine untere Schranke von $\{u,\;u\sqcup v\}$, so gilt insbesondere $t\sqsubseteq u$.
+  \end{itemize}
+  Also $\inf(u,u\sqcup v)=u$, d.h.\ $u\sqcap(u\sqcup v)=u$.
+
+  Dual für $u\sqcup(u\sqcap v)=u$: Es ist $u\sqsubseteq u$ und $u\sqcap v\sqsubseteq u$ nach (I1), also ist $u$ eine obere Schranke von $\{u,\;u\sqcap v\}$; und jede obere Schranke $t$ dieser Menge erfüllt $u\sqsubseteq t$, also ist $u$ die kleinste. Damit $\sup(u,u\sqcap v)=u$. \qed
+
+  Fazit: Jede Ordnung, in der je zwei Elemente Supremum und Infimum besitzen, liefert einen Verband. Zusammen mit Aufgabe~7 (die die Gegenrichtung leistet) heißt das: \emph{Verbände und solche Ordnungen sind zwei Sichtweisen auf dasselbe Objekt.} Die Beispiele aus Aufgabe~3 sind genau die Ordnungen $(\mathcal{P}(M),\subseteq)$, $(\NN,\leq)$ und $(T_n,\mid)$ -- und die Ordnung aus Aufgabe~2\,d) ist kein Verband, weil dort $\sup\{p,q\}$ fehlt.
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$5$}{Induzierte Ordnung}\\
 Sei $(V,\sqcap,\sqcup)$ ein Verband. Definiere eine Ordnung $\sqsubseteq$ auf $V$ durch $a\sqsubseteq b \Leftrightarrow a\sqcap b = a$. Zeigen Sie, dass $(V,\sqsubseteq)$ eine Ordnung ist.
+
+\begin{loesung}
+Zu zeigen ist, dass $\sqsubseteq$ reflexiv, antisymmetrisch und transitiv ist. Benutzt werden dabei nur die Verbandsaxiome und das in Aufgabe~4 bewiesene Idempotenzgesetz.
+
+\textbf{Reflexivität:} Für jedes $a\in V$ gilt nach dem Idempotenzgesetz (Aufgabe~4) $a\sqcap a=a$. Genau das ist nach Definition die Aussage $a\sqsubseteq a$. \checkmark
+
+\textbf{Antisymmetrie:} Seien $a\sqsubseteq b$ und $b\sqsubseteq a$, d.h.\ $a\sqcap b=a$ und $b\sqcap a=b$. Mit der Kommutativität ist $a\sqcap b=b\sqcap a$, also
+\[a=a\sqcap b=b\sqcap a=b.\]
+Damit $a=b$. \checkmark
+
+\textbf{Transitivität:} Seien $a\sqsubseteq b$ und $b\sqsubseteq c$, d.h.\ $a\sqcap b=a$ und $b\sqcap c=b$. Dann rechnet man
+\[a\sqcap c \;\overset{\text{Vor.}}{=}\; (a\sqcap b)\sqcap c \;\overset{\text{Assoz.}}{=}\; a\sqcap(b\sqcap c) \;\overset{\text{Vor.}}{=}\; a\sqcap b \;\overset{\text{Vor.}}{=}\; a.\]
+Also $a\sqsubseteq c$. \checkmark
+
+Damit ist $(V,\sqsubseteq)$ eine (partielle) Ordnung. \qed
+
+\textbf{Bemerkung.} Die Verschmelzungsgesetze wurden hier nur indirekt über das Idempotenzgesetz gebraucht -- also war Aufgabe~4 die nötige Vorarbeit für die Reflexivität.
+
+Zwei Ergänzungen, die das Bild abrunden:
+\begin{itemize}
+  \item Nach Aufgabe~5 ist $a\sqsubseteq b$ gleichbedeutend mit $a\sqcup b=b$; die Ordnung hängt also nicht davon ab, welche der beiden Operationen man zur Definition heranzieht.
+  \item In dieser Ordnung gilt tatsächlich $a\sqcap b=\inf(a,b)$ und $a\sqcup b=\sup(a,b)$: Aus $(a\sqcap b)\sqcap a = a\sqcap(a\sqcap b)=(a\sqcap a)\sqcap b=a\sqcap b$ folgt $a\sqcap b\sqsubseteq a$, analog $a\sqcap b\sqsubseteq b$, d.h.\ $a\sqcap b$ ist untere Schranke. Ist $t\sqsubseteq a$ und $t\sqsubseteq b$, so ist $t\sqcap(a\sqcap b)=(t\sqcap a)\sqcap b=t\sqcap b=t$, also $t\sqsubseteq a\sqcap b$ -- $a\sqcap b$ ist die größte untere Schranke. Dual für $\sqcup$.
+\end{itemize}
+Zusammen mit Aufgabe~6 schließt sich damit der Kreis: Aus einer Ordnung mit Suprema und Infima wird ein Verband, aus einem Verband wird eine solche Ordnung -- und beide Konstruktionen sind zueinander invers.
+\end{loesung}
 
 
 

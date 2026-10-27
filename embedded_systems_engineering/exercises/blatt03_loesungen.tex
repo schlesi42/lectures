@@ -1,0 +1,241 @@
+%!TEX TS-program = pdflatex
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+\newcommand{\blattnummer}{3}
+\input{include/config.tex}
+\usetikzlibrary{automata,arrows.meta,positioning}
+\tikzset{zustand/.style={draw,rounded corners,align=center,minimum height=9mm,minimum width=17mm},every edge/.style={draw,->},every loop/.style={looseness=6},>=Stealth}
+\newcommand{\leer}{\ensuremath{\varepsilon}}
+\begin{document}
+\section*{Lösungen zu Blatt 3: Finite State Machines}
+\textbf{Konventionen.} Ein Eingabeereignis pro Schritt. Mealy-Kanten sind mit Eingabe/Ausgabe beschriftet, Moore-Zustände mit Zustand/Ausgabe. $\varepsilon$ bedeutet keine Ausgabe. Der Startpfeil kennzeichnet den Initialzustand. Nicht eingezeichnete Übergänge werden jeweils ausdrücklich erläutert.
+
+\subsection*{Aufgabe 1: LED-Lampe}
+\textbf{Zustände:} $Aus$ (initial), $Mittel$, $Max$. Eingaben: $on,off$. Ausgaben: $0$ (aus), $m$ (mittlere Helligkeit), $h$ (maximale Helligkeit). Die Ausgabe beschreibt die Helligkeitsstufe, kein kurzzeitiges Ereignis.
+
+\textbf{Moore-Automat}
+\begin{center}
+\begin{tikzpicture}[node distance=43mm,auto]
+\node[zustand,initial,initial text={}] (a) {$Aus/0$};
+\node[zustand,right=of a] (m) {$Mittel/m$};
+\node[zustand,right=of m] (h) {$Max/h$};
+\path (a) edge[bend left] node{$on$} (m)
+(m) edge[bend left] node{$off$} (a)
+(m) edge[bend left] node{$on$} (h)
+(h) edge[bend left] node{$on$} (m)
+(h) edge[bend left=48] node[below]{$off$} (a)
+(a) edge[loop above] node{$off$} (a);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Äquivalenter Mealy-Automat}\par
+Jede Kante erhält die Moore-Ausgabe ihres \emph{Zielzustands}.
+\begin{center}
+\begin{tikzpicture}[node distance=43mm,auto]
+\node[zustand,initial,initial text={}] (a) {$Aus$};
+\node[zustand,right=of a] (m) {$Mittel$};
+\node[zustand,right=of m] (h) {$Max$};
+\path (a) edge[bend left] node{$on/m$} (m)
+(m) edge[bend left] node{$off/0$} (a)
+(m) edge[bend left] node{$on/h$} (h)
+(h) edge[bend left] node{$on/m$} (m)
+(h) edge[bend left=48] node[below]{$off/0$} (a)
+(a) edge[loop above] node{$off/0$} (a);
+\end{tikzpicture}
+\end{center}
+\textbf{Initialausgabe:} Der Moore-Automat gibt schon vor der ersten Eingabe $0$ aus. Beim Mealy-Automaten wird die Lampe initial auf $0$ gesetzt; danach stimmen die Ausgaben nach jedem Eingabeschritt überein. Ohne diese Initialisierung ist die übliche Äquivalenz um die zusätzliche Moore-Initialausgabe versetzt.
+
+\textbf{Beispiel:} $on,on,on,off$ führt zu $m,h,m,0$.
+\newpage
+\subsection*{Aufgabe 2: Getränkeautomat}
+\textbf{Mealy-Automat.} $s_1$: kein Guthaben; $s_2$: eine Münze gespeichert.
+\begin{center}
+\begin{tikzpicture}[auto]
+\node[zustand,initial,initial text={}] (s1) {$s_1$};
+\node[zustand,right=65mm of s1] (s2) {$s_2$};
+\path (s1) edge[bend left] node{$m/\varepsilon$} (s2)
+(s2) edge[bend left] node[align=center]{$a/A,\ b/B,\ r/g$} (s1)
+(s1) edge[loop above] node{$a,b,r\,/\varepsilon$} (s1)
+(s2) edge[loop above] node{$m/g$} (s2);
+\end{tikzpicture}
+\end{center}
+Die Münzrückgabe bei $s_2\xrightarrow{m/g}s_2$ betrifft nur die zusätzliche Münze; das ursprüngliche Guthaben bleibt erhalten. Ohne Guthaben werden Wahl und Rückgabeknopf ignoriert.
+
+\textbf{Moore-Automat.} Zustände mit unterschiedlichen eingehenden Ausgaben werden aufgespalten. Ein Zustand merkt sich sowohl den Guthabenstatus als auch die gerade auszugebende Meldung:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lll}
+Zustand & Bedeutung & Ausgabe \\\hline
+$N_0$ (initial) & kein Guthaben & $\varepsilon$ \\
+$N_A$ & kein Guthaben, Getränk A ausgegeben & $A$ \\
+$N_B$ & kein Guthaben, Getränk B ausgegeben & $B$ \\
+$N_g$ & kein Guthaben, Abbruch mit Rückgabe & $g$ \\
+$P_0$ & Guthaben vorhanden & $\varepsilon$ \\
+$P_g$ & Guthaben vorhanden, Zusatzmünze zurück & $g$
+\end{tabular}
+\end{center}
+Die folgende vollständige Übergangstabelle definiert alle Kanten des Moore-Automaten (Ausgaben stehen ausschließlich an den Zuständen):
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{c|cccc}
+Zustand & $m$ & $r$ & $a$ & $b$ \\\hline
+$N_0$ & $P_0$ & $N_0$ & $N_0$ & $N_0$ \\
+$N_A$ & $P_0$ & $N_0$ & $N_0$ & $N_0$ \\
+$N_B$ & $P_0$ & $N_0$ & $N_0$ & $N_0$ \\
+$N_g$ & $P_0$ & $N_0$ & $N_0$ & $N_0$ \\
+$P_0$ & $P_g$ & $N_g$ & $N_A$ & $N_B$ \\
+$P_g$ & $P_g$ & $N_g$ & $N_A$ & $N_B$
+\end{tabular}
+\end{center}
+\textbf{Ausgabesemantik:} Ausgaben werden einmal je Verarbeitungsschritt beim Erreichen des Zielzustands erzeugt, auch bei einem Selbstübergang. Das Verweilen in $N_A$ bedeutet daher keine dauernde Getränkeausgabe. Bei einer technischen Umsetzung als Pulse sind entsprechende Entry-Aktionen bzw. eine Taktung erforderlich.
+
+\textbf{Äquivalenz:} Für $m,m,b$ liefert Mealy $\varepsilon,g,B$; Moore durchläuft $N_0,P_0,P_g,N_B$ und liefert $\varepsilon,\varepsilon,g,B$. Nach Weglassen der zusätzlichen Initialausgabe stimmen die Folgen überein. $N_g$ und $P_g$ können trotz gleicher Ausgabe nicht verschmolzen werden: Nur in $P_g$ darf eine Wahl ein Getränk ausgeben.
+\newpage
+\subsection*{Aufgabe 2: Moore-Diagramm (Fortsetzung)}
+Das Diagramm zeigt dieselben sechs Zustände wie die Tabelle. Um kreuzende Kanten zu vermeiden, werden die identischen ausgehenden Übergänge der Zustandsgruppen in zwei Teilbildern dargestellt. Gleiche Zustandsnamen bezeichnen in beiden Teilbildern denselben Zustand; die Mengenboxen sind lediglich Abkürzungen, keine zusätzlichen Zustände.
+
+\textbf{Übergänge ohne Guthaben:} Von jedem der vier Zustände links gelten dieselben beiden Kanten.
+\begin{center}
+\begin{tikzpicture}[auto]
+\node[zustand,minimum width=40mm,minimum height=28mm] (n) at (0,0) {$N_0/\varepsilon$ (initial)\\$N_A/A$\\$N_B/B$\\$N_g/g$};
+\node[zustand] (p) at (7,1) {$P_0/\varepsilon$};
+\node[zustand] (zero) at (7,-1.5) {$N_0/\varepsilon$};
+\path (n) edge node{$m$} (p) (n) edge node[below]{$a,b,r$} (zero);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Übergänge mit Guthaben:} Von jedem der beiden Zustände links gelten alle vier Kanten.
+\begin{center}
+\begin{tikzpicture}[auto]
+\node[zustand,minimum width=40mm,minimum height=16mm] (p) at (0,0) {$P_0/\varepsilon$\\$P_g/g$};
+\node[zustand] (g) at (7,3) {$P_g/g$};
+\node[zustand] (ng) at (7,1) {$N_g/g$};
+\node[zustand] (a) at (7,-1) {$N_A/A$};
+\node[zustand] (b) at (7,-3) {$N_B/B$};
+\path (p) edge node{$m$} (g) (p) edge node{$r$} (ng)
+(p) edge node[below]{$a$} (a) (p) edge node[below]{$b$} (b);
+\end{tikzpicture}
+\end{center}
+Insbesondere enthält die erste Gruppe die Selbstübergänge von $N_0$ bei $a,b,r$; die zweite Gruppe enthält den Selbstübergang von $P_g$ bei $m$. Die Tabelle auf der vorherigen Seite löst die Gruppen vollständig auf.
+\newpage
+\subsection*{Aufgabe 3: Zustandsexplosion}
+Jeder Zustand speichert die Menge $S\subseteq\{A,B,C\}$ der bereits empfangenen Ereignisse. Initial gilt $S=\emptyset$. Es werden genau $2^3=8$ Zustände benötigt.
+\begin{center}
+\begin{tikzpicture}[auto,scale=0.95,transform shape]
+\node[zustand,initial,initial text={}] (e) at (0,0) {$\emptyset$};
+\node[zustand] (a) at (3,2.5) {$A$};
+\node[zustand] (b) at (3,0) {$B$};
+\node[zustand] (c) at (3,-2.5) {$C$};
+\node[zustand] (ab) at (7,2.5) {$AB$};
+\node[zustand] (ac) at (7,0) {$AC$};
+\node[zustand] (bc) at (7,-2.5) {$BC$};
+\node[zustand] (abc) at (10,0) {$ABC$};
+\path (e) edge node{$A$} (a) (e) edge node{$B$} (b) (e) edge node[below]{$C$} (c)
+(a) edge node{$B$} (ab) (a) edge node[pos=.3]{$C$} (ac)
+(b) edge node[pos=.3]{$A$} (ab) (b) edge node[pos=.3,below]{$C$} (bc)
+(c) edge node[pos=.3,below]{$A$} (ac) (c) edge node[below]{$B$} (bc)
+(ab) edge node{$C$} (abc) (ac) edge node{$B$} (abc) (bc) edge node[below]{$A$} (abc);
+\draw[->] (abc.south) -- (10,-3.6) -- node[below]{$Y/Z$} (0,-3.6) -- (e.south);
+\end{tikzpicture}
+\end{center}
+Alle mit $A,B,C$ beschrifteten Kanten haben die Ausgabe $\varepsilon$. Die ausgelassenen Selbstübergänge sind durch folgende vollständige Regel definiert:
+\[
+\delta(S,x)=S\cup\{x\},\quad\lambda(S,x)=\varepsilon
+\qquad (x\in\{A,B,C\}).
+\]
+\[
+(\delta(S,Y),\lambda(S,Y))=
+\begin{cases}
+(\emptyset,Z),&S=\{A,B,C\},\\
+(S,\varepsilon),&\text{sonst}.
+\end{cases}
+\]
+Bereits empfangene Ereignisse ändern also nichts; ein zu frühes $Y$ wird ignoriert. Insbesondere löst das dritte verschiedene Ereignis noch kein $Z$ aus: Erst ein anschließendes $Y$ tut dies.
+
+\textbf{Minimalitätsbegründung.} Alle acht Mengen sind erreichbar. Seien $S\neq T$. Nach gegebenenfalls Vertauschen gibt es ein $x\in S\setminus T$. Man sende alle Ereignisse aus $\{A,B,C\}\setminus S$ und danach $Y$. Ausgehend von $S$ sind dann alle drei Ereignisse vorhanden, also wird $Z$ ausgegeben. Ausgehend von $T$ fehlt weiterhin $x$, also bleibt die Ausgabe aus. Somit sind je zwei Zustände durch eine Eingabefolge unterscheidbar und keiner kann mit einem anderen verschmolzen werden.
+
+Für $n$ unabhängig eintreffende Ereignisse ergeben sich entsprechend $2^n$ Zustände. Nebenläufige Teilautomaten können diese Information kompakt darstellen; die Anzahl ihrer globalen Zustandskombinationen bleibt dennoch $2^n$.
+\newpage
+\subsection*{Aufgabe 4: Blinker als Moore-Automat}
+Die Ausgabe wird als $(links,rechts)$ gelesen. Damit gelten $Aus/00$, $L/10$, $R/01$, $WB/11$. Modelliert wird die Freigabe der Blinker; eine zeitliche Hell-Dunkel-Folge ist nicht spezifiziert.
+\begin{center}
+\begin{tikzpicture}[auto]
+\node[zustand,initial,initial text={}] (a) at (0,0) {$Aus/00$};
+\node[zustand] (l) at (-4.5,-2.4) {$L/10$};
+\node[zustand] (r) at (4.5,-2.4) {$R/01$};
+\node[zustand] (w) at (0,-5) {$WB/11$};
+\path (a) edge[bend right=20] node[left]{$left$} (l)
+(l) edge[bend right=20] node[sloped,above]{$mid,right$} (a)
+(a) edge[bend left=20] node[right]{$right$} (r)
+(r) edge[bend left=20] node[sloped,above]{$mid,left$} (a)
+(l) edge node[left]{$haz$} (w)
+(r) edge node[right]{$haz$} (w)
+
+(w) edge node[right]{$haz$} (a);
+\draw[->] (a.north) -- (0,.7) -- (-6,.7) -- node[left]{$haz$} (-6,-5) -- (w.west);
+\end{tikzpicture}
+\end{center}
+\textbf{Vollständige Übergangstabelle:}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|cccc|c}
+Zustand & $left$ & $mid$ & $right$ & $haz$ & Ausgabe \\\hline
+$Aus$ & $L$ & $Aus$ & $R$ & $WB$ & 00 \\
+$L$ & $L$ & $Aus$ & $Aus$ & $WB$ & 10 \\
+$R$ & $Aus$ & $Aus$ & $R$ & $WB$ & 01 \\
+$WB$ & $WB$ & $WB$ & $WB$ & $Aus$ & 11
+\end{tabular}
+\end{center}
+\textbf{Interpretation des Hebels:} Die Formulierung „auf oder über die Mittelposition“ wird wörtlich umgesetzt: Ein Gegenrichtungsereignis in $L$ bzw. $R$ deaktiviert zunächst die normale Blinkfunktion. Zum Einschalten der Gegenrichtung ist danach ein entsprechendes Ereignis aus $Aus$ nötig.
+
+Falls $left,mid,right$ stattdessen als \emph{gemeldete Endpositionen} des Hebels gemeint sind, lautet die alternative Modellierung $L\xrightarrow{right}R$ und $R\xrightarrow{left}L$; beim realen Überqueren wird zuvor $mid$ gemeldet. Die übrigen Übergänge sind unverändert. Die gewählte Ereignisinterpretation muss daher ausdrücklich festgelegt werden.
+
+\textbf{Priorität:} In $WB$ werden alle Hebelereignisse ignoriert. $haz$ führt aus jedem normalen Zustand nach $WB$ und von dort stets nach $Aus$; es wird kein vorheriger Blinkerzustand wiederhergestellt. Für gleichzeitig anliegende Eingaben wäre zusätzlich eine Prioritätsregel nötig; hier werden Ereignisse einzeln verarbeitet.
+\newpage
+\subsection*{Aufgabe 5: Bankautomat als Mealy-Automat}
+\textbf{Eingaben:} $karte$, $betrag$, $ja$, $nein$, $korrekt$, $falsch$, $genommen$, $abbruch$. Betrag und PIN werden extern erfasst bzw. geprüft. \textbf{Ausgaben:} $wahl$ (Betrag abfragen), $pruefen$, $verfuegbar$ (verfügbaren Betrag anzeigen und erneut wählen lassen), $pin$, $fehler$, $karteAus$, $geld$, später $einziehen$.
+
+\textbf{a) Grundmodell}
+\begin{center}
+\begin{tikzpicture}[auto,font=\small]
+\node[zustand,initial,initial text={}] (i) at (0,0) {$I$\\bereit};
+\node[zustand] (b) at (4,0) {$B$\\Betragswahl};
+\node[zustand] (v) at (9,0) {$V$\\Prüfung};
+\node[zustand] (p) at (9,-3) {$P$\\PIN};
+\node[zustand] (k) at (0,-3) {$K$\\Kartenentnahme};
+\path (i) edge node{$karte/wahl$} (b)
+(b) edge[bend left] node{$betrag/pruefen$} (v)
+(v) edge[bend left] node{$nein/verfuegbar$} (b)
+(v) edge node[right]{$ja/pin$} (p)
+(p) edge node[below]{$korrekt/karteAus$} (k)
+(k) edge node[left]{$genommen/geld$} (i)
+(p) edge[loop right] node{$falsch/fehler$} (p)
+(b) edge[bend right=35] node[above]{$abbruch/karteAus$} (i)
+(p) edge node[sloped,above,pos=.65]{$abbruch/karteAus$} (i);
+\end{tikzpicture}
+\end{center}
+Nicht aufgeführte Eingaben werden ohne Ausgabe ignoriert. Bei $falsch$ bleibt die PIN-Eingabe aktiv. Während der externen Betragsprüfung ist in dieser Lösung keine Abbruchmöglichkeit vorgesehen; gefordert ist sie bei Betragswahl und PIN-Eingabe. Nach Abbruch geht es laut Aufgabe direkt nach $I$. Nach korrekter PIN wird dagegen zwingend in $K$ auf die Kartenentnahme gewartet: Erst dann wird Geld ausgegeben.
+
+\textbf{b) Karte nach drei aufeinanderfolgenden Fehlversuchen einbehalten}
+Ersetze $P$ durch $P_0,P_1,P_2$ (bisher 0, 1 oder 2 falsche PIN-Eingaben). Der Übergang $V\xrightarrow{ja/pin}P$ führt nun nach $P_0$.
+\begin{center}
+\begin{tikzpicture}[auto,node distance=25mm,font=\small]
+\node[zustand] (p0) {$P_0$};
+\node[zustand,right=of p0] (p1) {$P_1$};
+\node[zustand,right=of p1] (p2) {$P_2$};
+\node[zustand,right=of p2] (i) {$I$};
+\path (p0) edge node{$falsch/fehler$} (p1)
+(p1) edge node{$falsch/fehler$} (p2)
+(p2) edge node{$falsch/einziehen$} (i);
+\end{tikzpicture}
+\end{center}
+Aus jedem $P_i$ führt $korrekt/karteAus$ nach $K$ und $abbruch/karteAus$ nach $I$. Alle übrigen Übergänge bleiben erhalten. Ein neuer Vorgang beginnt bei $P_0$; nach erfolgreicher PIN endet die Folge der Fehlversuche. Ignorierte Ereignisse setzen sie nicht zurück. Beim dritten Fehler werden weder Karte noch Geld ausgegeben.
+
+\textbf{Prüffolgen:} Nach \(karte,betrag,ja\) gilt:
+\begin{itemize}
+\item \(falsch,falsch,korrekt,genommen\): Geld wird ausgegeben.
+\item \(falsch,falsch,falsch\): Die Karte wird einbehalten.
+\end{itemize}
+Das Grundmodell benötigt 5 Zustände, die Erweiterung 7.
+\end{document}

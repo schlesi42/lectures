@@ -1,0 +1,267 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% Die Lösungsschalter bleiben wie bei den anderen Blättern in Zeile 4 und 5.
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% Für die Lösungsausgabe in Zeile 5 false durch true ersetzen.
+\newcommand{\blattnummer}{2}
+\input{include/config.tex}
+\usetikzlibrary{arrows.meta}
+\tikzset{
+  pnplace/.style={circle,draw,minimum size=8mm,inner sep=0pt},
+  pntrans/.style={rectangle,draw,fill=gray!15,minimum width=5mm,minimum height=9mm,inner sep=0pt},
+  pnlabel/.style={font=\small,align=center},
+  pnarc/.style={->,>=Latex,semithick}
+}
+\newcommand{\pnmark}[1]{\fill (#1.center) circle (2pt);}
+
+\begin{document}
+\setblatthema{Petrinetze: Einfache Modellierungen}
+\iforiginal{\input{include/kopf.tex}}
+
+\begin{notes}
+\textbf{Grundlage:} Vorlesung ,,Embedded Systems -- Modellierung``, Folien 63--65.\par
+Modelliert die Abläufe als Petrinetze und erläutert ihr Verhalten direkt an der Zeichnung.
+Stellen werden als Kreise, Transitionen als Rechtecke und Marken als Punkte gezeichnet.
+Verbindet durch Pfeile immer eine Stelle mit einer Transition oder umgekehrt.
+Alle Kanten haben Gewicht eins.
+Eine Transition ist aktiviert, wenn jede Eingangsstelle mindestens eine Marke enthält.
+Beim Schalten wird je eine Marke aus jeder Eingangsstelle entfernt und in jeder
+Ausgangsstelle erzeugt. Es gibt keine zusätzlichen Kapazitätsgrenzen oder Zeitbedingungen.
+Beschriftet Stellen und Transitionen mit ihrer Bedeutung und zeichnet die Marken
+im Anfangszustand ein. Eine formale Beschreibung durch Mengen oder Formeln ist nicht erforderlich.
+\end{notes}
+
+\aufgabetitel{$5$}{Bearbeitungsstation}\\
+Eine Station bearbeitet jeweils ein Werkstück. Anfangs ist sie frei.
+Durch das Einlegen eines Werkstücks beginnt die Bearbeitung. Nach deren Abschluss
+liegt das fertige Werkstück noch in der Station. Erst nach seiner Entnahme ist
+die Station wieder frei. Werkstücke stehen zum Einlegen immer zur Verfügung;
+ihre Vorratshaltung wird nicht modelliert.
+\begin{enumerate}
+  \item Zeichne ein Petrinetz mit drei Stellen für die Zustände der Station und drei Transitionen.
+  \item Spiele einen vollständigen Durchlauf an deiner Zeichnung durch.
+        Welche Bedeutung hat die Marke, und wo liegt sie nach den einzelnen Schritten?
+  \item Warum kann während der Bearbeitung kein zweites Werkstück eingelegt werden?
+        Weshalb muss auch ein fertiges Werkstück die Station noch blockieren?
+\end{enumerate}
+
+\aufgabetitel{$5$}{Getränkeauswahl}\\
+Ein vereinfachter Getränkeautomat wartet anfangs auf eine Münze. Nach dem Einwurf
+kann entweder Tee oder Kaffee gewählt oder der Vorgang abgebrochen werden.
+Die Wahl gibt sofort das jeweilige Getränk aus; ein Abbruch gibt die Münze zurück.
+Danach wartet der Automat wieder auf eine Münze. Solange die Entscheidung aussteht,
+kann keine weitere Münze eingeworfen werden. Vorräte und Zubereitungszeiten werden nicht modelliert.
+\begin{enumerate}
+  \item Modelliere den Ablauf mit zwei Stellen und vier Transitionen.
+  \item Welche Transitionen sind unmittelbar nach dem Münzeinwurf aktiviert?
+        Begründe, warum mit einer Münze nicht beide Getränke ausgegeben werden können.
+  \item Entscheidet das Netz, welche der möglichen Transitionen als Nächstes schaltet?
+        Erkläre den Unterschied zwischen ,,aktiviert sein`` und ,,schalten``.
+\end{enumerate}
+
+\clearpage
+\aufgabetitel{$5$}{Zwei Sensorprüfungen}\\
+Beim Start eines Geräts müssen ein Temperatur- und ein Drucksensor geprüft werden.
+Anfangs ist das Gerät startbereit. Ein Start stößt beide Prüfungen an.
+Die Prüfungen laufen unabhängig voneinander und können in beliebiger Reihenfolge
+fertig werden. Erst wenn beide erfolgreich abgeschlossen sind, wird das Gerät
+freigegeben. Modelliert wird genau ein Startvorgang ohne Fehlerfälle und ohne Neustart.
+\begin{enumerate}
+  \item Zeichne ein Petrinetz. Unterscheide für jeden Sensor die Stellen
+        ,,Prüfung läuft`` und ,,Prüfung fertig``. Ergänze Stellen für
+        ,,startbereit`` und ,,freigegeben``.
+  \item Warum können die beiden Prüfungen unabhängig voneinander fertig werden?
+        Vergleiche die Verzweigung beim Start mit der Getränkeauswahl aus Aufgabe 2.
+  \item Zeige die Marken in deiner Zeichnung, wenn nur die Temperaturprüfung fertig ist.
+        Warum kann die Freigabe noch nicht schalten? Was passiert, wenn die Druckprüfung nie fertig wird?
+\end{enumerate}
+
+\aufgabetitel{$5$}{Gemeinsamer Arbeitsbereich}\\
+Zwei Roboter A und B benutzen denselben Arbeitsbereich. Jeder Roboter befindet
+sich entweder außerhalb oder innerhalb dieses Bereichs. Anfangs sind beide
+außerhalb und der Bereich ist frei. Ein Roboter darf den Bereich nur betreten,
+wenn er frei ist. Beim Verlassen gibt er ihn wieder frei. Beide Roboter können
+diesen Ablauf beliebig oft wiederholen.
+\begin{enumerate}
+  \item Zeichne ein Petrinetz mit je zwei Stellen pro Roboter und einer
+        zusätzlichen Stelle ,,Bereich frei``. Verwende je eine Transition
+        zum Betreten und zum Verlassen pro Roboter.
+  \item Welche Transitionen sind anfangs aktiviert? Welche sind aktiviert,
+        nachdem Roboter A den Bereich betreten hat?
+  \item Begründe, warum nie beide Roboter gleichzeitig im Bereich sein können.
+        Erzwingt das Netz, dass sich A und B abwechseln? Begründe deine Antwort.
+\end{enumerate}
+
+\ifloesung{\clearpage}
+\begin{loesung}
+\textbf{Aufgabe 1: Bearbeitungsstation}
+
+Die Stellen beschreiben Zustände, die Transitionen die Zustandswechsel.
+Eine Marke zeigt den aktuellen Zustand der Station an.
+\begin{center}
+\begin{tikzpicture}[every label/.style=pnlabel]
+  \node[pnplace,label=above:{frei}] (f) at (0,0) {}; \pnmark{f}
+  \node[pntrans,label=below:{einlegen}] (e) at (2.5,0) {};
+  \node[pnplace,label=above:{in Bearbeitung}] (b) at (5,0) {};
+  \node[pntrans,label=below:{abschließen}] (a) at (7.5,0) {};
+  \node[pnplace,label=above:{fertig}] (g) at (10,0) {};
+  \node[pntrans,label=below:{entnehmen}] (n) at (5,-2) {};
+  \draw[pnarc] (f)--(e); \draw[pnarc] (e)--(b);
+  \draw[pnarc] (b)--(a); \draw[pnarc] (a)--(g);
+  \draw[pnarc] (g) |- (n); \draw[pnarc] (n) -| (f);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Ein Durchlauf:} Anfangs liegt die Marke in ,,frei``. Beim Einlegen
+wird sie dort entfernt und in ,,in Bearbeitung`` erzeugt. Beim Abschließen
+wechselt sie nach ,,fertig`` und beim Entnehmen zurück nach ,,frei``.
+Die Marke steht hier für den Zustand der Station, nicht für einen Werkstückvorrat.
+
+\textbf{Belegung und Reihenfolge:} Während der Bearbeitung fehlt die Marke
+in ,,frei``. Deshalb ist ,,einlegen`` nicht aktiviert. Auch ein fertiges Werkstück
+belegt die Station noch; erst seine Entnahme ermöglicht das nächste Einlegen.
+Würde bereits das Abschließen die Station freigeben, könnte ein neues Werkstück
+eingelegt werden, obwohl das alte noch darin liegt.
+
+\textbf{Bedeutung der Marken:} In diesem Netz bleibt genau eine Marke erhalten,
+weil jede Transition eine Marke verbraucht und eine erzeugt. Die Station ist
+somit immer in genau einem ihrer drei Zustände. Das ist eine Eigenschaft dieses
+Modells; Petrinetze können auch mehrere Marken besitzen oder beim Schalten
+die Gesamtzahl der Marken verändern (siehe Aufgabe 3).
+
+\clearpage
+\textbf{Aufgabe 2: Getränkeauswahl}
+
+Die Stellen unterscheiden ,,warte auf Münze`` und ,,bezahlt``.
+Die Getränke-Transitionen fassen jeweils Auswahl und Ausgabe zusammen;
+die Abbruchtransition modelliert zugleich die Rückgabe der Münze.
+\begin{center}
+\begin{tikzpicture}[every label/.style=pnlabel]
+  \node[pnplace,label=left:{warte auf Münze}] (w) at (0,0) {}; \pnmark{w}
+  \node[pnplace,label=right:{bezahlt}] (z) at (6,0) {};
+  \node[pntrans,label=above:{Münze einwerfen}] (e) at (3,1.7) {};
+  \node[pntrans,label=above:{Tee wählen/ausgeben}] (t) at (3,0) {};
+  \node[pntrans,label=below:{Kaffee wählen/ausgeben}] (k) at (3,-1.5) {};
+  \node[pntrans,label=below:{abbrechen/Münze zurück}] (r) at (3,-3) {};
+  \draw[pnarc] (w) |- (e); \draw[pnarc] (e) -| (z);
+  \draw[pnarc] (z)--(t); \draw[pnarc] (t)--(w);
+  \draw[pnarc] (z.south west)--(k.east); \draw[pnarc] (k.west)--(w.south east);
+  \draw[pnarc] (z.south) |- (r); \draw[pnarc] (r) -| (w.south);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Aktivierte Transitionen:} Anfangs trägt nur ,,warte auf Münze`` eine
+Marke. Der Münzeinwurf verbraucht diese und erzeugt eine Marke in ,,bezahlt``.
+Damit sind Teeauswahl, Kaffeeauswahl und Abbruch aktiviert. Ein weiterer
+Münzeinwurf ist in diesem Zustand nicht möglich.
+
+\textbf{Konflikt:} Alle drei Alternativen benötigen dieselbe Marke in ,,bezahlt``.
+Schaltet eine davon, verbraucht sie diese Marke. Die anderen beiden sind danach
+nicht mehr aktiviert. Eine Münze ermöglicht daher nur eine Getränkeausgabe
+oder eine Rückgabe. Anschließend liegt wieder eine Marke in ,,warte auf Münze``.
+
+\textbf{Aktivierung und Auswahl:} ,,Aktiviert`` bedeutet, dass die Voraussetzungen
+zum Schalten erfüllt sind. Es bedeutet weder, dass die Transition sofort schaltet,
+noch, dass alle aktivierten Transitionen schalten müssen. Das Netz gibt hier
+keine Reihenfolge oder Priorität vor. Welche Alternative gewählt wird, hängt
+beim realen Automaten von der Bedienung ab; das Modell zeigt die zulässigen Möglichkeiten.
+
+\clearpage
+\textbf{Aufgabe 3: Zwei Sensorprüfungen}
+
+Die Starttransition erzeugt je eine Marke für die beiden unabhängigen Prüfungen.
+Die Freigabetransition benötigt anschließend beide Fertigmeldungen.
+\begin{center}
+\begin{tikzpicture}[every label/.style=pnlabel]
+  \node[pnplace,label=above:{startbereit}] (s) at (0,0) {}; \pnmark{s}
+  \node[pntrans,label=below:{Start}] (a) at (1.7,0) {};
+  \node[pnplace,label=above:{Temp. läuft}] (lt) at (3.5,1.6) {};
+  \node[pnplace,label=below:{Druck läuft}] (ld) at (3.5,-1.6) {};
+  \node[pntrans,label=above:{abschließen}] (t) at (5.6,1.6) {};
+  \node[pntrans,label=below:{abschließen}] (d) at (5.6,-1.6) {};
+  \node[pnplace,label=above:{Temp. fertig}] (ft) at (7.7,1.6) {};
+  \node[pnplace,label=below:{Druck fertig}] (fd) at (7.7,-1.6) {};
+  \node[pntrans,label={[yshift=-7mm]below:Freigabe}] (g) at (9.5,0) {};
+  \node[pnplace,label=above:{freigegeben}] (b) at (11.3,0) {};
+  \draw[pnarc] (s)--(a);
+  \draw[pnarc] (a)--(lt); \draw[pnarc] (a)--(ld);
+  \draw[pnarc] (lt)--(t); \draw[pnarc] (t)--(ft);
+  \draw[pnarc] (ld)--(d); \draw[pnarc] (d)--(fd);
+  \draw[pnarc] (ft)--(g); \draw[pnarc] (fd)--(g); \draw[pnarc] (g)--(b);
+\end{tikzpicture}
+\end{center}
+In der Zeichnung steht ,,Temp.`` für Temperatur. Anfangs trägt nur
+,,startbereit`` eine Marke; alle anderen Stellen sind leer.
+
+\textbf{Nebenläufigkeit:} Beim Start wird eine Marke verbraucht und je eine Marke
+in den beiden Stellen ,,läuft`` erzeugt. Beide Abschluss-Transitionen sind dann
+unabhängig aktiviert, da sie Marken aus verschiedenen Stellen benötigen.
+Die Temperaturprüfung kann zuerst fertig werden oder die Druckprüfung.
+Der Abschluss der einen verhindert den Abschluss der anderen nicht.
+Das Netz legt keine Dauer der Prüfungen fest.
+
+\textbf{Unterschied zur Getränkeauswahl:} Dort verzweigen die Pfeile von einer
+\emph{Stelle} zu mehreren Transitionen, die um dieselbe Marke konkurrieren.
+Hier verzweigen sie von einer \emph{Transition} zu mehreren Stellen:
+Beim Start erhalten beide Zweige eine Marke. Es werden also beide Prüfungen
+angestoßen, nicht nur eine ausgewählt.
+
+\textbf{Synchronisation:} Ist nur die Temperaturprüfung fertig, liegen Marken
+in ,,Temp. fertig`` und ,,Druck läuft``. In ,,Druck fertig`` fehlt noch eine Marke.
+Die Freigabe benötigt jedoch eine Marke aus jeder ihrer beiden Eingangsstellen.
+Sie kann erst nach Abschluss beider Prüfungen schalten und erzeugt dann eine
+Marke in ,,freigegeben``.
+
+Wird die Druckprüfung nie fertig, bleibt die Freigabe aus. Das Modell enthält
+weder einen Timeout noch eine Fehlerbehandlung. Nach erfolgreicher Freigabe
+kann dagegen absichtlich keine weitere Transition schalten: Der einmalige
+Startvorgang ist beendet.
+
+\clearpage
+\textbf{Aufgabe 4: Gemeinsamer Arbeitsbereich}
+
+Die Marke in ,,Bereich frei`` ist die Erlaubnis, den gemeinsamen Bereich zu betreten.
+Sie wird beim Betreten entnommen und erst beim Verlassen zurückgegeben.
+\begin{center}
+\begin{tikzpicture}[every label/.style=pnlabel]
+  \node[pnplace,label=left:{A außen}] (a0) at (0,2) {}; \pnmark{a0}
+  \node[pntrans,label=above:{A betreten}] (ea) at (2.5,2) {};
+  \node[pnplace,label=right:{A innen}] (a1) at (5,2) {};
+  \node[pntrans,label={[yshift=8mm]above:A verlassen}] (va) at (2.5,3.7) {};
+  \node[pnplace,label=above right:{Bereich frei}] (f) at (2.5,0) {}; \pnmark{f}
+  \node[pnplace,label=left:{B außen}] (b0) at (0,-2) {}; \pnmark{b0}
+  \node[pntrans,label=below:{B betreten}] (eb) at (2.5,-2) {};
+  \node[pnplace,label=right:{B innen}] (b1) at (5,-2) {};
+  \node[pntrans,label={[yshift=-8mm]below:B verlassen}] (vb) at (2.5,-3.7) {};
+  \draw[pnarc] (a0)--(ea); \draw[pnarc] (ea)--(a1);
+  \draw[pnarc] (a1) |- (va); \draw[pnarc] (va) -| (a0);
+  \draw[pnarc] (b0)--(eb); \draw[pnarc] (eb)--(b1);
+  \draw[pnarc] (b1) |- (vb); \draw[pnarc] (vb) -| (b0);
+  \draw[pnarc] (f)--(ea); \draw[pnarc] (f)--(eb);
+  \draw[pnarc] (va.north)--(2.5,4.5)--(-3,4.5)--(-3,0)--(f.west);
+  \draw[pnarc] (vb.south)--(2.5,-4.5)--(8.5,-4.5)--(8.5,0)--(f.east);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Aktivierte Transitionen:} Anfangs liegt je eine Marke in ,,A außen``,
+,,B außen`` und ,,Bereich frei``. Beide Betreten-Transitionen sind aktiviert,
+konkurrieren aber um dieselbe Freigabemarke. Nachdem A den Bereich betreten hat,
+liegen Marken nur in ,,A innen`` und ,,B außen``. Dann kann ausschließlich
+,,A verlassen`` schalten.
+
+\textbf{Gegenseitiger Ausschluss:} Wer den Bereich betritt, verbraucht die
+Marke in ,,Bereich frei``. Solange dieser Roboter im Bereich ist, fehlt dem
+anderen die erforderliche Marke zum Betreten. Erst das Verlassen gibt die
+Erlaubnis zurück. So können nie beide Roboter gleichzeitig im Bereich sein.
+Die Marke in ,,Bereich frei`` beschreibt eine verfügbare Ressource; die Marken
+in den Roboterstellen beschreiben dagegen deren jeweilige Position.
+
+\textbf{Keine erzwungene Abwechslung:} A darf eintreten, austreten und direkt
+erneut eintreten. Nach jedem Verlassen durch A sind wieder beide
+Betreten-Transitionen aktiviert; das Netz bevorzugt B nicht. Es garantiert
+somit den gegenseitigen Ausschluss, aber keine faire Aufteilung:
+B könnte beliebig lange nicht an die Reihe kommen.
+\end{loesung}
+\end{document}

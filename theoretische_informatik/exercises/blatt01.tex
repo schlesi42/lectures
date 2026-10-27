@@ -2,7 +2,7 @@
 %!TEX TS-options = -shell-escape
 % % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
 \newcommand{\printpraesenzlsg}{false}
-\newcommand{\printloesungen}{false}
+\newcommand{\printloesungen}{true}
 \newcommand{\printbewertungen}{false}
 % % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
 \newcommand{\blattnummer}{1}
@@ -36,6 +36,24 @@ Bewerten Sie für $A=\{1,\{1\},a\}$ folgende Aussagen:
   \item $\{1\}\in\mathcal{P}(A)$
   \item $\{1\}\subseteq\mathcal{P}(A)$
 \end{enumerate}
+
+\begin{loesung}
+Die Menge $A=\{1,\{1\},a\}$ hat genau die drei Elemente $1$, $\{1\}$ und $a$. Man beachte durchgehend den Unterschied zwischen \glqq ist Element von\grqq{} ($\in$) und \glqq ist Teilmenge von\grqq{} ($\subseteq$).
+\begin{enumerate}[(i)]
+  \item \textbf{wahr}. $1$ ist als Element aufgez"ahlt.
+  \item \textbf{wahr}. Auch die \emph{Menge} $\{1\}$ ist als Element aufgez"ahlt -- Elemente d"urfen selbst Mengen sein.
+  \item \textbf{wahr}. $a$ ist als Element aufgez"ahlt.
+  \item \textbf{wahr}. $\{1\}\subseteq A$ bedeutet $\forall x\in\{1\}:x\in A$, also nur $1\in A$, und das gilt nach (i). $\{1\}$ ist hier also gleichzeitig Element \emph{und} Teilmenge von $A$.
+  \item \textbf{wahr}. $\{a\}\subseteq A$ bedeutet $a\in A$, das gilt nach (iii).
+  \item \textbf{wahr}. $\{1,a\}\subseteq A$ bedeutet $1\in A$ \emph{und} $a\in A$, beides gilt.
+  \item \textbf{falsch}. $1$ ist keine Menge, kann also auch keine Teilmenge sein. (Streng genommen ist die Aussage gar nicht sinnvoll gebildet; als Aussage gewertet ist sie falsch.)
+  \item \textbf{wahr}. $\emptyset\subseteq M$ gilt f"ur \emph{jede} Menge $M$: die Bedingung $\forall x\in\emptyset:x\in M$ ist leer erf"ullt, da es kein $x\in\emptyset$ gibt.
+  \item \textbf{falsch}. Die Elemente von $A$ sind $1$, $\{1\}$ und $a$; $\emptyset$ ist keines davon.
+  \item \textbf{wahr}. Es ist $\emptyset\in\mathcal{P}(A)\Leftrightarrow\emptyset\subseteq A$, und das gilt nach (viii).
+  \item \textbf{wahr}. Es ist $\{1\}\in\mathcal{P}(A)\Leftrightarrow\{1\}\subseteq A$, und das gilt nach (iv).
+  \item \textbf{falsch}. Es ist $\{1\}\subseteq\mathcal{P}(A)\Leftrightarrow 1\in\mathcal{P}(A)\Leftrightarrow 1\subseteq A$, und das ist nach (vii) falsch. Richtig w"are dagegen $\{\{1\}\}\subseteq\mathcal{P}(A)$.
+\end{enumerate}
+\end{loesung}
 
 \aufgabetitel{$5$}{Mengenbeweis}\\
 Seien $A,B,C$ Mengen. Beweisen Sie \[(A\cap B)\cup C=A\cap (B\cup C)\Leftrightarrow C\subseteq A\]
@@ -84,7 +102,7 @@ $\Leftrightarrow (x\in A\vee x\in B)\wedge (x\in A\vee x\notin A)\wedge (x\notin
 
 $\Leftrightarrow (x\in A\vee x\in B)\wedge (x\notin A\vee x\notin B)$ ($x\in A\vee x\notin A$ ist immer wahr, kann man also k"urzen)
 
-$\Leftrightarrow x\in (A\cup B)\wedge \neq (x\in A\wedge x\in B)$ (De Morgan)
+$\Leftrightarrow x\in (A\cup B)\wedge \neg (x\in A\wedge x\in B)$ (De Morgan)
 
 $\Leftrightarrow x\in(A\cup B)\backslash(A\cap B)$
 
@@ -200,6 +218,25 @@ Geben Sie f"ur die folgenden Funktionen an, ob sie injektiv oder surjektiv sind 
 \item $f:\emptyset\to\{0\}$
 \end{enumerate}
 
+\begin{loesung}
+Wir gehen die beiden Funktionen einzeln durch.
+\begin{enumerate}[(i)]
+\item $f:\ZZ\to\NN,\ x\mapsto|x|$ ist \textbf{nicht injektiv}, aber \textbf{surjektiv}.
+
+\emph{Nicht injektiv:} Es ist $f(1)=|1|=1=|-1|=f(-1)$, aber $1\neq -1$. Damit ist die Bedingung $f(x_1)=f(x_2)\Rightarrow x_1=x_2$ verletzt.
+
+\emph{Surjektiv:} Sei $n\in\NN$ beliebig. Wegen $\NN\subseteq\ZZ$ ist $n$ auch ein zul"assiges Argument von $f$, und es gilt $f(n)=|n|=n$. Also wird jedes $n\in\NN$ getroffen.
+
+\item $f:\emptyset\to\{0\}$ (die \glqq leere Funktion\grqq) ist \textbf{injektiv}, aber \textbf{nicht surjektiv}.
+
+\emph{Injektiv:} Die Bedingung $\forall x_1,x_2\in\emptyset: f(x_1)=f(x_2)\Rightarrow x_1=x_2$ ist leer erf"ullt, da es "uberhaupt keine $x_1,x_2\in\emptyset$ gibt.
+
+\emph{Nicht surjektiv:} F"ur $0\in\{0\}$ m"usste es ein $x\in\emptyset$ mit $f(x)=0$ geben. Es gibt aber kein einziges $x\in\emptyset$, also wird $0$ nicht getroffen.
+
+Beachte, dass $f$ tats"achlich eine Funktion ist: auch die Forderung \glqq jedes Element des Urbildbereichs hat genau ein Bild\grqq{} ist "uber $\emptyset$ leer erf"ullt.
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$4$}{Indexmengen und Beweis}\\
 Es sei $A_i=\{n\in\mathbb{N}\mid n<i\}$.
 \begin{enumerate}[(i)]
@@ -207,8 +244,34 @@ Es sei $A_i=\{n\in\mathbb{N}\mid n<i\}$.
     \item Zeigen Sie, dass $\bigcap_{i\in\mathbb{N}}A_i=\emptyset$.
 \end{enumerate}
 
+\begin{loesung}
+In der Vorlesung ist $\NN=\{0,1,2,\dots\}$, also $0\in\NN$.
+\begin{enumerate}[(i)]
+\item $A_4=\{n\in\NN\mid n<4\}=\{0,1,2,3\}$.
+\item \textbf{Beweis:} Angenommen, es g"abe ein $n\in\bigcap_{i\in\NN}A_i$. Der Schnitt "uber alle $i\in\NN$ enth"alt nur Elemente, die in \emph{jedem} $A_i$ liegen, also insbesondere in $A_n$. Das hei"st $n<n$ -- Widerspruch. Also gibt es kein solches $n$ und der Schnitt ist leer.
+
+Alternativ und k"urzer: Es ist $A_0=\{n\in\NN\mid n<0\}=\emptyset$, und wegen $\bigcap_{i\in\NN}A_i\subseteq A_0=\emptyset$ folgt sofort $\bigcap_{i\in\NN}A_i=\emptyset$.
+\qed
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$4$}{Beweis mit Relationen}\\
 Seien $R_1,S_1,R_2,S_2\subseteq M\times M$ Relationen auf einer Menge $M$. Zeigen Sie \[R_1\subseteq R_2\wedge S_1\subseteq S_2\Rightarrow R_1\circ S_1\subseteq R_2\circ S_2\]
+
+\begin{loesung}
+Wir benutzen die Komposition aus der Vorlesung:
+\[R\circ S=\{(x,z)\mid\exists y:(x,y)\in R\wedge (y,z)\in S\}.\]
+
+\textbf{Beweis:} Es gelte $R_1\subseteq R_2$ und $S_1\subseteq S_2$. Sei $(x,z)\in R_1\circ S_1$ beliebig.
+
+Nach Definition der Komposition gibt es dann ein $y\in M$ mit $(x,y)\in R_1$ und $(y,z)\in S_1$.
+
+Wegen $R_1\subseteq R_2$ ist $(x,y)\in R_2$, und wegen $S_1\subseteq S_2$ ist $(y,z)\in S_2$.
+
+Dasselbe $y$ ist damit ein Zeuge daf"ur, dass $(x,z)\in R_2\circ S_2$ gilt.
+
+Da $(x,z)$ beliebig gew"ahlt war, folgt $R_1\circ S_1\subseteq R_2\circ S_2$. \qed
+\end{loesung}
 
 \aufgabetitel{$5$}{"Aquivalenzrelation}\\
 Sei $x\sim y\Leftrightarrow x=y \vee x=-y$ eine Relation auf $\mathbb{Z}\times\mathbb{Z}$. 
@@ -216,6 +279,29 @@ Sei $x\sim y\Leftrightarrow x=y \vee x=-y$ eine Relation auf $\mathbb{Z}\times\m
     \item Zeigen Sie, dass $\sim$ eine Äquivalenzrelation ist.
     \item Bestimmen Sie die Quotientenmenge $\mathbb{Z}/\sim$.
 \end{enumerate}
+
+\begin{loesung}
+Gemeint ist ${\sim}\subseteq\ZZ\times\ZZ$, also eine Relation \emph{auf} $\ZZ$.
+\begin{enumerate}[(i)]
+\item Wir pr"ufen die drei Eigenschaften einer "Aquivalenzrelation.
+
+\emph{Reflexiv:} Sei $x\in\ZZ$. Dann gilt $x=x$, also die linke Seite der Disjunktion, und damit $x\sim x$.
+
+\emph{Symmetrisch:} Sei $x\sim y$, also $x=y$ oder $x=-y$. Im ersten Fall ist auch $y=x$. Im zweiten Fall folgt aus $x=-y$ durch Multiplikation mit $-1$, dass $-x=y$, also $y=-x$. In beiden F"allen gilt $y\sim x$.
+
+\emph{Transitiv:} Seien $x\sim y$ und $y\sim z$, also $x=y$ oder $x=-y$, und $y=z$ oder $y=-z$. Einsetzen von $y=\pm z$ in $x=\pm y$ liefert in allen vier F"allen $x=z$ oder $x=-z$, also $x\sim z$.
+
+Damit ist $\sim$ reflexiv, symmetrisch und transitiv, also eine "Aquivalenzrelation. \qed
+
+(K"urzer: es ist $x\sim y\Leftrightarrow |x|=|y|$, und die drei Eigenschaften erbt $\sim$ dann unmittelbar von der Gleichheit.)
+
+\item Die "Aquivalenzklasse von $x$ ist
+\[[x]=\{y\in\ZZ\mid y=x\vee y=-x\}=\{x,-x\},\]
+also $[0]=\{0\}$ und $[x]=\{x,-x\}$ mit zwei Elementen f"ur $x\neq 0$. Damit ist
+\[\ZZ/{\sim}=\{\{x,-x\}\mid x\in\ZZ\}=\{\{0\},\{1,-1\},\{2,-2\},\{3,-3\},\dots\}.\]
+Jede Klasse enth"alt genau einen Vertreter aus $\NN$, n"amlich $|x|$. Die Abbildung $\NN\to\ZZ/{\sim},\ n\mapsto[n]$ ist also eine Bijektion, man kann $\ZZ/{\sim}$ damit mit $\NN$ identifizieren.
+\end{enumerate}
+\end{loesung}
 
 \aufgabetitel{$6$}{Beweise}\\
 Zeigen Sie
@@ -225,6 +311,41 @@ Zeigen Sie
     
     (Hinweis: Es ist $f^{-1}(X)=\{a\in A\mid f(a)\in X\}$.)
 \end{enumerate}
+
+\begin{loesung}
+Beide Aussagen zeigen wir durch eine Kette von "Aquivalenzen.
+\begin{enumerate}[(i)]
+\item \textbf{Beweis:} Sei $x$ beliebig.
+
+$x\in B\backslash(B\backslash A)$
+
+$\Leftrightarrow x\in B\wedge x\notin(B\backslash A)$
+
+$\Leftrightarrow x\in B\wedge\neg(x\in B\wedge x\notin A)$
+
+$\Leftrightarrow x\in B\wedge(x\notin B\vee x\in A)$ (De Morgan)
+
+$\Leftrightarrow (x\in B\wedge x\notin B)\vee(x\in B\wedge x\in A)$ (Distributivit"at)
+
+$\Leftrightarrow x\in B\wedge x\in A$ ($x\in B\wedge x\notin B$ ist immer falsch, kann also weggelassen werden)
+
+$\Leftrightarrow x\in A\cap B$ \qed
+
+\item \textbf{Beweis:} Sei $a\in A$ beliebig.
+
+$a\in f^{-1}(B_1\cap B_2)$
+
+$\Leftrightarrow f(a)\in B_1\cap B_2$ (Definition des Urbilds)
+
+$\Leftrightarrow f(a)\in B_1\wedge f(a)\in B_2$
+
+$\Leftrightarrow a\in f^{-1}(B_1)\wedge a\in f^{-1}(B_2)$ (Definition des Urbilds, zweimal)
+
+$\Leftrightarrow a\in f^{-1}(B_1)\cap f^{-1}(B_2)$ \qed
+
+Beachte, dass hier nirgends Injektivit"at oder Surjektivit"at von $f$ gebraucht wird -- $f^{-1}$ bezeichnet das Urbild, nicht die Umkehrfunktion.
+\end{enumerate}
+\end{loesung}
 
 
 \aufgabetitel{$5$}{Mengenbeweise} \\
@@ -238,8 +359,76 @@ Beweisen Sie folgende Aussagen:
   \item $\bigcap_{\varepsilon\in\mathbb{R}\backslash\{0\}}\{x\in\mathbb{R}||x-\pi|\leq |\varepsilon|\}=\{\pi\}$
 \end{enumerate}
 
+\begin{loesung}
+Wir zeigen die Aussagen der Reihe nach.
+\begin{enumerate}[(i)]
+\item \textbf{Beweis:} \glqq $\Rightarrow$\grqq: Gelte $A\subseteq B\cap C$ und sei $x\in A$. Dann ist $x\in B\cap C$, also $x\in B$ und $x\in C$. Da $x$ beliebig war, folgt $A\subseteq B$ und $A\subseteq C$.
+
+\glqq $\Leftarrow$\grqq: Gelte $A\subseteq B$ und $A\subseteq C$, und sei $x\in A$. Dann ist $x\in B$ (wegen $A\subseteq B$) und $x\in C$ (wegen $A\subseteq C$), also $x\in B\cap C$. Damit $A\subseteq B\cap C$. \qed
+
+\item \textbf{Beweis:} Sei $x$ beliebig.
+
+$x\in A\backslash(B\cup C)$
+
+$\Leftrightarrow x\in A\wedge\neg(x\in B\vee x\in C)$
+
+$\Leftrightarrow x\in A\wedge x\notin B\wedge x\notin C$ (De Morgan)
+
+$\Leftrightarrow (x\in A\wedge x\notin B)\wedge(x\in A\wedge x\notin C)$ ($x\in A$ darf man doppelt hinschreiben, Idempotenz)
+
+$\Leftrightarrow x\in(A\backslash B)\cap(A\backslash C)$ \qed
+
+\item \textbf{Beweis:} Elemente eines kartesischen Produkts sind Paare. Sei also $z=(p,q)$ beliebig.
+
+$(p,q)\in(A\cup B)\times C$
+
+$\Leftrightarrow p\in A\cup B\wedge q\in C$
+
+$\Leftrightarrow (p\in A\vee p\in B)\wedge q\in C$
+
+$\Leftrightarrow (p\in A\wedge q\in C)\vee(p\in B\wedge q\in C)$ (Distributivit"at)
+
+$\Leftrightarrow (p,q)\in A\times C\vee (p,q)\in B\times C$
+
+$\Leftrightarrow (p,q)\in(A\times C)\cup(B\times C)$ \qed
+
+\item \textbf{Beweis:} Sei $x$ beliebig.
+
+$x\in\left(\bigcup_{i\in I}D_i\right)\cap B$
+
+$\Leftrightarrow \left(\exists i\in I: x\in D_i\right)\wedge x\in B$
+
+$\Leftrightarrow \exists i\in I:(x\in D_i\wedge x\in B)$ (die Aussage $x\in B$ h"angt nicht von $i$ ab, darf also in den Existenzquantor gezogen werden)
+
+$\Leftrightarrow \exists i\in I: x\in D_i\cap B$
+
+$\Leftrightarrow x\in\bigcup_{i\in I}(D_i\cap B)$ \qed
+
+\item Wir schreiben abk"urzend $M_\varepsilon:=\{x\in\RR\mid |x-\pi|\leq|\varepsilon|\}$ und zeigen beide Inklusionen.
+
+\glqq $\supseteq$\grqq: Es ist $|\pi-\pi|=0\leq|\varepsilon|$ f"ur jedes $\varepsilon$, also $\pi\in M_\varepsilon$ f"ur alle $\varepsilon\in\RR\backslash\{0\}$ und damit $\pi\in\bigcap_\varepsilon M_\varepsilon$.
+
+\glqq $\subseteq$\grqq: Sei $x\in\bigcap_\varepsilon M_\varepsilon$, d.h. $|x-\pi|\leq|\varepsilon|$ f"ur \emph{alle} $\varepsilon\neq 0$. Angenommen $x\neq\pi$. Dann ist $d:=|x-\pi|>0$, und wir d"urfen $\varepsilon:=\frac{d}{2}\neq 0$ w"ahlen. Das liefert
+\[d=|x-\pi|\leq|\varepsilon|=\frac{d}{2},\]
+also $d\leq\frac{d}{2}$ und damit $d\leq 0$ -- im Widerspruch zu $d>0$. Also ist $x=\pi$.
+
+Insgesamt folgt $\bigcap_{\varepsilon\in\RR\backslash\{0\}}M_\varepsilon=\{\pi\}$. \qed
+
+Anschaulich: eine Zahl, die von $\pi$ einen kleineren Abstand als jede noch so kleine positive Schranke hat, muss $\pi$ selbst sein.
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$4$}{Beweis mit Relationen}\\
 Sei $R\subseteq M\times M$ auf einer Menge $M$. Zeigen Sie \[R\mbox{ transitiv }\Leftrightarrow R\circ R\subseteq R\]
+
+\begin{loesung}
+Wieder mit $R\circ R=\{(x,z)\mid\exists y\in M:(x,y)\in R\wedge (y,z)\in R\}$.
+
+\textbf{Beweis:}\\
+\glqq $\Rightarrow$\grqq: Sei $R$ transitiv und $(x,z)\in R\circ R$ beliebig. Nach Definition der Komposition gibt es ein $y\in M$ mit $(x,y)\in R$ und $(y,z)\in R$. Aus der Transitivit"at folgt $(x,z)\in R$. Da $(x,z)$ beliebig war, ist $R\circ R\subseteq R$.
+
+\glqq $\Leftarrow$\grqq: Gelte $R\circ R\subseteq R$. Seien $x,y,z\in M$ mit $(x,y)\in R$ und $(y,z)\in R$. Dann ist $(x,z)\in R\circ R$ nach Definition der Komposition (mit $y$ als Zwischenelement), und wegen $R\circ R\subseteq R$ also $(x,z)\in R$. Das ist genau die Transitivit"at von $R$. \qed
+\end{loesung}
 
 
 \aufgabetitel{$5$}{Funktionen und Relationen}\\
@@ -248,6 +437,53 @@ Sei $f:X\to Y$ eine Funktion und $\sim$ eine Relation "uber $X$ mit $x\sim y:\Le
     \item Stellen Sie die Funktion $f$ und die Relation $\sim$ f"ur $X=\{1,2,3,4,5\}$, $Y=\{1,2,3\}$, $1\mapsto 1, 2\mapsto 1, 3\mapsto 2, 4\mapsto 2, 5\mapsto 3$ dar.
     \item Zeigen Sie: $\sim$ ist eine Ordnungsrelation genau dann, wenn $f$ injektiv ist.
 \end{enumerate}
+
+\begin{loesung}
+Dabei sei $\leq$ eine Ordnung auf $Y$ (in (i) die "ubliche Ordnung auf $Y\subseteq\NN$).
+\begin{enumerate}[(i)]
+\item Die Funktion $f$ ist gegeben durch
+
+\begin{center}
+\begin{tabular}{c|ccccc}
+$x$ & 1 & 2 & 3 & 4 & 5\\\hline
+$f(x)$ & 1 & 1 & 2 & 2 & 3
+\end{tabular}
+\end{center}
+
+Es ist $x\sim y\Leftrightarrow f(x)\leq f(y)$, also
+\begin{align*}
+{\sim}=\{&(1,1),(1,2),(1,3),(1,4),(1,5),\\
+&(2,1),(2,2),(2,3),(2,4),(2,5),\\
+&(3,3),(3,4),(3,5),\\
+&(4,3),(4,4),(4,5),\\
+&(5,5)\}
+\end{align*}
+(17 Paare). Als Adjazenzmatrix (Zeile $=x$, Spalte $=y$):
+\[
+\begin{pmatrix}
+1&1&1&1&1\\
+1&1&1&1&1\\
+0&0&1&1&1\\
+0&0&1&1&1\\
+0&0&0&0&1
+\end{pmatrix}
+\]
+Man sieht der Matrix direkt an, dass $\sim$ hier \emph{keine} Ordnung ist: sie ist nicht antisymmetrisch, denn z.B. ist $(1,2)\in{\sim}$ und $(2,1)\in{\sim}$, aber $1\neq 2$. Passend dazu ist $f$ nicht injektiv ($f(1)=f(2)=1$).
+
+\item Zun"achst halten wir fest, dass zwei der drei Ordnungseigenschaften \emph{immer} gelten, unabh"angig von $f$:
+
+\emph{Reflexiv:} F"ur $x\in X$ ist $f(x)\leq f(x)$ (da $\leq$ reflexiv ist), also $x\sim x$.
+
+\emph{Transitiv:} Aus $x\sim y$ und $y\sim z$ folgt $f(x)\leq f(y)$ und $f(y)\leq f(z)$, wegen der Transitivit"at von $\leq$ also $f(x)\leq f(z)$, d.h. $x\sim z$.
+
+$\sim$ ist also genau dann eine Ordnung, wenn $\sim$ antisymmetrisch ist. Das zeigen wir "aquivalent zur Injektivit"at von $f$.
+
+\textbf{Beweis:}\\
+\glqq $\Rightarrow$\grqq: Sei $\sim$ eine Ordnung, also insbesondere antisymmetrisch. Seien $x,y\in X$ mit $f(x)=f(y)$. Dann gilt sowohl $f(x)\leq f(y)$ als auch $f(y)\leq f(x)$, also $x\sim y$ und $y\sim x$. Aus der Antisymmetrie folgt $x=y$. Das ist genau die Injektivit"at von $f$.
+
+\glqq $\Leftarrow$\grqq: Sei $f$ injektiv. Nach der Vor"uberlegung bleibt nur die Antisymmetrie zu zeigen. Seien also $x,y\in X$ mit $x\sim y$ und $y\sim x$, d.h. $f(x)\leq f(y)$ und $f(y)\leq f(x)$. Da $\leq$ antisymmetrisch ist, folgt $f(x)=f(y)$, und aus der Injektivit"at von $f$ dann $x=y$. Also ist $\sim$ antisymmetrisch und damit eine Ordnung. \qed
+\end{enumerate}
+\end{loesung}
 
 \aufgabetitel{$5$}{Faktorisierungssatz für Abbildungen}\\
 Seien $X=\{0,1,2,3\}$, $Y=\{1,2\}$ und sei die Abbildung $f:X\to Y$ definiert durch
@@ -258,4 +494,34 @@ Definiere $a\sim b \Leftrightarrow f(a)=f(b).$
     \item Bestimme die Abbildung $\widetilde f:X/{\sim}\to Y$, $[x]\mapsto f(x)$
     \item Überzeuge dich davon, dass $f=\widetilde f\circ\pi$ gilt und dass $\widetilde f$ surjektiv ist.
 \end{enumerate}
+
+\begin{loesung}
+Es ist $f(0)=1$, $f(1)=2$, $f(2)=1$, $f(3)=2$ und $a\sim b\Leftrightarrow f(a)=f(b)$.
+\begin{enumerate}
+\item Die "Aquivalenzklassen sind die Urbilder der Elemente von $Y$:
+\[[0]=f^{-1}(\{1\})=\{0,2\},\qquad [1]=f^{-1}(\{2\})=\{1,3\}\]
+und wegen $[0]=[2]$ sowie $[1]=[3]$ gibt es keine weiteren Klassen. Also
+\[X/{\sim}=\{\{0,2\},\{1,3\}\}.\]
+(Das ist eine Partition von $X=\{0,1,2,3\}$, wie es f"ur eine "Aquivalenzrelation sein muss.)
+
+\item $\widetilde f:X/{\sim}\to Y$ ist gegeben durch
+\[\widetilde f(\{0,2\})=f(0)=1,\qquad \widetilde f(\{1,3\})=f(1)=2.\]
+$\widetilde f$ ist \textbf{wohldefiniert}, d.h. das Ergebnis h"angt nicht vom gew"ahlten Vertreter ab: gilt $[x]=[x']$, so ist $x\sim x'$, also nach Definition von $\sim$ gerade $f(x)=f(x')$. (Bei $\{0,2\}$ etwa: $f(0)=1=f(2)$.)
+
+\item Die Projektion ist $\pi:X\to X/{\sim},\ x\mapsto[x]$, also
+\[\pi(0)=\pi(2)=\{0,2\},\qquad \pi(1)=\pi(3)=\{1,3\}.\]
+Damit rechnet man $f=\widetilde f\circ\pi$ punktweise nach:
+\begin{align*}
+(\widetilde f\circ\pi)(0)&=\widetilde f(\{0,2\})=1=f(0)\\
+(\widetilde f\circ\pi)(1)&=\widetilde f(\{1,3\})=2=f(1)\\
+(\widetilde f\circ\pi)(2)&=\widetilde f(\{0,2\})=1=f(2)\\
+(\widetilde f\circ\pi)(3)&=\widetilde f(\{1,3\})=2=f(3)
+\end{align*}
+Allgemein gilt das direkt nach Definition: $(\widetilde f\circ\pi)(x)=\widetilde f([x])=f(x)$.
+
+$\widetilde f$ ist \textbf{surjektiv}: $1=\widetilde f(\{0,2\})$ und $2=\widetilde f(\{1,3\})$, also wird jedes Element von $Y=\{1,2\}$ getroffen. (Das gilt allgemein, wenn man $\widetilde f$ auf $Im(f)$ abbilden l"asst; hier ist $Im(f)=Y$.)
+
+$\widetilde f$ ist hier sogar \textbf{injektiv} und damit bijektiv: aus $\widetilde f([x])=\widetilde f([x'])$ folgt $f(x)=f(x')$, also $x\sim x'$ und damit $[x]=[x']$. Genau das ist die Aussage des Faktorisierungssatzes -- jede Abbildung zerf"allt in eine surjektive Projektion $\pi$ und eine injektive Abbildung $\widetilde f$.
+\end{enumerate}
+\end{loesung}
 \end{document}

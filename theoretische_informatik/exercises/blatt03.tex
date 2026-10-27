@@ -2,7 +2,7 @@
 %!TEX TS-options = -shell-escape
 % % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
 \newcommand{\printpraesenzlsg}{false}
-\newcommand{\printloesungen}{false}
+\newcommand{\printloesungen}{true}
 \newcommand{\printbewertungen}{false}
 % % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
 \newcommand{\blattnummer}{3}
@@ -35,6 +35,24 @@ Macht Euch nochmal folgende Statements klar:
   
 \end{enumerate}
 
+\begin{loesung}
+\begin{enumerate}[a)]
+  \item \textbf{$M,\sigma\models\varphi$:} \enquote{$\varphi$ ist in der Struktur $M$ unter der Variablenbelegung $\sigma$ erfüllt.} Hier ist $M$ eine Struktur (Trägermenge plus Interpretation aller Symbole) und $\sigma$ eine Abbildung von den Variablen in die Trägermenge. Erst beides zusammen gibt jedem Term einen Wert $\llbracket t\rrbracket^M_\sigma$ und damit jeder Formel einen Wahrheitswert. Die Relation $\models$ ist rekursiv über den Formelaufbau definiert, z.\,B.
+  \begin{itemize}
+    \item $M,\sigma\models P(t_1,\dots,t_n)$ $:\Leftrightarrow$ $(\llbracket t_1\rrbracket^M_\sigma,\dots,\llbracket t_n\rrbracket^M_\sigma)\in P^M$,
+    \item $M,\sigma\models\varphi\wedge\psi$ $:\Leftrightarrow$ $M,\sigma\models\varphi$ und $M,\sigma\models\psi$,
+    \item $M,\sigma\models\forall x\,\varphi$ $:\Leftrightarrow$ für \emph{alle} $a$ aus der Trägermenge gilt $M,\sigma[a/x]\models\varphi$.
+  \end{itemize}
+  Wichtig: Das ist eine \emph{semantische} Aussage über ein konkretes Modell -- hier wird nichts hergeleitet, sondern ausgerechnet.
+
+  \item \textbf{$M\models\varphi$:} \enquote{$\varphi$ gilt in $M$} bzw. \enquote{$M$ ist ein Modell von $\varphi$}, d.\,h. $M,\sigma\models\varphi$ für \emph{jede} Variablenbelegung $\sigma$.
+
+  Der Unterschied zu a) ist also die Quantifizierung über $\sigma$. Für \emph{Sätze} (Formeln ohne freie Variablen) fällt der Unterschied weg: Dort hängt der Wahrheitswert gar nicht von $\sigma$ ab, und es gilt $M\models\varphi$ genau dann, wenn $M,\sigma\models\varphi$ für irgendein (und damit jedes) $\sigma$.
+
+  Abzugrenzen ist beides von $\vdash$: $\models$ ist Semantik (\enquote{gilt im Modell}), $\vdash$ ist Syntax (\enquote{ist im Kalkül ableitbar}).
+\end{enumerate}
+\end{loesung}
+
 \aufgabetitel{$7$}{Strukturen}\\
 Gegeben sei die Sprache mit Symbolen $S=\{c,f,p\}$ mit
 \begin{itemize}
@@ -56,14 +74,55 @@ Gegeben sei die Sprache mit Symbolen $S=\{c,f,p\}$ mit
     \item $\mathcal{M},\sigma\models\forall y(P(x,y)\to P(c,y))$
     \item $\mathcal{M},\sigma\models\exists y(P(x,y)\wedge P(y,c))$
   \end{itemize}
-\end{enumerate} 
+\end{enumerate}
 
-\aufgabetitel{$18$}{Beweis im Kalkül des natürlichen Schließens}\\
+\begin{loesung}
+Terme werden von innen nach außen ausgewertet; dabei ist $\llbracket c\rrbracket^\mathcal{M}_\sigma=c^\mathcal{M}=42$, $\llbracket x\rrbracket^\mathcal{M}_\sigma=\sigma(x)$ und $\llbracket f(s,t)\rrbracket^\mathcal{M}_\sigma=\llbracket s\rrbracket^\mathcal{M}_\sigma+\llbracket t\rrbracket^\mathcal{M}_\sigma$. (In c) ist mit $P$ das Prädikatensymbol $p$ gemeint.)
+
+\begin{enumerate}[a)]
+  \item Mit $\sigma(x)=7$, $\sigma(y)=42$:
+  \begin{align*}
+    \llbracket f(c,x)\rrbracket^\mathcal{M}_\sigma &= \llbracket c\rrbracket^\mathcal{M}_\sigma+\llbracket x\rrbracket^\mathcal{M}_\sigma = 42+7 = 49,\\
+    \llbracket f(x,f(c,y))\rrbracket^\mathcal{M}_\sigma &= \llbracket x\rrbracket^\mathcal{M}_\sigma+\bigl(\llbracket c\rrbracket^\mathcal{M}_\sigma+\llbracket y\rrbracket^\mathcal{M}_\sigma\bigr) = 7+(42+42) = 7+84 = 91.
+  \end{align*}
+
+  \item $\sigma[2/x]$ ist die Belegung, die überall mit $\sigma$ übereinstimmt, außer dass sie $x$ auf $2$ schickt:
+  \begin{align*}
+    \llbracket f(c,x)\rrbracket^\mathcal{M}_{\sigma[2/x]} &= 42+2 = 44,\\
+    \llbracket f(x,f(c,y))\rrbracket^\mathcal{M}_{\sigma[3/x,2/y]} &= 3+(42+2) = 3+44 = 47.
+  \end{align*}
+  Man beachte, dass in der zweiten Zeile der ursprüngliche Wert $\sigma(y)=42$ durch $2$ überschrieben wird, $c^\mathcal{M}=42$ dagegen nicht -- Konstantensymbole werden von der Belegung nicht berührt.
+
+  \item Es ist $(a,b)\in p^\mathcal{M}\Leftrightarrow a<b$, und weiterhin $\sigma(x)=7$, $\sigma(y)=42$.
+  \begin{itemize}
+    \item $\mathcal{M},\sigma\models P(c,x)$ bedeutet $(42,7)\in p^\mathcal{M}$, also $42<7$. Das ist \textbf{falsch}, die Formel ist also \emph{nicht} erfüllt.
+
+    \item $\mathcal{M},\sigma\models\forall y\,(P(x,y)\to P(c,y))$ bedeutet: für alle $n\in\NN$ gilt $7<n\Rightarrow 42<n$. Das ist \textbf{falsch}: $n=8$ ist ein Gegenbeispiel, denn $7<8$, aber $42<8$ gilt nicht.
+
+    \item $\mathcal{M},\sigma\models\exists y\,(P(x,y)\wedge P(y,c))$ bedeutet: es gibt ein $n\in\NN$ mit $7<n$ und $n<42$. Das ist \textbf{wahr}, z.\,B. mit $n=8$ (jedes $n\in\{8,\dots,41\}$ tut es).
+  \end{itemize}
+  Man sieht hier gut, dass es auf $\sigma$ nur über die \emph{freien} Variablen ankommt: In allen drei Formeln ist $y$ gebunden, der Wert $\sigma(y)=42$ spielt also keine Rolle; nur $\sigma(x)=7$ geht ein.
+\end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$30$}{Beweis im Kalkül des natürlichen Schließens}\\
 Beweise, die im Kalkül des natürlichen Schließens geführt werden, bestehen aus einer Folge von Zeilen, wobei jede Zeile entweder eine Voraussetzung (Axiom) ist oder durch Anwendung einer der Schlussregeln, die wir in der Vorlesung hatten.
 Die Beweise werden in dem Kalkül praktisch von oben nach unten durchgeführt. Also man versucht, die zu zeigende Aussage ganz unten zu erreichen und startet oben mit den Voraussetzungen. Teilweise erfordert es aber auch, neue Voraussetzungen einzuführen, die man letztlich mit den Pfeilregeln (also Implikationen) entlastet.
 
+Zum Aufwärmen: Die Teilaufgaben a)--j) kommen ohne Quantoren aus, es werden also nur die aussagenlogischen Regeln $\wedge I$, $\wedge E$, $\vee I$, $\vee E$, $\to I$, $\to E$, $\neg I$, $\neg E$, $\bot E$ und $\neg\neg I$/$\neg\neg E$ benötigt. Ab k) wird es anspruchsvoller.
+
 Beweisen Sie im Kalkül des natürlichen Schließens:
 \begin{enumerate}[a)]
+  \item $\vdash A\to A$
+  \item $A\wedge B\vdash B\wedge A$
+  \item $A\vdash B\to A$
+  \item $A\to B, B\to C, A\vdash C$
+  \item $\vdash A\to(B\to(A\wedge B))$
+  \item $A\wedge(B\wedge C)\vdash(A\wedge B)\wedge C$
+  \item $A\to B,\neg B\vdash\neg A$ \quad (\textit{Modus tollens})
+  \item $A\vee B\vdash B\vee A$
+  \item $\neg A\vdash A\to B$ \quad (\textit{ex falso quodlibet}, Hinweis: $\neg E$ und $\bot E$)
+  \item $(A\vee B)\to C\vdash(A\to C)\wedge(B\to C)$
   \item $\vdash (A\to(B\to C))\to(A\wedge B\to C)$
   \item $\vdash ((A\to B)\wedge (B\to C))\to(A\to C)$
   \item $\vdash (A\to B)\to(\neg B\to \neg A)$
@@ -71,6 +130,258 @@ Beweisen Sie im Kalkül des natürlichen Schließens:
   \item $\forall x(\neg P(x)\to Q(x)),\neg Q(t)\vdash P(t)$
   \item $\forall x(P(x)\to Q(x)), \forall x P(x)\vdash \forall x Q(x)$
 \end{enumerate}
+
+\begin{loesung}
+\textbf{Notation.} Entlastete (\enquote{gecancelte}) Annahmen werden in eckige Klammern gesetzt und mit einer Nummer versehen; dieselbe Nummer steht an der Regel, die sie entlastet, z.\,B. $[A]^1$ und $\to I_1$. Eine Annahme darf an mehreren Blättern gleichzeitig stehen und wird dann auf einen Schlag entlastet; sie darf auch gar nicht vorkommen (\enquote{leere Entlastung}, siehe c)).
+
+Beim $\vee I$ gibt es zwei Varianten, die wir mit $\vee I_1$ (aus $A$ folgt $A\vee B$) und $\vee I_2$ (aus $B$ folgt $A\vee B$) unterscheiden. Das $\neg I$ aus der Vorlesung benutzen wir in der üblichen kombinierten Form: Führt die Annahme $A$ auf einen Widerspruch $\bot$ (den wir mit $\neg E$ aus $B$ und $\neg B$ gewinnen), so schließen wir $\neg A$ und entlasten dabei $A$.
+
+\begin{enumerate}[a)]
+
+  \item $\vdash A\to A$ -- der kürzest mögliche Beweis: Annahme machen und sofort wieder entlasten.
+  \begin{prooftree}
+    \AxiomC{$[A]^1$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$A\to A$}
+  \end{prooftree}
+
+  \item $A\wedge B\vdash B\wedge A$ -- die Prämisse wird zweimal verwendet, einmal für jede Komponente.
+  \begin{prooftree}
+    \AxiomC{$A\wedge B$}
+    \RightLabel{$\wedge E_2$}
+    \UnaryInfC{$B$}
+    \AxiomC{$A\wedge B$}
+    \RightLabel{$\wedge E_1$}
+    \UnaryInfC{$A$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$B\wedge A$}
+  \end{prooftree}
+
+  \item $A\vdash B\to A$ -- hier wird die Annahme $[B]^1$ entlastet, \emph{ohne} dass sie im Beweis überhaupt vorkommt. Das ist erlaubt: $\to I$ verlangt nur, dass sich $A$ aus $B$ herleiten lässt, und das tut es erst recht, wenn man $B$ gar nicht braucht.
+  \begin{prooftree}
+    \AxiomC{$A$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$B\to A$}
+  \end{prooftree}
+
+  \item $A\to B,\ B\to C,\ A\vdash C$ -- zweimal Modus ponens hintereinander.
+  \begin{prooftree}
+    \AxiomC{$A$}
+    \AxiomC{$A\to B$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$B$}
+    \AxiomC{$B\to C$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$C$}
+  \end{prooftree}
+
+  \item $\vdash A\to(B\to(A\wedge B))$ -- zwei geschachtelte $\to I$. Wichtig ist die Reihenfolge der Entlastung: zuerst die \emph{innere} Annahme $B$ (Nummer 1), danach die äußere Annahme $A$ (Nummer 2).
+  \begin{prooftree}
+    \AxiomC{$[A]^2$}
+    \AxiomC{$[B]^1$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$A\wedge B$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$B\to(A\wedge B)$}
+    \RightLabel{$\to I_2$}
+    \UnaryInfC{$A\to(B\to(A\wedge B))$}
+  \end{prooftree}
+
+  \item $A\wedge(B\wedge C)\vdash(A\wedge B)\wedge C$ -- Assoziativität von $\wedge$: Wir zerlegen die Prämisse vollständig in $A$, $B$ und $C$ und bauen sie neu geklammert wieder zusammen.
+  \begin{scprooftree}{0.9}
+    \AxiomC{$A\wedge(B\wedge C)$}
+    \RightLabel{$\wedge E_1$}
+    \UnaryInfC{$A$}
+    \AxiomC{$A\wedge(B\wedge C)$}
+    \RightLabel{$\wedge E_2$}
+    \UnaryInfC{$B\wedge C$}
+    \RightLabel{$\wedge E_1$}
+    \UnaryInfC{$B$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$A\wedge B$}
+    \AxiomC{$A\wedge(B\wedge C)$}
+    \RightLabel{$\wedge E_2$}
+    \UnaryInfC{$B\wedge C$}
+    \RightLabel{$\wedge E_2$}
+    \UnaryInfC{$C$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$(A\wedge B)\wedge C$}
+  \end{scprooftree}
+
+  \item $A\to B,\ \neg B\vdash\neg A$ (\textit{Modus tollens}) -- die typische Anwendung von $\neg I$: Wir nehmen $A$ versuchsweise an, laufen in den Widerspruch und schließen daraus $\neg A$.
+  \begin{prooftree}
+    \AxiomC{$[A]^1$}
+    \AxiomC{$A\to B$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$B$}
+    \AxiomC{$\neg B$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\neg I_1$}
+    \UnaryInfC{$\neg A$}
+  \end{prooftree}
+
+  \item $A\vee B\vdash B\vee A$ -- $\vee E$ ist eine Fallunterscheidung: Wir müssen in \emph{beiden} Fällen dasselbe Ziel $B\vee A$ erreichen. Beide Fallannahmen werden von derselben $\vee E$-Anwendung entlastet, tragen also dieselbe Nummer.
+  \begin{prooftree}
+    \AxiomC{$A\vee B$}
+    \AxiomC{$[A]^1$}
+    \RightLabel{$\vee I_2$}
+    \UnaryInfC{$B\vee A$}
+    \AxiomC{$[B]^1$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$B\vee A$}
+    \RightLabel{$\vee E_1$}
+    \TrinaryInfC{$B\vee A$}
+  \end{prooftree}
+
+  \item $\neg A\vdash A\to B$ (\textit{ex falso quodlibet}) -- aus einem Widerspruch folgt mit $\bot E$ alles, insbesondere das völlig beziehungslose $B$.
+  \begin{prooftree}
+    \AxiomC{$[A]^1$}
+    \AxiomC{$\neg A$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\bot E$}
+    \UnaryInfC{$B$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$A\to B$}
+  \end{prooftree}
+
+  \item $(A\vee B)\to C\vdash(A\to C)\wedge(B\to C)$ -- zwei strukturgleiche Teilbeweise, die sich nur darin unterscheiden, ob $A\vee B$ links oder rechts eingeführt wird. Die Prämisse darf in beiden Teilbäumen benutzt werden.
+  \begin{scprooftree}{0.85}
+    \AxiomC{$[A]^1$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$A\vee B$}
+    \AxiomC{$(A\vee B)\to C$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$C$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$A\to C$}
+    \AxiomC{$[B]^2$}
+    \RightLabel{$\vee I_2$}
+    \UnaryInfC{$A\vee B$}
+    \AxiomC{$(A\vee B)\to C$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$C$}
+    \RightLabel{$\to I_2$}
+    \UnaryInfC{$B\to C$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$(A\to C)\wedge(B\to C)$}
+  \end{scprooftree}
+
+  \item $\vdash (A\to(B\to C))\to(A\wedge B\to C)$ -- Standardvorgehen bei einem Beweis ohne Prämissen: Alles, was vorne an Implikationen steht, wird als Annahme oben in den Baum gesteckt und am Ende in umgekehrter Reihenfolge wieder entlastet. Die Annahme $[A\wedge B]^1$ wird an zwei Blättern gebraucht.
+  \begin{scprooftree}{0.85}
+    \AxiomC{$[A\wedge B]^1$}
+    \RightLabel{$\wedge E_2$}
+    \UnaryInfC{$B$}
+    \AxiomC{$[A\wedge B]^1$}
+    \RightLabel{$\wedge E_1$}
+    \UnaryInfC{$A$}
+    \AxiomC{$[A\to(B\to C)]^2$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$B\to C$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$C$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$A\wedge B\to C$}
+    \RightLabel{$\to I_2$}
+    \UnaryInfC{$(A\to(B\to C))\to(A\wedge B\to C)$}
+  \end{scprooftree}
+
+  \item $\vdash ((A\to B)\wedge(B\to C))\to(A\to C)$ -- die Transitivität der Implikation. Die Annahme $[(A\to B)\wedge(B\to C)]^2$ wird zweimal benutzt, einmal mit $\wedge E_1$, einmal mit $\wedge E_2$.
+  \begin{scprooftree}{0.85}
+    \AxiomC{$[A]^1$}
+    \AxiomC{$[(A\to B)\wedge(B\to C)]^2$}
+    \RightLabel{$\wedge E_1$}
+    \UnaryInfC{$A\to B$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$B$}
+    \AxiomC{$[(A\to B)\wedge(B\to C)]^2$}
+    \RightLabel{$\wedge E_2$}
+    \UnaryInfC{$B\to C$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$C$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$A\to C$}
+    \RightLabel{$\to I_2$}
+    \UnaryInfC{$((A\to B)\wedge(B\to C))\to(A\to C)$}
+  \end{scprooftree}
+
+  \item $\vdash (A\to B)\to(\neg B\to\neg A)$ (Kontraposition) -- im Kern derselbe Beweis wie g), nur sind jetzt beide Prämissen ebenfalls Annahmen, die am Ende entlastet werden. Entlastet wird von innen nach außen: erst $A$ (3), dann $\neg B$ (2), dann $A\to B$ (1).
+  \begin{scprooftree}{0.9}
+    \AxiomC{$[A]^3$}
+    \AxiomC{$[A\to B]^1$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$B$}
+    \AxiomC{$[\neg B]^2$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\neg I_3$}
+    \UnaryInfC{$\neg A$}
+    \RightLabel{$\to I_2$}
+    \UnaryInfC{$\neg B\to\neg A$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$(A\to B)\to(\neg B\to\neg A)$}
+  \end{scprooftree}
+
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge\neg B)$ (eine Richtung von De Morgan) -- zweimal dasselbe Muster: Aus $A$ (bzw. $B$) bastelt man sich mit $\vee I$ genau das, was die Annahme $\neg(A\vee B)$ verbietet.
+  \begin{scprooftree}{0.8}
+    \AxiomC{$[A]^2$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$A\vee B$}
+    \AxiomC{$[\neg(A\vee B)]^1$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\neg I_2$}
+    \UnaryInfC{$\neg A$}
+    \AxiomC{$[B]^3$}
+    \RightLabel{$\vee I_2$}
+    \UnaryInfC{$A\vee B$}
+    \AxiomC{$[\neg(A\vee B)]^1$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\neg I_3$}
+    \UnaryInfC{$\neg B$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$\neg A\wedge\neg B$}
+    \RightLabel{$\to I_1$}
+    \UnaryInfC{$\neg(A\vee B)\to(\neg A\wedge\neg B)$}
+  \end{scprooftree}
+
+  \item $\forall x(\neg P(x)\to Q(x)),\ \neg Q(t)\vdash P(t)$ -- $\forall E$ erlaubt es, den Term $t$ für $x$ einzusetzen ($t$ muss dafür frei für $x$ sein). Da wir $P(t)$ \emph{positiv} zeigen wollen, aber nur eine Annahme der Form \enquote{$\neg P(\dots)$ führt zu etwas} haben, führen wir einen Widerspruchsbeweis: aus $\neg P(t)$ folgt $\bot$, also $\neg\neg P(t)$, und mit $\neg\neg E$ schließlich $P(t)$.
+  \begin{scprooftree}{0.85}
+    \AxiomC{$[\neg P(t)]^1$}
+    \AxiomC{$\forall x(\neg P(x)\to Q(x))$}
+    \RightLabel{$\forall E$}
+    \UnaryInfC{$\neg P(t)\to Q(t)$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$Q(t)$}
+    \AxiomC{$\neg Q(t)$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\neg I_1$}
+    \UnaryInfC{$\neg\neg P(t)$}
+    \RightLabel{$\neg\neg E$}
+    \UnaryInfC{$P(t)$}
+  \end{scprooftree}
+  Der letzte Schritt $\neg\neg E$ ist der Punkt, an dem der Beweis \emph{klassisch} wird -- intuitionistisch wäre die Aussage nicht beweisbar.
+
+  \item $\forall x(P(x)\to Q(x)),\ \forall x\,P(x)\vdash\forall x\,Q(x)$ -- wir spezialisieren beide Prämissen mit $\forall E$ auf eine \emph{frische} Variable $u$, schließen $Q(u)$ und generalisieren mit $\forall I$ wieder.
+  \begin{scprooftree}{0.9}
+    \AxiomC{$\forall x\,P(x)$}
+    \RightLabel{$\forall E$}
+    \UnaryInfC{$P(u)$}
+    \AxiomC{$\forall x(P(x)\to Q(x))$}
+    \RightLabel{$\forall E$}
+    \UnaryInfC{$P(u)\to Q(u)$}
+    \RightLabel{$\to E$}
+    \BinaryInfC{$Q(u)$}
+    \RightLabel{$\forall I$}
+    \UnaryInfC{$\forall x\,Q(x)$}
+  \end{scprooftree}
+  Die Nebenbedingung von $\forall I$ ist hier entscheidend: $u$ darf in keiner \emph{offenen} Annahme frei vorkommen. Das ist erfüllt, denn in $\forall x(P(x)\to Q(x))$ und $\forall x\,P(x)$ ist $x$ gebunden, $u$ kommt dort also gar nicht vor. Genau deshalb ist $u$ \enquote{beliebig} und die Verallgemeinerung zulässig. Ohne diese Bedingung könnte man aus $P(u)$ fälschlich $\forall x\,P(x)$ schließen.
+
+\end{enumerate}
+\end{loesung}
 
 % \aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
 % Der Sequenzenkalkül ist ein anderer Kalkül. In jeder Zeile stehen Sequenzen von Formeln (also Listen von Formeln), getrennt durch einen Doppelpfeil. Die Semantik ist, dass die Konjunktion der Formeln links vom Pfeil die Disjunktion der Formeln rechts vom Pfeil impliziert. Die Schlussregeln sind in den Slides.

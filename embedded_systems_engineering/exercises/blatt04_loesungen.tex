@@ -1,0 +1,129 @@
+%!TEX TS-program = pdflatex
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+\newcommand{\blattnummer}{4}
+\input{include/config.tex}
+\usetikzlibrary{automata,arrows.meta,positioning,fit,backgrounds}
+\tikzset{zustand/.style={draw,rounded corners,align=center,minimum height=9mm,minimum width=20mm},every edge/.style={draw,->},>=Stealth}
+\lstset{basicstyle=\ttfamily\small,numbers=none,language={},xleftmargin=0pt}
+\begin{document}
+\section*{Lösungen zu Blatt 4: State Charts}
+Die Definitionen aus dem Aufgabenblatt werden unverändert übernommen. Alle Modelle werden mit \texttt{@EventDriven} ausgeführt. Kantenbeschriftungen verwenden \texttt{Trigger [Guard] / Effekt}; Initial- und History-Entries besitzen keinen Trigger. Nicht behandelte Eingabeereignisse werden ignoriert. Die Diagramme und Tabellen beschreiben die im CREATE-Modellbereich anzulegenden Zustände und Transitionen.
+
+\subsection*{Aufgabe 1: Fahrstuhl}
+Vier Zustände unterscheiden Stillstand und Fahrt: \textit{EG}, \textit{Aufwärts}, \textit{OG}, \textit{Abwärts}. Die Fahrzeit wird durch Zeitevents modelliert, ohne zusätzliche Events oder Variablen.
+\begin{center}
+\begin{tikzpicture}[auto,font=\small]
+\node[zustand] (eg) at (0,0) {EG};
+\node[circle,fill,inner sep=2pt] (init) at (-3,0) {};
+\node[zustand] (up) at (7,0) {Aufwärts};
+\node[zustand] (og) at (7,-3) {OG};
+\node[zustand] (down) at (0,-3) {Abwärts};
+\draw[->] (init) -- node[above,align=center]{/ location = 2} (eg);
+\path (eg) edge node{Button.up} (up)
+(up) edge node[right,align=left]{after 3s /\\location = 1;\\raise Status.arrived} (og)
+(og) edge node[below]{Button.down} (down)
+(down) edge node[left,align=right]{after 3s /\\location = 2;\\raise Status.arrived} (eg);
+\end{tikzpicture}
+\end{center}
+\textbf{Exakte Transitionen:}
+\begin{lstlisting}
+Initial -> EG: / location = 2
+EG -> Aufwaerts: Button.up
+Aufwaerts -> OG:
+    after 3s / location = 1; raise Status.arrived
+OG -> Abwaerts: Button.down
+Abwaerts -> EG:
+    after 3s / location = 2; raise Status.arrived
+\end{lstlisting}
+Die Schreibweise \texttt{Quelle -> Ziel:} dient hier und im Folgenden nur der Dokumentation; in CREATE wird lediglich der Text hinter dem Doppelpunkt an die jeweilige Kante geschrieben.
+
+Während der Fahrt werden Tastenereignisse ignoriert. Insbesondere darf kein Selbstübergang in einem Fahrzustand den 3-Sekunden-Timer neu starten. \texttt{location} bleibt bis zur Ankunft das zuletzt erreichte Stockwerk; ein zusätzlicher Wert für „unterwegs“ ist nicht nötig. Beim Initialisieren wird kein Ankunftsevent ausgegeben.
+
+\textbf{Prüffolge:} Start: EG, \texttt{location = 2}; \texttt{Button.up}: Aufwärts; nach 3 Sekunden: OG, \texttt{location = 1} und einmal \texttt{Status.arrived}. Die Rückfahrt verläuft symmetrisch.
+\newpage
+\subsection*{Aufgabe 2a: Reinigungsroboter}
+Oberste Ebene: \textit{Aus} (initial) und der zusammengesetzte Zustand \textit{Ein}. \textit{Ein} besitzt zwei orthogonale Regionen: \textit{Betriebsmodus} und \textit{Hindernisüberwachung}. Beim Einschalten wird über einen \textbf{Shallow-History-Entry} in der Modusregion der letzte Modus reaktiviert; ohne gespeicherte History führt dessen Default-Kante nach \textit{Warten}.
+\begin{center}
+\begin{tikzpicture}[font=\small,auto]
+\draw[rounded corners] (-1,-1) rectangle (11,-6.8);
+\node[anchor=north west,font=\bfseries] at (-.9,-1.05) {Ein};
+\draw[dashed] (-1,-4.8) -- (11,-4.8);
+\node[anchor=north west] at (-.9,-1.55) {Region Betriebsmodus};
+\node[anchor=north west] at (-.9,-4.85) {Region Hindernisüberwachung};
+\node[zustand,initial,initial text={}] (aus) at (0,1) {Aus};
+\node[circle,draw] (h) at (0,-2.8) {H};
+\node[zustand] (w) at (2.4,-2.8) {Warten};
+\node[zustand] (s) at (5.8,-2.8) {Saugen};
+\node[zustand] (m) at (9,-2.8) {Wischen};
+\draw[->] (aus) -- node[right,align=left,pos=.28]{Remote.power /\\raise Status.ein} (h);
+\draw[->] (10,-1) -- (10,1) -- node[above]{Remote.power / raise Status.aus} (aus);
+\draw[->] (h) -- (w);
+\path (w) edge node[above]{T1} (s)
+(s) edge node[above]{T2} (m)
+(m) edge[bend left=30] node[below]{T3} (w)
+(s) edge[bend left=45] node[below]{T4} (w);
+\node[circle,fill,inner sep=2pt] (i) at (0,-6) {};
+\node[zustand] (sensor) at (4,-6) {Überwachen};
+\draw[->] (i) -- (sensor);
+\path (sensor) edge[loop right] node[right,align=left]{Hindernis.detect /\\raise Status.hindernis} (sensor);
+\end{tikzpicture}
+\end{center}
+Die Moduskanten sind aus Platzgründen abgekürzt; verbindlich sind folgende vollständigen Beschriftungen:
+\begin{lstlisting}
+T1: Warten -> Saugen: Remote.mode / raise Status.saugen
+T2: Saugen -> Wischen: Remote.mode / raise Status.wischen
+T3: Wischen -> Warten:
+    Remote.mode, Remote.stop / raise Status.warten
+T4: Saugen -> Warten: Remote.stop / raise Status.warten
+\end{lstlisting}
+\textbf{History und Hierarchie.} Die Einschaltkante zielt auf den History-Entry der Modusregion in \textit{Ein}; die zweite Region wird dabei über ihren normalen Initial-Entry betreten. Die Ausschaltkante beginnt am Rand des gesamten Zustands \textit{Ein}. Sie beendet beide Regionen und bewahrt den letzten Modus. Shallow History reicht, da die drei Modi keine Unterzustände haben.
+
+\textbf{Ausgaben.} Statusmeldungen für Moduswechsel stehen auf den Kanten, nicht als Entry-Aktionen. Dadurch wird beim Wiederherstellen nur \texttt{Status.ein} ausgegeben. Optional kann die Default-Kante $H\to Warten$ den Effekt \texttt{/ raise Status.warten} tragen, um den Modus beim allerersten Start anzuzeigen. Der Hindernis-Selbstübergang betrifft nur \textit{Überwachen}, setzt also den Betriebsmodus nicht zurück. Im Zustand \textit{Aus} werden Sensor-, Modus- und Stoppereignisse ignoriert.
+\newpage
+\subsection*{Aufgabe 2b: Überwachung des Beutelfüllstands}
+Die Zustände \textit{Messung}, \textit{Pause5}, \textit{Pause1} und \textit{Voll} genügen auf oberster Ebene. \textit{Voll} enthält die Unterzustände \textit{Frist} und \textit{Erinnert}. Jede Messanforderung führt nach \textit{Messung}; dessen Entry-Aktion lautet \texttt{entry / raise Sensor.check\_dust}.
+\begin{center}
+\begin{tikzpicture}[font=\small,auto,scale=.88,transform shape]
+\node[zustand,initial,initial text={}] (mess) at (0,0) {Messung};
+\node[zustand] (p5) at (8,1) {Pause5};
+\node[zustand] (p1) at (8,-1.4) {Pause1};
+\draw[rounded corners] (-1.5,-3.3) rectangle (10,-6.2);
+\node[anchor=north west,font=\bfseries] at (-1.4,-3.35) {Voll};
+\node[circle,fill,inner sep=2pt] (init) at (-.8,-5) {};
+\node[zustand] (f) at (1,-5) {Frist};
+\node[zustand] (e) at (7,-5) {Erinnert};
+\draw[->] (init) -- (f);
+\path (mess) edge[bend left=15] node[above]{Ergebnis $<90$} (p5)
+(p5) edge[bend left=15] node[below]{after 5s} (mess)
+(mess) edge[bend left=15] node[above]{Ergebnis $90\ldots98$ / Ton} (p1)
+(p1) edge[bend left=15] node[below]{after 1s} (mess)
+(f) edge node[above]{after 5s / raise Beutel.sound} (e);
+\draw[->] (mess) -- node[right,align=left]{Ergebnis $\geq99$ / Ton} (0,-3.3);
+\draw[->] (10,-4) -- (11,-4) -- (11,2.2) -- node[above]{Beutel.replaced} (0,2.2) -- (mess);
+\end{tikzpicture}
+\end{center}
+\textbf{Exakte Modellbeschriftungen} (die Ergebniskanten im Diagramm sind abgekürzt):
+\begin{lstlisting}
+Initial -> Messung:                    // ohne Effekt
+Messung: entry / raise Sensor.check_dust
+Messung -> Pause5:
+    Sensor.dust_checked [Sensor.dust_level < 90]
+Messung -> Pause1:
+    Sensor.dust_checked
+    [Sensor.dust_level >= 90 && Sensor.dust_level < 99]
+    / raise Beutel.sound
+Messung -> Voll:
+    Sensor.dust_checked [Sensor.dust_level >= 99]
+    / raise Beutel.sound
+Pause5 -> Messung: after 5s
+Pause1 -> Messung: after 1s
+Voll.Initial -> Frist:                 // ohne Effekt
+Frist -> Erinnert: after 5s / raise Beutel.sound
+Voll -> Messung: Beutel.replaced
+\end{lstlisting}
+\textbf{Warum zwei Unterzustände?} Bei Eintritt in \textit{Voll} ertönt der erste Ton. Nach 5 Sekunden folgt genau ein zweiter Ton; \textit{Erinnert} hat keinen Timer. \texttt{Beutel.replaced} verlässt aus beiden Unterzuständen den Verbundzustand und startet sofort eine neue Messung. Beim vorzeitigen Verlassen von \textit{Frist} wird dessen Timer beendet.
+
+Die Guards sind disjunkt und für den zugesicherten Bereich 0--100 vollständig. Ausgewertet wird erst bei \texttt{Sensor.dust\_checked}, nie direkt nach der Messanforderung. Wartezeiten beginnen mit dem verarbeiteten Ergebnis. Nebenläufigkeit ist hier nicht nötig: Messung, Pause und Warten auf Austausch erfolgen nacheinander. Bei zeitgleichem Austausch und Timerablauf ist die Reihenfolge der Ereignisverarbeitung maßgeblich; die Spezifikation legt dafür keine zusätzliche Priorität fest.
+\end{document}

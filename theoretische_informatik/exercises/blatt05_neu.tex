@@ -1,0 +1,346 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{5}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+
+% Terminalsymbole in Schreibmaschinenschrift (Klammern, Listen)
+\newcommand{\tm}[1]{\mathtt{#1}}
+\newcommand{\ko}{\mathord{\mathtt{,}}}
+
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+\begin{notes}\small
+\textbf{Wiederholung und Schreibweisen}
+\begin{itemize}
+  \item Eine \textbf{Grammatik} ist ein 4-Tupel $G=(V,\Sigma,P,S)$ aus Variablen $V$, Terminalsymbolen $\Sigma$, Regeln $P$ und Startsymbol $S\in V$. Regeln mit derselben linken Seite fassen wir zusammen: $S\to aSb\mid\varepsilon$ steht für die beiden Regeln $S\to aSb$ und $S\to\varepsilon$.
+  \item Wenn nichts anderes gesagt wird, sind Großbuchstaben Variablen, $S$ ist das Startsymbol und alle übrigen Zeichen sind Terminalsymbole. Es genügt dann, die Regeln anzugeben.
+  \item $u\Rightarrow_G v$ heißt: $v$ entsteht aus $u$ durch \emph{eine} Regelanwendung. $\Rightarrow^*_G$ bedeutet beliebig viele (auch null) Schritte. Es ist $L(G)=\{w\in\Sigma^*\mid S\Rightarrow^*_G w\}$. Alles, was aus $S$ ableitbar ist (auch mit Variablen darin), nennen wir eine \textbf{Satzform}. $L(G)$ besteht also genau aus den Satzformen ohne Variablen.
+  \item Für ein Wort $w$ ist $|w|$ seine Länge, $|w|_x$ die Anzahl der Vorkommen des Zeichens $x$ in $w$ und $w^R$ das Spiegelwort (z.\,B. $(aab)^R=baa$). $a^n$ ist das Wort aus $n$ Zeichen $a$, insbesondere ist $a^0=\varepsilon$.
+  \item \textbf{Chomsky-Hierarchie:} $G$ ist vom Typ~0, wenn es keine Einschränkungen gibt, vom Typ~1, wenn für alle Regeln $u\to v$ gilt $|u|\leq|v|$, vom Typ~2, wenn jede linke Seite eine einzelne Variable ist ($u\in V$), und vom Typ~3, wenn zusätzlich jede rechte Seite in $\Sigma\cup\Sigma V$ liegt. Die $\varepsilon$-Sonderregel $S\to\varepsilon$ ist erlaubt (bei Typ~1 soll $S$ dann auf keiner rechten Seite vorkommen). \emph{Konvention für dieses Blatt:} Bei Typ~2 und Typ~3 lassen wir, wie allgemein üblich, beliebige Regeln $A\to\varepsilon$ zu. Man kann zeigen, dass sich die erzeugbaren Sprachen dadurch nicht ändern.
+  \item Eine \emph{Sprache} ist vom Typ~$i$, wenn es \emph{irgendeine} Typ-$i$-Grammatik gibt, die sie erzeugt.
+  \item \textbf{Wie zeigt man $L(G)=L$?} Man zeigt beide Inklusionen.
+  \begin{itemize}
+    \item[$\supseteq$] Jedes Wort aus $L$ ist ableitbar: Für ein beliebiges $w\in L$ gibt man eine Ableitung an, meist als Schema (\enquote{$n$-mal Regel 1, dann einmal Regel 2}).
+    \item[$\subseteq$] $G$ erzeugt nichts Falsches: Man sucht eine Eigenschaft (\emph{Invariante}), die $S$ hat und die bei jeder Regelanwendung erhalten bleibt. Dann haben alle Satzformen diese Eigenschaft (Induktion über die Länge der Ableitung), und für Satzformen ohne Variablen muss daraus $w\in L$ folgen.
+  \end{itemize}
+\end{itemize}
+\end{notes}
+
+\aufgabetitel{$6$}{Ableitungen}\\
+Gegeben sei die Grammatik $G=(\{S\},\{a,b\},P,S)$ mit
+\[P:\qquad S\to aSb\mid bSa\mid\varepsilon.\]
+\begin{enumerate}[a)]
+  \item Geben Sie Ableitungen für die Wörter $aabb$, $abab$ und $bbaa$ an.
+  \item Bestimmen Sie $L_4:=\{w\in L(G)\mid |w|\leq 4\}$. Gehören $abba$ und $baab$ zu $L(G)$? Begründen Sie.
+  \item Zeigen Sie: Für jedes $w\in L(G)$ gilt $|w|_a=|w|_b$.
+  \item Nach c) ist $L(G)\subseteq L_{=}:=\{w\in\{a,b\}^*\mid |w|_a=|w|_b\}$, nach b) gilt aber keine Gleichheit. Beschreiben Sie $L(G)$ exakt.\\
+  \emph{Hinweis:} Vergleichen Sie den $i$-ten Buchstaben von vorne mit dem $i$-ten Buchstaben von hinten.
+  \item \textit{(anspruchsvoller)} Ergänzen Sie $P$ um \emph{eine} Regel, sodass die neue Grammatik $G'$ genau die Sprache $L_{=}$ erzeugt, und begründen Sie Ihre Wahl.\\
+  \emph{Hinweis:} Betrachten Sie für $w\in L_{=}$ die Differenz $d(v)=|v|_a-|v|_b$ für alle Präfixe $v$ von $w$.
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}[a)]
+  \item In jeder Satzform steht höchstens ein $S$, das jeweils ersetzt wird:
+  \begin{align*}
+    S &\Rightarrow aSb \Rightarrow aaSbb \Rightarrow aabb,\\
+    S &\Rightarrow aSb \Rightarrow abSab \Rightarrow abab,\\
+    S &\Rightarrow bSa \Rightarrow bbSaa \Rightarrow bbaa.
+  \end{align*}
+
+  \item Jede Anwendung von $S\to aSb$ oder $S\to bSa$ erzeugt genau zwei Buchstaben, am Ende steht einmal $S\to\varepsilon$. Alle Wörter in $L(G)$ haben daher gerade Länge. Wir zählen alle Ableitungen mit höchstens zwei \enquote{echten} Schritten auf:
+  \begin{itemize}
+    \item Länge 0: $S\Rightarrow\varepsilon$.
+    \item Länge 2: $S\Rightarrow aSb\Rightarrow ab$ und $S\Rightarrow bSa\Rightarrow ba$.
+    \item Länge 4: $aabb$, $abab$, $bbaa$ (siehe a)) sowie $S\Rightarrow bSa\Rightarrow baSba\Rightarrow baba$.
+  \end{itemize}
+  Also ist
+  \[L_4=\{\varepsilon,\ ab,\ ba,\ aabb,\ abab,\ baba,\ bbaa\}.\]
+  \textbf{$abba\notin L(G)$ und $baab\notin L(G)$:} Bei einem nichtleeren Wort ist der erste Schritt $S\to aSb$ oder $S\to bSa$. Die dabei erzeugten Buchstaben bleiben ganz außen stehen, weil alle weiteren Schritte nur das $S$ in der Mitte ersetzen. Jedes nichtleere Wort aus $L(G)$ beginnt also mit $a$ und endet mit $b$ oder umgekehrt. $abba$ beginnt und endet mit $a$, $baab$ beginnt und endet mit $b$. Beide Wörter liegen nicht in $L(G)$, obwohl sie gleich viele $a$ und $b$ enthalten.
+
+  \item Invariante: Für jede Satzform $\alpha$ gilt $|\alpha|_a=|\alpha|_b$.
+  \begin{itemize}
+    \item Für $\alpha=S$ gilt $0=0$.
+    \item Ein Schritt $\alpha\Rightarrow\beta$ ersetzt ein $S$ durch $aSb$, $bSa$ oder $\varepsilon$. Dabei steigen beide Anzahlen um $1$ oder bleiben gleich. Die Gleichheit bleibt also erhalten.
+  \end{itemize}
+  Per Induktion über die Anzahl der Schritte gilt die Invariante für alle Satzformen, insbesondere für alle $w\in L(G)$. \qed
+
+  \item Für $x\in\{a,b\}^*$ sei $\ol{x}$ das Wort, das aus $x$ durch Vertauschen von $a$ und $b$ entsteht (z.\,B. $\ol{aab}=bba$). Dann gilt
+  \[L(G)=\{x\,\ol{x}^R\mid x\in\{a,b\}^*\}.\]
+  In Worten: Die Wörter aus $L(G)$ haben gerade Länge $2n$, und für alle $i\in\{1,\dots,n\}$ ist der $i$-te Buchstabe von vorne verschieden vom $i$-ten Buchstaben von hinten. Probe an $L_4$: $x=ab$ liefert $\ol{x}=ba$, $\ol{x}^R=ab$, also $abab$. $x=aa$ liefert $aabb$.
+
+  \emph{$\subseteq$:} Alle Satzformen haben die Gestalt $x\,S\,\ol{x}^R$ oder $x\,\ol{x}^R$. Für $S=\varepsilon\,S\,\varepsilon$ stimmt das. Aus $x\,S\,\ol{x}^R$ wird mit $S\to aSb$ die Satzform $xa\,S\,b\,\ol{x}^R=(xa)\,S\,\ol{(xa)}^R$, denn $\ol{xa}=\ol{x}\,b$ und damit $\ol{xa}^R=b\,\ol{x}^R$. Für $S\to bSa$ geht es genauso, und $S\to\varepsilon$ liefert $x\,\ol{x}^R$.
+
+  \emph{$\supseteq$:} Für $x=x_1\cdots x_n$ wendet man nacheinander für $i=1,\dots,n$ die Regel $S\to x_i\,S\,\ol{x_i}$ an und zum Schluss $S\to\varepsilon$.
+
+  Anschaulich schreibt jede Regel vorne einen Buchstaben und an der gespiegelten Position hinten den jeweils anderen Buchstaben.
+
+  \item Wir ergänzen die Regel $S\to SS$, also
+  \[P':\qquad S\to aSb\mid bSa\mid SS\mid\varepsilon.\]
+  \emph{$L(G')\subseteq L_{=}$:} Der Beweis aus c) funktioniert weiterhin, denn $S\to SS$ erzeugt keine Terminalsymbole.
+
+  \emph{$L_{=}\subseteq L(G')$:} Wir zeigen per starker Induktion über $|w|$, dass jedes $w\in L_{=}$ aus $S$ ableitbar ist.
+  \begin{itemize}
+    \item $w=\varepsilon$: $S\Rightarrow\varepsilon$.
+    \item Erster und letzter Buchstabe verschieden, also $w=aub$ oder $w=bua$: Dann ist auch $u\in L_{=}$ und $|u|<|w|$. Nach Induktionsvoraussetzung gilt $S\Rightarrow^* u$, also $S\Rightarrow aSb\Rightarrow^* aub$ (bzw.\ mit $bSa$).
+    \item Erster und letzter Buchstabe gleich, etwa $w=aua$ (der Fall $b$ geht genauso): Für das Präfix aus dem ersten Buchstaben ist $d(a)=1$. Für das Präfix $au$ (alles außer dem letzten Buchstaben) ist $d(au)=d(w)-1=-1$. Da sich $d$ pro Buchstabe um genau $\pm1$ ändert, muss $d$ dazwischen den Wert $0$ annehmen. Es gibt also eine Zerlegung $w=vv'$ mit nichtleeren Wörtern $v,v'$ und $d(v)=0$. Wegen $d(w)=0$ ist auch $d(v')=0$, also $v,v'\in L_{=}$. Beide sind kürzer als $w$, nach Induktionsvoraussetzung ist $S\Rightarrow^* v$ und $S\Rightarrow^* v'$ und damit
+    \[S\Rightarrow SS\Rightarrow^* vv'=w.\]
+  \end{itemize}
+  Beispiel: $abba=ab\cdot ba$, also $S\Rightarrow SS\Rightarrow aSbS\Rightarrow abS\Rightarrow abbSa\Rightarrow abba$. \qed
+
+  (Eine andere richtige Lösung ist $S\to aSbS\mid bSaS\mid\varepsilon$. Dafür muss man aber alle drei Regeln ändern.)
+\end{enumerate}
+\end{loesung}
+
+\aufgabetitel{$12$}{Welche Sprache erzeugt die Grammatik?}\\
+Bestimmen Sie für jede der folgenden Grammatiken die erzeugte Sprache $L(G)$. Geben Sie sie in Mengenschreibweise an oder, wo das nicht sinnvoll geht, durch eine präzise Beschreibung in Worten. Begründen Sie Ihre Antwort.\\
+\emph{Tipp:} Leiten Sie zuerst einige kurze Wörter ab und stellen Sie dann eine Vermutung auf.
+\begin{enumerate}[a)]
+  \item $S\to aS\mid b$
+  \item $S\to aSbb\mid\varepsilon$
+  \item $S\to aSb\mid aS\mid\varepsilon$
+  \item $S\to AB,\quad A\to aA\mid\varepsilon,\quad B\to bB\mid\varepsilon$
+  \item $S\to aSc\mid T,\quad T\to bTc\mid\varepsilon$
+  \item $S\to aSa\mid bSb\mid a\mid b\mid\varepsilon$
+  \item $S\to 0S\mid 1A\mid 1,\quad A\to 0A\mid 1S\mid 0\qquad$ (mit $\Sigma=\{0,1\}$)
+  \item $S\to SS\mid\tm{(}S\tm{)}\mid\varepsilon\qquad$ (mit $\Sigma=\{\tm{(},\tm{)}\}$)
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}[a)]
+  \item Kurze Wörter: $b$, $ab$, $aab$, \ldots
+  \[L(G)=\{a^nb\mid n\geq 0\}.\]
+  Die Satzformen sind genau $a^nS$ und $a^nb$ mit $n\geq0$. Mit $S\to aS$ wächst der $a$-Block, mit $S\to b$ endet die Ableitung. Umgekehrt erhält man jedes $a^nb$ durch $n$-mal $S\to aS$ und einmal $S\to b$.
+
+  \item Kurze Wörter: $\varepsilon$, $abb$, $aabbbb$, \ldots
+  \[L(G)=\{a^nb^{2n}\mid n\geq 0\}.\]
+  Hier der Beweis ausführlich als Muster für die anderen Teilaufgaben:
+
+  \emph{$\supseteq$:} Für $n\geq0$ ist
+  \[S\Rightarrow aSbb\Rightarrow aaSbbbb\Rightarrow\cdots\Rightarrow a^nSb^{2n}\Rightarrow a^nb^{2n}\]
+  ($n$-mal $S\to aSbb$, dann $S\to\varepsilon$).
+
+  \emph{$\subseteq$:} Invariante: Jede Satzform hat die Gestalt $a^nSb^{2n}$ oder $a^nb^{2n}$ mit $n\geq0$. Für $S=a^0Sb^0$ stimmt das. Eine Satzform $a^nb^{2n}$ enthält keine Variable mehr, dort geht es nicht weiter. Aus $a^nSb^{2n}$ entsteht $a^{n+1}Sb^{2(n+1)}$ oder $a^nb^{2n}$, beide wieder von der richtigen Gestalt. Die Satzformen ohne Variable sind also genau die Wörter $a^nb^{2n}$. \qed
+
+  \item Kurze Wörter: $\varepsilon$, $a$, $aa$, $ab$, $aaa$, $aab$, \ldots
+  \[L(G)=\{a^nb^m\mid n\geq m\geq 0\}.\]
+  Jedes $b$ entsteht zusammen mit einem $a$ (Regel $S\to aSb$), zusätzliche $a$ liefert $S\to aS$. Da alle $a$ links und alle $b$ rechts von $S$ entstehen, stehen alle $a$ vor allen $b$.
+
+  \emph{$\subseteq$:} Die Satzformen haben die Gestalt $a^nSb^m$ oder $a^nb^m$ mit $n\geq m$. Die Regel $S\to aSb$ erhöht beide Exponenten um $1$, $S\to aS$ nur $n$.
+
+  \emph{$\supseteq$:} Für $n\geq m$ wendet man $m$-mal $S\to aSb$ an, dann $(n-m)$-mal $S\to aS$ und schließlich $S\to\varepsilon$:
+  \[S\Rightarrow^* a^mSb^m\Rightarrow^* a^nSb^m\Rightarrow a^nb^m.\]
+
+  \item $A$ erzeugt genau die Wörter $a^m$ mit $m\geq0$, $B$ genau die Wörter $b^n$ mit $n\geq0$ (wie in a), nur mit $\varepsilon$ statt $b$ als Abschluss). Damit ist
+  \[L(G)=\{a^mb^n\mid m,n\geq 0\}.\]
+  Im Unterschied zu c) sind die beiden Anzahlen hier völlig unabhängig: $A$ und $B$ werden getrennt voneinander abgeleitet. In c) koppelt die Regel $S\to aSb$ die beiden Anzahlen.
+
+  \item Kurze Wörter: $\varepsilon$, $ac$, $bc$, $aacc$, $abcc$, $bbcc$, \ldots
+  \[L(G)=\{a^nb^mc^{n+m}\mid n,m\geq 0\}.\]
+  Die Ableitung hat zwei Phasen. Zuerst erzeugt $S\to aSc$ die Satzform $a^nSc^n$. Mit $S\to T$ wechselt man in die zweite Phase, in der $T\to bTc$ die Satzform $a^nb^mTc^mc^n$ erzeugt. Zum Schluss kommt $T\to\varepsilon$. Jedes $a$ und jedes $b$ bekommt also sein eigenes $c$. Da es von $T$ keinen Weg zurück zu $S$ gibt, kann nach einem $b$ kein $a$ mehr kommen. Umgekehrt erhält man jedes $a^nb^mc^{n+m}$ mit genau diesem Schema.
+
+  \item Kurze Wörter: $\varepsilon$, $a$, $b$, $aa$, $bb$, $aaa$, $aba$, $bab$, $bbb$, \ldots Die erzeugte Sprache ist die Menge der \textbf{Palindrome} über $\{a,b\}$:
+  \[L(G)=\{w\in\{a,b\}^*\mid w=w^R\}.\]
+  \emph{$\subseteq$:} Die Satzformen haben die Gestalt $xSx^R$ oder $x\,c\,x^R$ mit $c\in\{\varepsilon,a,b\}$, denn $S\to aSa$ macht aus $xSx^R$ die Satzform $(xa)S(xa)^R$. Jedes Wort $x\,c\,x^R$ ist ein Palindrom.
+
+  \emph{$\supseteq$:} Ist $w=w^R$ und $n=\lfloor|w|/2\rfloor$, so ist $w=x\,c\,x^R$, wobei $x$ aus den ersten $n$ Buchstaben besteht und $c\in\{\varepsilon,a,b\}$ ist. Man erzeugt $x$ von außen nach innen mit $S\to aSa$ bzw.\ $S\to bSb$ und schließt mit $S\to c$ ab.
+
+  \item Kurze Wörter: $1$, $01$, $10$, $001$, $010$, $100$, $111$, \ldots\ Vermutung:
+  \[L(G)=\{w\in\{0,1\}^*\mid |w|_1\text{ ist ungerade}\}.\]
+  \emph{Idee:} Die Variable \enquote{merkt sich}, ob bisher eine gerade ($S$) oder ungerade ($A$) Anzahl von Einsen erzeugt wurde. Eine $0$ ändert nichts, eine $1$ wechselt die Variable.
+
+  \emph{$\subseteq$:} Invariante: Jede Satzform ist entweder $uS$ mit $|u|_1$ gerade oder $uA$ mit $|u|_1$ ungerade oder ein Wort $u$ ohne Variable mit $|u|_1$ ungerade. Das prüft man für alle Regeln einzeln nach. Zum Beispiel macht $A\to 1S$ aus einer ungeraden Anzahl eine gerade, $S\to 1$ macht aus einer geraden Anzahl eine ungerade und beendet die Ableitung, und $A\to 0$ beendet die Ableitung bei ungerader Anzahl.
+
+  \emph{$\supseteq$:} Sei $w=w_1\cdots w_k$ mit ungerader Anzahl von Einsen (insbesondere $k\geq1$). Man erzeugt $w_1,\dots,w_{k-1}$ von links nach rechts und wählt dabei jeweils die Regel, die zur neuen Parität passt. Für den letzten Buchstaben gilt: Ist $w_k=1$, so enthält $w_1\cdots w_{k-1}$ eine gerade Anzahl von Einsen, die Variable ist $S$, und man schließt mit $S\to1$ ab. Ist $w_k=0$, so ist die Anzahl ungerade, die Variable ist $A$, und man schließt mit $A\to0$ ab. Beispiel:
+  \[S\Rightarrow 1A\Rightarrow 10A\Rightarrow 101S\Rightarrow 1011.\]
+  Diese Idee, in der Variablen eine endliche Information über das bisher erzeugte Wort zu speichern, begegnet uns bei den endlichen Automaten wieder.
+
+  \item Kurze Wörter: $\varepsilon$, $\tm{()}$, $\tm{()()}$, $\tm{(())}$, $\tm{()()()}$, $\tm{(()())}$, \ldots\ Erzeugt werden genau die \textbf{korrekt geklammerten Ausdrücke}:
+  \[L(G)=\bigl\{w\in\{\tm{(},\tm{)}\}^*\ \bigm|\ |w|_{\tm{(}}=|w|_{\tm{)}}\text{ und für jedes Präfix $v$ von $w$ gilt }|v|_{\tm{(}}\geq|v|_{\tm{)}}\bigr\}.\]
+  In Worten: Man schließt nie mehr Klammern, als man bisher geöffnet hat, und am Ende sind alle Klammern geschlossen. Zum Beispiel sind $\tm{(()())}$ und $\tm{()(())}$ enthalten, $\tm{)(}$, $\tm{())}$ und $\tm{(()}$ dagegen nicht. Wir nennen diese Menge $D$.
+
+  \emph{$\subseteq$:} Wir betrachten in einer Satzform nur die Klammern und ignorieren die Variablen. Invariante: Die Satzform ist ausgeglichen, und jedes Präfix hat mindestens so viele öffnende wie schließende Klammern. Die Regeln $S\to SS$ und $S\to\varepsilon$ ändern an den Klammern nichts. $S\to\tm{(}S\tm{)}$ fügt ein zusammengehöriges Paar ein: Präfixe, die das neue $\tm{(}$, aber nicht das neue $\tm{)}$ enthalten, bekommen eine öffnende Klammer mehr, alle anderen Präfixe behalten ihre Bilanz.
+
+  \emph{$\supseteq$:} Starke Induktion über $|w|$. Für $w=\varepsilon$ gilt $S\Rightarrow\varepsilon$. Sei $w\in D$ nichtleer. Dann beginnt $w$ mit $\tm{(}$. Sei $v$ das kürzeste nichtleere Präfix von $w$ mit gleich vielen öffnenden und schließenden Klammern. Dann ist $v=\tm{(}u\tm{)}$ mit $u\in D$ (innerhalb von $v$ sinkt die Bilanz erst am Ende auf $0$), und $w=vw'$ mit $w'\in D$. Nach Induktionsvoraussetzung gilt
+  \[S\Rightarrow SS\Rightarrow\tm{(}S\tm{)}S\Rightarrow^*\tm{(}u\tm{)}w'=w.\]
+  (Das ist derselbe Präfix-Trick wie in Aufgabe 1 e).)
+\end{enumerate}
+\end{loesung}
+
+% \aufgabetitel{$14$}{Grammatiken konstruieren}\\
+% Geben Sie für jede der folgenden Sprachen eine Grammatik $G$ mit $L(G)=L_i$ an. Begründen Sie jeweils kurz, warum Ihre Grammatik \emph{alle} Wörter aus $L_i$ und \emph{keine anderen} Wörter erzeugt. Bei a)--d) ist sogar eine Typ-3-Grammatik möglich. Finden Sie eine?
+% \begin{enumerate}[a)]
+%   \item $L_1=\{w\in\{a,b\}^*\mid w\text{ beginnt mit }a\text{ und endet mit }b\}$
+%   \item $L_2=\{w\in\{a,b\}^*\mid |w|\text{ ist gerade}\}$
+%   \item $L_3=\{w\in\{a,b\}^*\mid w\text{ enthält }aa\text{ als Teilwort}\}$
+%   \item $L_4$ = die Binärdarstellungen der \emph{geraden} natürlichen Zahlen ohne führende Nullen, also\\ $L_4=\{0,\ 10,\ 100,\ 110,\ 1000,\ 1010,\ \dots\}$
+%   \item $L_5=\{a^ncb^n\mid n\geq0\}$
+%   \item $L_6=\{a^nb^{n+m}c^m\mid n,m\geq0\}$
+%   \item $L_7=\{a^nb^m\mid n,m\geq0,\ n\neq m\}$
+%   \item Sei $\Sigma=\{\tm{[},\ \tm{]},\ \tm{a},\ \ko\}$ (das Komma ist hier selbst ein Terminalsymbol).
+%   \begin{enumerate}[(i)]
+%     \item $L_8$ = alle Listen, deren Einträge $\tm{a}$ sind: $\tm{[]}$, $\tm{[a]}$, $\tm{[a{,}a]}$, $\tm{[a{,}a{,}a]}$, \ldots
+%     \item $L_9$ = alle (beliebig verschachtelten) Listen, deren Einträge $\tm{a}$ oder selbst wieder solche Listen sind, z.\,B. $\tm{[[]]}$, $\tm{[a{,}[a{,}a]{,}[]]}$ oder $\tm{[[[a]]]}$. Nicht dazu gehören etwa $\tm{[a{,}]}$, $\tm{[{,}a]}$, $\tm{[aa]}$ oder $\tm{][}$.
+%   \end{enumerate}
+%   \item \textit{(anspruchsvoller)} $L_{10}=\{a^nb^m\mid m\leq n\leq 2m\}$
+% \end{enumerate}
+
+% \begin{loesung}
+% Grammatiken sind nicht eindeutig. Zu jeder Sprache gibt es viele richtige Lösungen, hier jeweils eine (manchmal zwei).
+
+% \begin{enumerate}[a)]
+%   \item Typ~2:
+%   \[S\to aAb,\qquad A\to aA\mid bA\mid\varepsilon.\]
+%   $A$ erzeugt jedes Wort $u\in\{a,b\}^*$ (Buchstabe für Buchstabe von links nach rechts) und nichts anderes. Also ist $L(G)=\{aub\mid u\in\{a,b\}^*\}=L_1$.
+
+%   Typ~3:
+%   \[S\to aA,\qquad A\to aA\mid bA\mid b.\]
+%   Hier erzeugt $A$ genau die nichtleeren Wörter, die auf $b$ enden: Beendet werden kann die Ableitung nur mit $A\to b$. Zum Beispiel ist $S\Rightarrow aA\Rightarrow ab$.
+
+%   \item Typ~3:
+%   \[S\to aA\mid bA\mid\varepsilon,\qquad A\to aS\mid bS.\]
+%   Wie in Aufgabe 2 g) merkt sich die Variable eine Parität, diesmal die der bisherigen Länge: $S$ steht für gerade, $A$ für ungerade Länge. Beenden kann man die Ableitung nur in $S$, also bei gerader Länge. Umgekehrt erzeugt man jedes Wort gerader Länge Buchstabe für Buchstabe und schließt mit $S\to\varepsilon$ ab.
+
+%   Ebenfalls richtig (Typ~2): $S\to XXS\mid\varepsilon$, $X\to a\mid b$.
+
+%   \item Idee: Man \enquote{rät}, an welcher Stelle das $aa$ steht, also $w=u\,aa\,v$ mit beliebigen $u,v$. Typ~2:
+%   \[S\to XaaX,\qquad X\to aX\mid bX\mid\varepsilon.\]
+%   Typ~3:
+%   \[S\to aS\mid bS\mid aA,\qquad A\to aB,\qquad B\to aB\mid bB\mid\varepsilon.\]
+%   $S$ erzeugt ein beliebiges Anfangsstück $u$. Mit $S\to aA$ und $A\to aB$ wird das $aa$ geschrieben, danach erzeugt $B$ ein beliebiges Endstück $v$. Nur $B$ kann die Ableitung beenden, und nach $B$ kommt man nur über $S\to aA$, $A\to aB$. Jedes erzeugte Wort enthält also $aa$. Umgekehrt: $S\Rightarrow^* uS\Rightarrow uaA\Rightarrow uaaB\Rightarrow^* uaavB\Rightarrow uaav$.
+
+%   \item Eine Binärzahl ohne führende Nullen ist entweder $0$ oder beginnt mit $1$. Gerade ist sie genau dann, wenn sie auf $0$ endet. Also ist $L_4=\{0\}\cup\{1w0\mid w\in\{0,1\}^*\}$. Typ~3:
+%   \[S\to 0\mid 1A,\qquad A\to 0A\mid 1A\mid 0.\]
+%   $A$ erzeugt genau die nichtleeren Wörter über $\{0,1\}$, die auf $0$ enden. Die führende $1$ verhindert führende Nullen, die Zahl $0$ selbst wird durch $S\to0$ abgedeckt. Beispiel für $6$: $S\Rightarrow1A\Rightarrow11A\Rightarrow110$.
+
+%   \item Eine passende Grammatik ist
+%   \[S\to aSb\mid c.\]
+%   Die Satzformen sind $a^nSb^n$ und $a^ncb^n$. Jedes $a$ entsteht zusammen mit \enquote{seinem} $b$. Die Sprache lässt sich (wie $\{a^nb^n\mid n\geq1\}$ aus der Vorlesung) \emph{nicht} durch eine Typ-3-Grammatik erzeugen. Den Beweis dafür sehen wir später.
+
+%   \item Der Trick ist die Zerlegung $a^nb^{n+m}c^m=a^nb^n\cdot b^mc^m$:
+%   \[S\to AB,\qquad A\to aAb\mid\varepsilon,\qquad B\to bBc\mid\varepsilon.\]
+%   $A$ erzeugt genau die Wörter $a^nb^n$, $B$ genau die Wörter $b^mc^m$. Beispiel mit $n=1$, $m=2$: $S\Rightarrow AB\Rightarrow^* ab\,B\Rightarrow^* ab\,bbcc=ab^3c^2$.
+
+%   \item $n\neq m$ heißt $n>m$ oder $n<m$. Im ersten Fall ist $a^nb^m=a^m\,a^{n-m}\,b^m$ mit $n-m\geq1$, im zweiten Fall entsprechend mit einem zusätzlichen $b$-Block.
+%   \[S\to aSb\mid A\mid B,\qquad A\to aA\mid a,\qquad B\to bB\mid b.\]
+%   $A$ erzeugt $a^j$ und $B$ erzeugt $b^j$ mit $j\geq1$. Die Satzformen vor dem Wechsel sind $a^kSb^k$. Danach entsteht $a^k\,a^j\,b^k$ oder $a^k\,b^j\,b^k$ mit $j\geq1$, also genau die Wörter mit $n\neq m$. Wichtig ist, dass es \emph{keine} Regel $S\to\varepsilon$ gibt, sonst entstünde auch $a^nb^n$.
+
+%   Ein häufiger Fehler ist $S\to A\mid B$ mit denselben Regeln für $A$ und $B$. Damit erhält man nur Wörter aus lauter $a$ oder lauter $b$, zum Beispiel fehlt $aab$.
+
+%   \item
+%   \begin{enumerate}[(i)]
+%     \item Eine passende Grammatik ist
+%     \[S\to\tm{[]}\mid\tm{[}A\tm{]},\qquad A\to\tm{a}\mid\tm{a}\ko A.\]
+%     $A$ erzeugt $\tm{a}$, $\tm{a{,}a}$, $\tm{a{,}a{,}a}$, \ldots. Die Regel $A\to\tm{a}\ko A$ setzt nach jedem Eintrag außer dem letzten genau ein Komma, dadurch entstehen weder $\tm{[a{,}]}$ noch $\tm{[{,}a]}$.
+%     \item Ein Eintrag $E$ darf jetzt auch wieder eine Liste sein. Die Verschachtelung entsteht durch den Rückgriff auf $S$:
+%     \[S\to\tm{[]}\mid\tm{[}A\tm{]},\qquad A\to E\mid E\ko A,\qquad E\to\tm{a}\mid S.\]
+%     Beispiel:
+%     \[S\Rightarrow\tm{[}A\tm{]}\Rightarrow\tm{[}E\ko A\tm{]}\Rightarrow\tm{[a}\ko A\tm{]}\Rightarrow\tm{[a}\ko E\tm{]}\Rightarrow\tm{[a}\ko S\tm{]}\Rightarrow\tm{[a{,}[]]}.\]
+%     Die Grammatik ist hier im Grunde die Definition selbst: \enquote{Eine Liste ist $\tm{[]}$ oder $\tm{[}$ gefolgt von durch Kommas getrennten Einträgen und $\tm{]}$. Ein Eintrag ist $\tm{a}$ oder eine Liste.} So sind auch die Grammatiken von Programmiersprachen oder JSON aufgebaut.
+%   \end{enumerate}
+
+%   \item Eine passende Grammatik ist
+%   \[S\to aSb\mid aaSb\mid\varepsilon.\]
+%   Jeder Schritt erzeugt genau ein $b$ und ein oder zwei $a$.
+
+%   \emph{$\subseteq$:} Die Satzformen sind $a^nSb^m$ bzw.\ $a^nb^m$ mit $m\leq n\leq 2m$. Beide Regeln erhalten die Ungleichungen: $S\to aSb$ erhöht $n$ und $m$ um je $1$, $S\to aaSb$ erhöht $n$ um $2$ und $m$ um $1$.
+
+%   \emph{$\supseteq$:} Sei $m\leq n\leq 2m$ und $k:=n-m$, also $0\leq k\leq m$. Man wendet $k$-mal $S\to aaSb$ und $(m-k)$-mal $S\to aSb$ an und schließt mit $S\to\varepsilon$ ab. Das ergibt $2k+(m-k)=m+k=n$ Zeichen $a$ und $m$ Zeichen $b$.
+% \end{enumerate}
+% \end{loesung}
+
+% \aufgabetitel{$6$}{Fehlersuche}\\
+% In einer Lerngruppe wurden für die folgenden Sprachen $L$ die angegebenen Grammatiken $G$ vorgeschlagen. Entscheiden Sie jeweils, ob $L(G)=L$ gilt. Falls nicht, geben Sie ein Wort an, das in genau einer der beiden Sprachen liegt, und korrigieren Sie die Grammatik, falls das möglich ist.
+% \begin{enumerate}[a)]
+%   \item $L=\{a^nb^m\mid n\geq m\geq0\}$, \quad $G$: $S\to aSb\mid a\mid\varepsilon$
+%   \item $L=\{w\in\{a,b\}^*\mid |w|_a\text{ ist gerade}\}$, \quad $G$: $S\to aSa\mid bS\mid\varepsilon$
+%   \item $L=\{w\in\{a,b\}^*\mid\text{auf jedes $a$ in $w$ folgt unmittelbar ein $b$}\}$, \quad $G$: $S\to abS\mid bS\mid\varepsilon$
+%   \item $L=\{w\in\{a,b\}^*\mid w=w^R\}$, \quad $G$: $S\to aSa\mid bSb\mid\varepsilon$
+%   \item $L=\{a^nb^nc^n\mid n\geq0\}$, \quad $G$: $S\to aSbc\mid\varepsilon$
+% \end{enumerate}
+
+% \begin{loesung}
+% \begin{enumerate}[a)]
+%   \item \textbf{Falsch.} Es ist $aa\in L$ (mit $n=2$, $m=0$), aber $aa\notin L(G)$. Die Regel $S\to a$ liefert höchstens \emph{ein} zusätzliches $a$, es ist $L(G)=\{a^nb^n\mid n\geq0\}\cup\{a^{n+1}b^n\mid n\geq0\}$. Die Richtung $L(G)\subseteq L$ stimmt also, aber es fehlen Wörter wie $aa$ oder $aaab$. Korrektur (vgl.\ Aufgabe 2 c)):
+%   \[S\to aSb\mid aS\mid\varepsilon.\]
+
+%   \item \textbf{Falsch.} Es gilt zwar $L(G)\subseteq L$, denn jede Regel erzeugt $0$ oder $2$ Zeichen $a$. Aber $aab\in L$ und $aab\notin L(G)$: Jedes nichtleere Wort aus $L(G)$ beginnt mit $b$ (Regel $S\to bS$) oder beginnt \emph{und} endet mit $a$ (Regel $S\to aSa$). $aab$ beginnt mit $a$ und endet mit $b$. Korrektur mit dem Paritätstrick aus Aufgabe 2 g) (Typ~3):
+%   \[S\to aA\mid bS\mid\varepsilon,\qquad A\to aS\mid bA.\]
+%   $S$ steht für eine gerade, $A$ für eine ungerade Anzahl bisher erzeugter $a$. Beenden kann man die Ableitung nur in $S$.
+
+%   \item \textbf{Richtig.} Ein Wort liegt genau dann in $L$, wenn es sich in Blöcke $ab$ und $b$ zerlegen lässt. Man liest das Wort von links nach rechts: Ein $a$ bildet mit dem nachfolgenden $b$ den Block $ab$, jedes übrige $b$ ist ein Block $b$. Umgekehrt folgt in jeder solchen Blockfolge auf jedes $a$ ein $b$. $G$ erzeugt genau alle Blockfolgen, denn die Satzformen sind $uS$ und $u$, wobei $u$ eine Folge der Blöcke $ab$ und $b$ ist. Beispiel: $S\Rightarrow bS\Rightarrow babS\Rightarrow babbS\Rightarrow babb$. Nicht erzeugt werden (zu Recht) etwa $a$, $ba$ oder $aab$.
+
+%   \item \textbf{Falsch.} Es fehlen die Palindrome ungerader Länge, z.\,B.\ $a$ oder $aba$. Die Grammatik erzeugt nur die Palindrome gerader Länge. Korrektur: Die Regeln $S\to a\mid b$ ergänzen (vgl.\ Aufgabe 2 f)).
+
+%   \item \textbf{Falsch.} $G$ erzeugt $a^n(bc)^n$, zum Beispiel $S\Rightarrow aSbc\Rightarrow aaSbcbc\Rightarrow aabcbc\notin L$. Umgekehrt ist $aabbcc\in L\setminus L(G)$. Nur $\varepsilon$ und $abc$ liegen in beiden Sprachen.
+
+%   Eine kontextfreie Korrektur gibt es nicht: Laut Vorlesung ist $\{a^nb^nc^n\mid n\geq1\}$ vom Typ~1, aber nicht vom Typ~2. Eine richtige Typ-1-Grammatik ist die aus der Vorlesung, ergänzt um ein neues Startsymbol $S'$ für den Fall $n=0$:
+%   \[S'\to\varepsilon\mid S,\quad S\to aSBC\mid aBC,\quad CB\to BC,\quad aB\to ab,\quad bB\to bb,\quad bC\to bc,\quad cC\to cc.\]
+% \end{enumerate}
+% \end{loesung}
+
+% \aufgabetitel{$8$}{Chomsky-Hierarchie}\\
+% Betrachten Sie die folgenden Grammatiken (jeweils mit Startsymbol $S$):
+% \begin{align*}
+%   G_1&:\quad S\to 0S\mid 1A\mid 1,\quad A\to 0A\mid 1S\mid 0\\
+%   G_2&:\quad S\to Sa\mid b\\
+%   G_3&:\quad S\to AB,\quad A\to aA\mid a,\quad B\to bB\mid b\\
+%   G_4&:\quad S\to aSb\mid ab\\
+%   G_5&:\quad S\to ABS\mid AB,\quad AB\to BA,\quad BA\to AB,\quad A\to a,\quad B\to b\\
+%   G_6&:\quad S\to aaS\mid\varepsilon,\quad aa\to a
+% \end{align*}
+% \begin{enumerate}[a)]
+%   \item Bestimmen Sie für jede Grammatik $G_i$ den höchsten Typ $j\in\{0,1,2,3\}$, sodass $G_i$ eine Typ-$j$-Grammatik ist.
+%   \item Bestimmen Sie jeweils die erzeugte Sprache $L(G_i)$.
+%   \item Bei einigen der Grammatiken ist die erzeugte \emph{Sprache} von höherem Typ als die \emph{Grammatik}. Geben Sie in diesen Fällen eine Grammatik des höheren Typs an, die dieselbe Sprache erzeugt.
+% \end{enumerate}
+
+% \begin{loesung}
+% \textbf{Übersicht:}
+% \begin{center}\small
+% \begin{tabular}{c|c|l|c}
+%   & Typ der Grammatik & $L(G_i)$ & Typ der Sprache\\\hline
+%   $G_1$ & 3 & $\{w\in\{0,1\}^*\mid |w|_1\text{ ungerade}\}$ & 3\\
+%   $G_2$ & 2 & $\{ba^n\mid n\geq0\}$ & 3\\
+%   $G_3$ & 2 & $\{a^mb^n\mid m,n\geq1\}$ & 3\\
+%   $G_4$ & 2 & $\{a^nb^n\mid n\geq1\}$ & 2\\
+%   $G_5$ & 1 & $\{w\in\{a,b\}^*\mid w\neq\varepsilon,\ |w|_a=|w|_b\}$ & 2\\
+%   $G_6$ & 0 & $\{a^k\mid k\geq0\}$ & 3
+% \end{tabular}
+% \end{center}
+
+% \begin{itemize}
+%   \item[$G_1$:] Alle linken Seiten sind Variablen, alle rechten Seiten liegen in $\Sigma\cup\Sigma V$. Also ist $G_1$ vom Typ~3. Die Sprache wurde in Aufgabe 2 g) bestimmt. Hier ist nichts zu verbessern.
+
+%   \item[$G_2$:] Alle linken Seiten sind Variablen, also Typ~2. Typ~3 ist $G_2$ \emph{nicht}, denn in $Sa$ steht die Variable \emph{vor} dem Terminalsymbol. Es ist $S\Rightarrow Sa\Rightarrow Saa\Rightarrow\cdots\Rightarrow Sa^n\Rightarrow ba^n$, also $L(G_2)=\{ba^n\mid n\geq0\}$. Eine Typ-3-Grammatik dafür ist
+%   \[S\to bA\mid b,\qquad A\to aA\mid a.\]
+%   (Man kann zeigen, dass auch \enquote{linkslineare} Grammatiken wie $G_2$ genau die Typ-3-Sprachen erzeugen. Nach der Definition aus der Vorlesung ist $G_2$ aber keine Typ-3-Grammatik.)
+
+%   \item[$G_3$:] Typ~2, aber nicht Typ~3 wegen $S\to AB$ (zwei Variablen rechts). $A$ erzeugt $a^m$ mit $m\geq1$, $B$ erzeugt $b^n$ mit $n\geq1$, also $L(G_3)=\{a^mb^n\mid m,n\geq1\}$. Typ~3:
+%   \[S\to aS\mid aB,\qquad B\to bB\mid b.\]
+
+%   \item[$G_4$:] Typ~2, aber nicht Typ~3 wegen $aSb$. Es ist $L(G_4)=\{a^nb^n\mid n\geq1\}$. Diese Sprache ist laut Vorlesung \emph{nicht} vom Typ~3. Hier kann man also nichts verbessern, die Sprache ist \enquote{echt} kontextfrei.
+
+%   \item[$G_5$:] Die Regeln $AB\to BA$ und $BA\to AB$ haben zwei Symbole auf der linken Seite, also ist $G_5$ nicht vom Typ~2. Für alle Regeln gilt aber $|u|\leq|v|$, also ist $G_5$ vom Typ~1.
+
+%   Sprache: Aus $S$ entsteht zunächst $(AB)^n$ mit $n\geq1$. Durch Vertauschen benachbarter $A$ und $B$ lassen sich die Variablen beliebig umordnen (wie beim Bubblesort). Zum Schluss werden $A$ und $B$ zu $a$ und $b$. In jeder Satzform gilt $|\alpha|_A+|\alpha|_a=|\alpha|_B+|\alpha|_b$. Also ist
+%   \[L(G_5)=\{w\in\{a,b\}^*\mid w\neq\varepsilon,\ |w|_a=|w|_b\}.\]
+%   Nach Aufgabe 1 e) ist diese Sprache vom Typ~2. Ohne $\varepsilon$ geht es etwa mit
+%   \[S\to aSb\mid bSa\mid SS\mid ab\mid ba.\]
+%   (Der Beweis ist derselbe wie in Aufgabe 1 e). Die Regeln $S\to ab\mid ba$ ersetzen den Fall $u=\varepsilon$.)
+
+%   \item[$G_6$:] Wegen $aa\to a$ (linke Seite länger als rechte Seite) ist $G_6$ nicht vom Typ~1, also nur vom Typ~0. Trotzdem ist die Sprache sehr einfach: Aus $S$ entstehen zunächst die Wörter $a^{2n}$. Mit $aa\to a$ kann man jedes $a^{2n}$ mit $n\geq1$ schrittweise auf $a^k$ für jedes $1\leq k\leq 2n$ verkürzen, und $S\Rightarrow\varepsilon$ liefert das leere Wort. Also ist $L(G_6)=\{a^k\mid k\geq0\}$. Typ~3:
+%   \[S\to aS\mid\varepsilon.\]
+% \end{itemize}
+
+% \textbf{Merke:} Der Typ einer Grammatik ist nur eine obere Schranke für die \enquote{Schwierigkeit} der Sprache. Eine komplizierte Grammatik kann eine einfache Sprache erzeugen, siehe $G_6$. Um zu zeigen, dass eine Sprache vom Typ~$i$ ist, genügt es, \emph{eine} Typ-$i$-Grammatik anzugeben. Um zu zeigen, dass sie \emph{nicht} vom Typ~$i$ ist, muss man dagegen über \emph{alle} Typ-$i$-Grammatiken argumentieren. Dafür lernen wir später Werkzeuge wie das Pumping-Lemma kennen.
+% \end{loesung}
+
+\end{document}

@@ -2,7 +2,7 @@
 %!TEX TS-options = -shell-escape
 % % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
 \newcommand{\printpraesenzlsg}{false}
-\newcommand{\printloesungen}{false}
+\newcommand{\printloesungen}{true}
 \newcommand{\printbewertungen}{false}
 % % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
 \newcommand{\blattnummer}{1}
@@ -27,6 +27,169 @@
     \item Was bezeichnet der Begriff Regelstrecke?
 \end{enumerate}
 
+\begin{loesung}
+\textbf{Zu 1: Begriff und Klassifikation}
+
+\emph{Definition.} Ein eingebettetes System ist ein informationsverarbeitendes System aus Hard- und
+Software, das in ein umgebendes technisches System integriert ist und dieses \emph{steuert bzw.\ regelt}.
+Charakteristisch sind:
+\begin{itemize}
+    \item Es steuert eine (meist analoge) technische Umgebung mit digitalen Komponenten.
+    \item Die Kopplung an die Umgebung erfolgt über \textbf{Sensoren} (Messgrößen) und \textbf{Aktoren} (Stellgrößen).
+    \item Es ist für die Nutzerin in der Regel nicht als ,,Computer`` sichtbar und nicht frei programmierbar.
+    \item Sein Zweck ist nicht die Berechnung einer mathematischen Funktion, sondern die \emph{dauerhafte
+          Interaktion} mit der Umgebung; es terminiert im Normalbetrieb nicht.
+    \item Es unterliegt typischerweise Ressourcen-, Energie-, Bauraum- und Stückkostenbeschränkungen.
+\end{itemize}
+Zur Einordnung: Über 98\,\% aller weltweit gefertigten Prozessoren stecken in eingebetteten Systemen.
+Werden eingebettete Systeme vernetzt und mit der Cyber-Welt rückgekoppelt, spricht man von
+\emph{Cyber-Physical Systems} bzw.\ \emph{Internet of Things}.
+
+\emph{Klassifikationskriterien aus der Vorlesung:}
+\begin{enumerate}[label=(\alph*)]
+    \item transformatorisch vs.\ reaktiv
+    \item diskretes vs.\ kontinuierliches Zeitverhalten
+    \item verteilte vs.\ monolithische Systeme
+    \item sicherheitskritisch vs.\ nicht sicherheitskritisch (z.\,B.\ Infotainment)
+    \item Massenmarkt-Gesetzen unterliegend (Stückkosten-/Time-to-Market-Druck) vs.\ Kleinserie
+\end{enumerate}
+Ergänzend die in der Vorlesung gezeigte Schachtelung: \emph{eingebettete Systeme} $\supseteq$
+\emph{reaktive Systeme} $\supseteq$ \emph{Echtzeitsysteme}, sowie die Unterscheidung \emph{harte} vs.\
+\emph{weiche} Echtzeit.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|p{2.9cm}|p{2.2cm}|p{3.1cm}|p{2.8cm}|p{3.6cm}|p{2.6cm}|}
+\hline
+\textbf{Beispiel} & \textbf{transf./ reaktiv} & \textbf{Zeitverhalten} &
+\textbf{Architektur} & \textbf{Kritikalität / Echtzeit} & \textbf{Markt} \\ \hline
+
+ABS-/ESP-Steuer\-gerät &
+reaktiv &
+hybrid: kontinuierliche Radschlupf-Regelung, diskreter Regelzyklus &
+verteilt (mehrere Steuergeräte, CAN/FlexRay) &
+sicherheitskritisch, harte Echtzeit (ISO 26262) &
+Massenmarkt \\ \hline
+
+Herzschrittmacher &
+reaktiv &
+hybrid: kontinuierliche Messung, diskrete Stimulation &
+monolithisch &
+höchst sicherheitskritisch, harte Echtzeit &
+Kleinserie (hoher Zertifizierungsaufwand) \\ \hline
+
+Waschmaschinen\-steuerung &
+überwiegend reaktiv; Programmablauf transformatorisch geprägt &
+diskrete Ablaufsteuerung, kontinuierlich bei Temperatur/Drehzahl &
+monolithisch &
+kaum kritisch (Überlauf-/Verbrühschutz), weiche Echtzeit &
+Massenmarkt \\ \hline
+
+Infotainment-/ Navigationssystem &
+reaktiv (Benutzerinteraktion) &
+diskret &
+verteilt (Fahrzeugbus, Mobilfunk/Cloud) &
+nicht sicherheitskritisch, weiche Echtzeit; Rückwirkungsfreiheit nötig &
+Massenmarkt \\ \hline
+
+Industrieroboter &
+reaktiv &
+hybrid: kontinuierliche Achsregelung, diskrete Ablauflogik &
+verteilt (SPS, Feldbus, Antriebe) &
+sicherheitskritisch (Personenschutz), harte Echtzeit &
+Kleinserie \\ \hline
+
+Flugregler einer Drohne &
+reaktiv &
+kontinuierlich (Lageregelung im kHz-Bereich) &
+monolithisch, bei Redundanz verteilt &
+sicherheitskritisch, harte Echtzeit &
+Massenmarkt (Consumer) \\ \hline
+
+Smart Meter &
+eher transformatorisch (Erfassen, Aggregieren, Übertragen) &
+diskret &
+verteilt &
+nicht safety-, aber \emph{security}-kritisch; weiche Echtzeit &
+Massenmarkt \\ \hline
+\end{tabular}}
+\end{table}
+
+\emph{Grenzfälle (Diskussion aus der Vorlesung).} Smartphone, Smart-TV und Cloud-Dienst sind keine
+eingebetteten Systeme im engeren Sinn: Sie sind frei programmierbare Allzweckrechner und steuern
+keine technische Umgebung. Sie \emph{enthalten} allerdings eingebettete Teilsysteme (Baseband-Prozessor,
+Kamera- und Energiemanagement-Controller). Eine Smart-Home-Anwendung ist ein Grenzfall: Die
+Feldgeräte (Thermostat, Rollladenaktor) sind eingebettet, die App-/Cloud-Schicht nicht.
+
+\textbf{Zu 2: Aufbau eingebetteter Systeme}
+
+Der Aufbau lässt sich auf drei Ebenen beschreiben:
+
+\emph{(a) Funktionale Struktur / Wirkungskette.} Die Kontrolleinheit greift über Aktoren in die
+Umgebung ein und beobachtet sie über Sensoren -- es entsteht ein geschlossener Wirkungskreis.
+Zusätzlich gibt es eine Benutzerschnittstelle zum Menschen.
+
+\begin{center}
+\begin{tikzpicture}[>=Latex, font=\small,
+    box/.style={draw, rounded corners, minimum width=3cm, minimum height=0.9cm, align=center}]
+  \node[box] (ctrl) {Kontrolleinheit\\(Prozessor + Software)};
+  \node[box, above=1.1cm of ctrl] (ui) {Benutzerschnittstelle};
+  \node[above=0.75cm of ui] (user) {Benutzer};
+  \node[box, below left=1.7cm and 0.9cm of ctrl] (akt) {Aktoren};
+  \node[box, below right=1.7cm and 0.9cm of ctrl] (sens) {Sensoren};
+  \node[box, below=3.5cm of ctrl, minimum width=7cm] (strecke)
+       {Regelstrecke / technische Umgebung};
+  \draw[<->] (user) -- (ui);
+  \draw[<->] (ui) -- (ctrl);
+  \draw[->] (ctrl) -- node[above left, align=center, font=\footnotesize] {Stellgrößen} (akt);
+  \draw[->] (akt) -- node[below left, align=center, font=\footnotesize] {Eingriff} (strecke);
+  \draw[->] (strecke) -- node[below right, align=center, font=\footnotesize] {Messung} (sens);
+  \draw[->] (sens) -- node[above right, align=center, font=\footnotesize] {Messgrößen} (ctrl);
+\end{tikzpicture}
+\end{center}
+
+\emph{(b) Hardware-Architektur.} Ein oder mehrere Prozessoren mit zugehöriger Software, Speicher,
+spezielle Hardware (ASIC, FPGA, Signalprozessoren) und Standardkomponenten; die Kopplung zur
+technischen Umgebung erfolgt über Sensorik und Aktorik, die Kopplung untereinander über Busse
+und Netzwerke (CAN, FlexRay, Ethernet).
+
+\emph{(c) Software-Architektur.} Typischerweise geschichtet: Hardware-Abstraktion und Treiber,
+darüber ein (Echtzeit-)Betriebssystem oder ein reiner Bare-Metal-Scheduler, Kommunikationsstacks
+sowie die eigentliche Steuerungs-, Regelungs- und Diagnoselogik, realisiert als Tasks und
+Interrupt-Service-Routinen.
+
+\textbf{Zu 3: Regelstrecke}
+
+Der Begriff stammt aus der Regelungstechnik. Die \textbf{Regelstrecke} (engl.\ \emph{plant},
+\emph{controlled system}) ist derjenige Teil der technischen bzw.\ physikalischen Umgebung, dessen
+Verhalten geregelt werden soll -- also das \emph{zu beeinflussende System} zwischen Stellgröße
+(Eingang) und Regelgröße (Ausgang). Sie gehört ausdrücklich \emph{nicht} zum Rechner, sondern zum
+Prozess.
+
+Im Regelkreis unterscheidet man:
+\begin{itemize}
+    \item \textbf{Führungsgröße} $w$ (Sollwert), \textbf{Regelgröße} $x$ (Istwert),
+          \textbf{Regeldifferenz} $e = w - x$
+    \item \textbf{Stellgröße} $u$: Ausgang des Reglers, wirkt über den Aktor auf die Strecke
+    \item \textbf{Störgröße} $z$: von außen auf die Strecke wirkende Einflüsse
+\end{itemize}
+Abzugrenzen ist die \emph{Regelung} (closed loop, mit Rückführung der Regelgröße) von der
+\emph{Steuerung} (open loop, ohne Rückführung).
+
+\emph{Beispiel Tempomat:} Regelstrecke ist die Längsdynamik des Fahrzeugs (Motor, Antriebsstrang,
+Fahrwiderstände); Stellgröße ist das angeforderte Antriebsmoment, Regelgröße die Geschwindigkeit,
+Störgrößen sind Steigung und Wind.
+
+\emph{Bedeutung für eingebettete Systeme:} Die Regelstrecke verhält sich in aller Regel
+\emph{kontinuierlich} (beschrieben durch Differentialgleichungen), der Regler arbeitet
+\emph{zeitdiskret} mit fester Abtastzeit -- zusammen ergibt sich ein \emph{hybrides} System.
+Abtastrate, Totzeiten und Jitter gehen unmittelbar in Regelgüte und Stabilität ein. Genau deshalb
+ist Zeit in eingebetteten Systemen eine Frage der Korrektheit und nicht der Performanz.
+\end{loesung}
+
 \aufgabetitel{$3$}{Embedded Intro - Teil 1}\\
 In \cite{lee2002embedded} steht ein Überblicksartikel zum Thema Embedded Software. Dieser gibt einen sehr guten
 Einblick in die speziellen Probleme, denen die Entwickler eingebetteter Software gegenüberstehen. Lesen Sie die Abschnitte 1 bis 3 und bereiten Sie sich auf folgende Fragen
@@ -36,6 +199,151 @@ vor:
     \item Diskutieren Sie die Begriffe Timeliness, Concurrency, Liveness, Interfaces, Heterogeneity, Reactivity und deren Bedeutung für die Entwickler eingebetteter Systeme.
     \item Welche Schwächen (laut Autor) haben die vorherrschenden Ansötze der Softwaretechnik für Embedded Software (Objektorientierung, Hardware-Beschreibungssprachen und Echtzeitbetriebssysteme)? Teilen Sie die Meinung des Autors?
 \end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1: Embedded Software vs.\ klassische Software}
+
+Lees Kernthese lautet: \emph{,,Embedded software is not just software on small computers.``} Der
+Unterschied ist kein gradueller (weniger Speicher, langsamerer Prozessor), sondern ein prinzipieller.
+
+\emph{Klassisches Bild von Software:} Ein Programm implementiert eine berechenbare Funktion
+Eingabe~$\mapsto$~Ausgabe. Terminierung ist erwünscht, die Umgebung wird wegabstrahiert, und Zeit ist
+eine reine Performanzfrage -- schneller ist besser. Die gesamte Abstraktionshierarchie der Informatik
+(Befehlssatz, Programmiersprache, Betriebssystem) ist genau darauf ausgelegt, physikalische
+Eigenschaften \emph{auszublenden}.
+
+\emph{Embedded Software} dagegen:
+\begin{itemize}
+    \item ist in einen physikalischen Prozess eingebettet; die Wirkung in der physikalischen Welt
+          \emph{ist} der Zweck und kein Seiteneffekt;
+    \item terminiert nicht -- Nichttermination ist Anforderung, im klassischen Berechenbarkeitsmodell
+          dagegen ein Fehlerfall;
+    \item ist \emph{zeitbehaftet}: Korrektheit hängt vom Zeitpunkt ab. Häufig gilt nicht ,,so schnell
+          wie möglich``, sondern ,,zum richtigen Zeitpunkt`` -- zu früh kann ebenso falsch sein wie
+          zu spät;
+    \item ist \emph{inhärent nebenläufig}, weil die physikalische Welt nebenläufig ist und nicht
+          sequenziell;
+    \item unterliegt harten Ressourcen-, Energie- und Stückkostenschranken;
+    \item ist heterogen (Hardware/Software, kontinuierlich/diskret, verschiedene Protokolle);
+    \item muss hochzuverlässig sein: Feldupdates sind teuer oder unmöglich, Fehler haben
+          physikalische Konsequenzen.
+\end{itemize}
+Verschärfend kommt hinzu, dass moderne Rechnerarchitekturen (Caches, Pipelines, spekulative
+Ausführung, Sprungvorhersage, dynamische Taktung) den \emph{Durchschnitt} verbessern und die
+\emph{Vorhersagbarkeit} verschlechtern. Der Entwicklerin wird damit die Kontrolle über das
+Zeitverhalten genommen -- genau über die Eigenschaft, die hier korrektheitsrelevant ist.
+
+\emph{Warum ist das für uns wichtig, und wie gehen wir damit um?}
+\begin{itemize}
+    \item Nicht-funktionale Anforderungen (Zeit, Nebenläufigkeit, Ressourcen, Sicherheit) gehören in
+          die \emph{Spezifikation} und in das \emph{Modell} -- sie lassen sich nicht nachträglich
+          ,,hinein-optimieren``.
+    \item Modellbasierte Entwicklung mit Modellen, die eine \emph{formale Semantik} besitzen:
+          endliche Automaten, Statecharts, Timed Automata, signalflussorientierte Modelle
+          (Simulink). Darauf aufbauend Simulation, Model Checking und Codegenerierung.
+    \item Analysierbare Architekturen: statische Schedules, WCET-Analyse, Verzicht auf schwer
+          vorhersagbare Konstrukte (dynamische Speicherallokation, unbeschränkte Rekursion,
+          Garbage Collection), Coding Standards wie MISRA-C, speichersichere Sprachen wie Rust.
+    \item Trennung von Funktionalität und Sicherheitsüberwachung: ein eigener Safety-Monitor bzw.\
+          Watchdog neben der eigentlichen Steuerungslogik.
+\end{itemize}
+
+\textbf{Zu 2: Die Begriffe im Einzelnen}
+
+\begin{itemize}
+    \item \textbf{Timeliness (Zeitbehaftung, Rechtzeitigkeit).} Die Korrektheit hängt vom Zeitpunkt
+          der Reaktion ab. Klassische Programmiersprachen und ihre Semantiken kennen keinen
+          Zeitbegriff; auch klassische Temporallogik beschreibt nur \emph{qualitative} Zeit
+          (,,immer``, ,,irgendwann``), aber keine exakten Schranken. \emph{Für Entwickler:}
+          Deadlines, Perioden und Jitter müssen Teil von Spezifikation \emph{und} Analyse werden
+          -- über Timed Automata, zeitbehaftete Logiken (TCTL), WCET- und Schedulability-Analyse.
+    \item \textbf{Concurrency (Nebenläufigkeit).} Mehrere unabhängige Kontrollflüsse: Das System
+          reagiert auf eine Menge von Sensoren und steuert ,,gleichzeitig`` Aktoren an. Die
+          etablierten Lösungen der Betriebssystemwelt (Scheduling, Semaphore, Monitore, Interrupts)
+          funktionieren, sind aber schwer vorhersagbar und fehleranfällig -- Race Conditions,
+          Deadlocks, Prioritätsinversion. \emph{Für Entwickler:} nebenläufige Modelle mit klarer
+          Semantik verwenden, Zustandsteilung minimieren (Message Passing statt Shared Memory),
+          kritische Abschnitte verifizieren statt testen.
+    \item \textbf{Liveness (Lebendigkeit).} Das System darf weder terminieren noch blockieren; es
+          muss ,,immer wieder etwas Gutes passieren``. Auszuschließen sind Deadlock (alle Prozesse
+          warten auf ein Ereignis, das nur ein anderer Prozess der Menge auslösen kann), Livelock
+          und Starvation. \emph{Für Entwickler:} Lebendigkeitseigenschaften explizit formulieren
+          (z.\,B.\ in LTL als $\Box\Diamond\,\varphi$) und per Model Checking nachweisen.
+    \item \textbf{Interfaces (Schnittstellen).} In klassischer Software beschreibt eine Schnittstelle
+          nur Typen von Parametern und Rückgabewerten und impliziert eine Übergabe des Kontrollflusses.
+          Für eingebettete Systeme müsste sie darüber hinaus die \emph{Dynamik} beschreiben:
+          zulässige Aufrufreihenfolgen und Protokolle, Zeitverhalten, Nebenläufigkeit,
+          Ressourcenverbrauch. \emph{Für Entwickler:} Lee fordert ,,system-level types`` bzw.\
+          Interface-Theorien, mit denen sich die Verträglichkeit einer Komposition ähnlich statisch
+          prüfen lässt wie heute Datentypen.
+    \item \textbf{Heterogeneity (Heterogenität).} Gemischt werden Hardware und Software,
+          kontinuierliche und diskrete Anteile, synchrone und asynchrone Abläufe, blockierende und
+          nichtblockierende Kommunikation, kontroll- und datenflussorientierte Sprachen.
+          \emph{Für Entwickler:} Ein einziger Formalismus reicht nicht; erforderlich sind
+          hierarchisch heterogene Modelle, eine sauber definierte Semantik an den Modellgrenzen und
+          Co-Simulation.
+    \item \textbf{Reactivity (Reaktivität).} Das System steht in kontinuierlicher Interaktion mit
+          der Umgebung und arbeitet in \emph{deren} Tempo, nicht im eigenen. Ein ,,verpasstes``
+          Ereignis kann schwere Folgen haben. \emph{Für Entwickler:} ereignisorientierte Modelle
+          (Automaten, Statecharts), reaktive Sprachen (Esterel, Lustre, Ada) oder Erweiterungen
+          etablierter Sprachen (SystemC, POSIX für C, RTSJ für Java); auf Implementierungsebene
+          Interrupt-Architektur, Pufferung und definiertes Überlastverhalten.
+\end{itemize}
+
+\textbf{Zu 3: Schwächen der vorherrschenden Ansätze}
+
+\emph{Objektorientierung.}
+\begin{itemize}
+    \item Sie abstrahiert genau das weg, worauf es ankommt: Zeit, Nebenläufigkeit und die
+          physikalische Realisierung.
+    \item Schnittstellen sind Methodensignaturen. Sie sagen nichts über Zeitverhalten, Protokoll
+          oder Nebenläufigkeit aus; die Übergabe des Kontrollflusses (\emph{transfer of control})
+          ist die falsche Abstraktion für nebenläufig interagierende Komponenten.
+    \item Objekte sind passiv -- sie müssen aufgerufen werden. Nebenläufigkeit wird nachträglich
+          über Threads und Monitore angeflanscht, ohne Kompositionssemantik: Aus der Korrektheit
+          der Teile folgt nicht die Korrektheit der Komposition.
+    \item Dynamische Bindung, dynamische Allokation und Garbage Collection erschweren die Vorhersage
+          von Zeit- und Speicherverhalten.
+\end{itemize}
+
+\emph{Hardware-Beschreibungssprachen (VHDL, Verilog).}
+\begin{itemize}
+    \item Stärke: Zeit und Nebenläufigkeit sind Teil der Semantik (Discrete-Event-Modell) -- genau
+          das, was der Objektorientierung fehlt.
+    \item Schwäche: Das Abstraktionsniveau ist für komplexe Softwarefunktionalität zu niedrig; es
+          fehlen Strukturierungs- und Abstraktionsmittel, wie sie große Softwaresysteme benötigen.
+    \item Die Semantik ist auf Simulation und Synthese von Hardware zugeschnitten und in Details
+          (Delta-Zyklen, Ereignisse mit gleichem Zeitstempel) subtil und wenig intuitiv.
+          SystemC ist der Versuch, dieses Modell in die Softwarewelt (C++) zu übertragen.
+\end{itemize}
+
+\emph{Echtzeitbetriebssysteme.}
+\begin{itemize}
+    \item Zeitanforderungen werden nur \emph{indirekt} über Prioritäten ausgedrückt. Priorität ist
+          eine schwache, globale und nicht-kompositionale Codierung einer Deadline.
+    \item Daraus folgen die klassischen Probleme: Prioritätsinversion (prominentes Beispiel: Mars
+          Pathfinder), Deadlocks, Starvation.
+    \item Es gibt keine Kompositionalität: Das Hinzufügen einer Task kann das Zeitverhalten
+          bestehender Tasks zerstören. Analysen wie RMS oder EDF setzen starke Annahmen voraus
+          (Periodizität, Unabhängigkeit, bekannte WCET), die in realen Systemen selten alle gelten.
+    \item Threads und Locks sind für Entwickler notorisch schwer korrekt zu verwenden; der
+          resultierende Nichtdeterminismus macht Fehler schlecht reproduzierbar und Tests wenig
+          aussagekräftig.
+    \item Grundsätzlich: Ein RTOS löst ein Ressourcen-Multiplexing-Problem, liefert aber kein
+          Modell, in dem Zeit Bestandteil der \emph{Semantik} ist.
+\end{itemize}
+
+\emph{Eigene Stellungnahme (Diskussionsaufgabe, es gibt keine eindeutig richtige Antwort).} Die
+Analyse ist mehr als zwanzig Jahre später weitgehend bestätigt: Modellbasierte Entwicklung mit
+Simulink/Stateflow, SCADE und Statecharts ist in Automotive und Avionik Standard, Timed Automata
+und Model Checking sind etablierte Werkzeuge, und mit Rust setzt sich eine Sprache durch, die
+Data-Race-Freiheit zur Übersetzungszeit garantiert. Einschränkend ist festzuhalten: Objektorientierung
+und Echtzeitbetriebssysteme sind in der Praxis außerordentlich erfolgreich, weil sie Wiederverwendung,
+Werkzeugunterstützung und verfügbares Personal mitbringen. Lees Kritik trifft sie weniger als
+\emph{Implementierungstechnik}, sondern als \emph{alleinige Entwurfsabstraktion}. Der pragmatische
+Schluss lautet daher: auf Entwurfsebene mit Modellen arbeiten, die Zeit und Nebenläufigkeit
+semantisch erfassen, und die klassischen Techniken darunter als Implementierungsschicht nutzen.
+\end{loesung}
 
 \aufgabetitel{$3$}{Embedded Intro - Teil 2}\\
 Lesen Sie nun die verbleibenden Abschnitte des Papers \cite{lee2002embedded} und bereiten Sie sich auf folgende Fragen vor: 
@@ -56,6 +364,167 @@ Lesen Sie nun die verbleibenden Abschnitte des Papers \cite{lee2002embedded} und
     \end{enumerate}
     \item Was sind Vor- und Nachteile der Verwendung allgemeiner oder spezialisierter Modelle zur Modellierung eingebetteter Systeme? Welche Vor- und Nachteile hat die Kombination mehrerer Modelle?
 \end{enumerate}
+
+\begin{loesung}
+\textbf{Zu 1: Lees Ansatz}
+
+Lee schlägt vor, von der \emph{objektorientierten} zur \emph{aktorenorientierten} Entwurfssicht
+(\emph{actor-oriented design}) überzugehen und die Semantik der Komposition explizit zu machen:
+\begin{itemize}
+    \item \textbf{Aktoren statt Objekte.} Komponenten sind nebenläufig, besitzen \emph{Ports} und
+          kommunizieren über Datenströme bzw.\ Signale. Die Schnittstelle ist nicht der
+          Methodenaufruf mit Kontrollflussübergabe, sondern der Datenaustausch.
+    \item \textbf{Explizites Model of Computation.} Wie Komponenten nebenläufig ausgeführt werden
+          und wie sie kommunizieren, legt nicht die Komponente fest, sondern das umgebende
+          Berechnungsmodell (in Ptolemy~II durch einen \emph{Director} repräsentiert). Die
+          ,,Gesetze``, nach denen die Komposition arbeitet, sind damit Teil des Modells und nicht
+          implizite Eigenschaft der Implementierung.
+    \item \textbf{Hierarchische Heterogenität.} Verschiedene Berechnungsmodelle werden hierarchisch
+          geschachtelt, sodass jedes Teilproblem im dafür passenden Modell beschrieben wird -- etwa
+          kontinuierliche Zeit für die Regelstrecke, endliche Automaten für Betriebsmodi,
+          Datenfluss für Signalverarbeitung, Discrete Event für die Buskommunikation.
+    \item \textbf{Interface-Theorien / ,,system-level types``.} Schnittstellen beschreiben auch
+          Dynamik, Zeit und Nebenläufigkeit, sodass sich unverträgliche Kompositionen statisch
+          erkennen lassen -- analog zur Typprüfung, aber auf Systemebene.
+\end{itemize}
+
+\emph{Inwiefern vermeidet das die beschriebenen Schwächen?} Zeit und Nebenläufigkeit sind Bestandteil
+der Semantik und nicht nachträglich angeflanscht (Gegenentwurf zur Objektorientierung). Das
+Abstraktionsniveau bleibt softwaretauglich und skaliert auf komplexe Funktionalität (Gegenentwurf zu
+den Hardware-Beschreibungssprachen). Das Zeitverhalten ergibt sich aus dem Modell statt aus
+Prioritäten und Scheduler-Heuristiken, und durch bewusst \emph{eingeschränkte}, domänenspezifische
+Modelle wird Analysierbarkeit überhaupt erst möglich (Gegenentwurf zum RTOS-Ansatz).
+
+\emph{Einschätzung (Diskussion).} Für den Ansatz spricht, dass er sich in der Praxis durchgesetzt hat,
+wenn auch nicht unter Lees Namen: Simulink/Stateflow, SCADE, Modelica und AUTOSAR sind im Kern
+aktorenorientierte, modellbasierte Werkzeugketten mit Codegenerierung; ROS\,2 realisiert ein
+Publish-Subscribe-Berechnungsmodell. Kritisch anzumerken sind die starke Werkzeugabhängigkeit und
+das Risiko des Vendor-Lock-in, der Einarbeitungsaufwand, die Gefahr auseinanderlaufender Modelle und
+Implementierungen sowie der schwierigste Punkt des Ansatzes selbst: eine saubere Semantik \emph{an
+den Grenzen} zwischen unterschiedlichen Berechnungsmodellen. Ptolemy~II selbst ist ein
+Forschungswerkzeug geblieben -- die Ideen sind es nicht.
+
+\textbf{Zu 2: Model of Computation}
+
+Ein \emph{Model of Computation} (MoC, Berechnungsmodell) ist die Menge der Regeln, die die
+\emph{Interaktion von Komponenten} innerhalb eines Modells bestimmen. Lee beschreibt es bildhaft als
+die ,,Gesetze der Physik``, denen die Komponenten einer Komposition unterliegen. Ein MoC legt fest:
+\begin{itemize}
+    \item Was ist eine Komponente, und wann wird sie aktiv (Aktivierungs-/Feuerregel, Scheduling)?
+    \item Wie wird kommuniziert -- blockierend oder nichtblockierend, gepuffert oder synchron,
+          gerichtet oder anonym?
+    \item Welche Rolle spielt Zeit: gar keine, logische Ordnung, diskrete Ticks, Zeitstempel oder
+          kontinuierliche Zeit? Was bedeutet ,,gleichzeitig``?
+    \item Wann ist eine Komposition wohldefiniert, determiniert und ausführbar?
+\end{itemize}
+\emph{Zweck:}
+\begin{itemize}
+    \item \textbf{Formale Semantik} als Grundlage für Simulation, Verifikation und Codegenerierung --
+          ohne sie ist ein Modell nur ein Bild.
+    \item \textbf{Kompositionalität:} Das Verhalten der Zusammensetzung folgt aus den Regeln und muss
+          nicht für jede Kombination neu ermittelt werden.
+    \item \textbf{Analysierbarkeit durch gezielte Einschränkung} der Ausdrucksstärke -- etwa
+          statisches Scheduling, beschränkte Puffergrößen oder entscheidbare Deadlock-Freiheit.
+    \item \textbf{Passung zur Domäne} und damit eine gemeinsame Sprache zwischen Domänenexpertin und
+          Softwareentwickler.
+\end{itemize}
+
+\textbf{Zu 3: Charakteristika der einzelnen Berechnungsmodelle}
+
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Datenflussmodelle.} Aktoren feuern datengetrieben, sobald genügend Token an ihren
+          Eingängen anliegen; ein globaler Zeitbegriff fehlt. Im Spezialfall \emph{Synchronous
+          Dataflow} (SDF) sind die Token-Raten statisch bekannt, wodurch sich Schedule, Puffergrößen
+          und Deadlock-Freiheit bereits zur Übersetzungszeit bestimmen lassen. Natürlicher
+          Anwendungsbereich: Signalverarbeitung und Streaming.
+    \item \textbf{Time Triggered Architectures (TTA).} Rechnen und Kommunizieren folgen einem
+          \emph{statischen, global zeitgesteuerten Fahrplan} (TDMA) auf Basis einer synchronisierten
+          globalen Zeit; nichts geschieht ereignisgetrieben. Das ergibt maximale Vorhersagbarkeit,
+          Testbarkeit und Fehlertoleranz, erkauft mit Unflexibilität gegenüber sporadischen
+          Ereignissen und einer Auslegung sämtlicher Ressourcen auf den Worst Case.
+    \item \textbf{Synchronous / Reactive (SR).} Es gilt die \emph{Synchronie-Hypothese}: Reaktionen
+          benötigen keine Zeit, das System durchläuft diskrete Ticks, in denen alle Komponenten
+          gleichzeitig auf die anliegenden Eingaben reagieren. Die Semantik ist ein Fixpunkt, weshalb
+          eine Kausalitätsanalyse nötig ist (Ausschluss von Kausalitätsschleifen). Determiniert und
+          sehr gut analysierbar (Esterel, Lustre, SCADE), aber global eng gekoppelt und damit auf
+          verteilten Plattformen teuer.
+    \item \textbf{Discrete Event models (DE).} Ereignisse tragen \emph{Zeitstempel}; die Ausführung
+          verarbeitet sie in chronologischer Reihenfolge aus einer globalen Ereigniswarteschlange.
+          Zeit ist explizit Teil der Semantik. Grundlage von Hardware- und Netzwerksimulatoren
+          (VHDL, Verilog, SystemC). Kritische Punkte: gleichzeitige Ereignisse und
+          Null-Verzögerungs-Rückkopplungen (Delta-Zyklen, ,,superdense time``) sowie die teure
+          globale Zeitordnung in verteilten Systemen.
+    \item \textbf{Process Networks (Kahn Process Networks).} Nebenläufige Prozesse kommunizieren über
+          konzeptuell unbeschränkte FIFO-Kanäle; Lesen blockiert, Schreiben blockiert nie. Das
+          Ergebnis ist \emph{determiniert und unabhängig von der Ausführungsreihenfolge} -- eine sehr
+          starke Eigenschaft. Ein Zeitbegriff fehlt; Beschränktheit der Puffer und Deadlock-Freiheit
+          sind im Allgemeinen unentscheidbar.
+    \item \textbf{Rendezvous.} Synchrone, ungepufferte Punkt-zu-Punkt-Kommunikation: Sender und
+          Empfänger warten aufeinander, der Datenaustausch findet atomar im ,,Treffpunkt`` statt
+          (CSP, CCS, Occam, Ada). Gut geeignet zur Modellierung geteilter Ressourcen und formal
+          hervorragend analysierbar (Prozessalgebren, Bisimulation); dafür starke Kopplung und
+          Deadlock-Gefahr, Nichtdeterminismus über bewachte Auswahl.
+    \item \textbf{Publish and Subscribe.} Anonyme, lose Kopplung über benannte Ereignisströme
+          (Topics); Produzenten kennen ihre Konsumenten nicht. Sehr gut für dynamische, verteilte und
+          skalierbare Systeme (heute DDS/ROS\,2, MQTT). Der Preis ist eine schwach definierte
+          Semantik bezüglich Reihenfolge, Zeit und Zustellgarantien -- Determinismus und harte
+          Echtzeit sind entsprechend schwer zuzusichern.
+    \item \textbf{Continuous Time models (CT).} Das Verhalten wird durch Differentialgleichungen über
+          einem kontinuierlichen Zeitbereich beschrieben; ausgeführt wird es näherungsweise durch
+          einen numerischen Solver (Schrittweitensteuerung, Nullstellenerkennung). Es ist das
+          passende Modell für die physikalische Regelstrecke; in Kombination mit diskreten Anteilen
+          entstehen \emph{hybride} Systeme (Simulink, Modelica).
+    \item \textbf{Finite State Machines.} Endliche Zustandsmenge mit Transitionen; das Verhalten ist
+          vollständig aufzählbar und damit sehr gut verifizierbar (Erreichbarkeitsanalyse, Model
+          Checking). Für sich genommen kennen FSM weder Nebenläufigkeit noch Zeit, und bei
+          Komposition droht Zustandsexplosion -- daher die Erweiterungen: Statecharts (Hierarchie und
+          Nebenläufigkeit), Timed Automata (Zeit) und hybride Automaten (FSM kombiniert mit CT).
+\end{enumerate}
+
+\textbf{Zu 4: Allgemeine vs.\ spezialisierte Modelle}
+
+\emph{Allgemeine Modelle} (Turing-mächtige Sprachen, UML, sehr ausdrucksstarke Berechnungsmodelle):
+\begin{itemize}
+    \item \emph{Vorteile:} Alles ist modellierbar, ein Formalismus deckt das Gesamtsystem ab, keine
+          Modellierungs-Verrenkungen nötig; breite Werkzeug- und Personalbasis.
+    \item \emph{Nachteile:} Analyseaussagen werden schwach oder unentscheidbar (Halteproblem,
+          Erreichbarkeit); statische Garantien zu Zeit und Speicher sind nicht zu bekommen; die
+          Semantik ist häufig unterspezifiziert -- bei UML bedeutet dasselbe Diagramm in
+          verschiedenen Werkzeugen Verschiedenes. Zudem sind solche Modelle selten domänennah.
+\end{itemize}
+
+\emph{Spezialisierte Modelle} (SDF, SR, Timed Automata, TTA, CT):
+\begin{itemize}
+    \item \emph{Vorteile:} Die eingeschränkte Ausdrucksstärke \emph{kauft} Analysierbarkeit --
+          statisches Scheduling, beschränkter Speicherbedarf, Determinismus, Deadlock-Freiheit,
+          Model Checking, WCET-Analyse und verlässliche Codegenerierung. Die Notation ist nah an der
+          Domäne und damit für Domänenexperten lesbar.
+    \item \emph{Nachteile:} Nicht alles lässt sich ausdrücken. Erzwungene Workarounds zerstören
+          häufig genau die Analysevorteile, für die man das Modell gewählt hat. Hinzu kommen
+          Lernaufwand, Werkzeugvielfalt und Lock-in-Risiken; die Grenzen des Modells müssen verstanden
+          sein.
+\end{itemize}
+
+\emph{Kombination mehrerer Modelle (hierarchische Heterogenität):}
+\begin{itemize}
+    \item \emph{Vorteile:} Jedes Teilproblem wird im passenden Modell beschrieben und behält dort
+          seine maximale Analysierbarkeit. Das entspricht der tatsächlich heterogenen Natur
+          eingebetteter Systeme -- kontinuierliche Regelstrecke, diskrete Steuerung,
+          ereignisbasierte Kommunikation. Lokale Verifikation und Wiederverwendung von Komponenten
+          werden dadurch erst praktikabel.
+    \item \emph{Nachteile:} Die Semantik \emph{an den Modellgrenzen} muss präzise definiert sein --
+          etwa die Abtastung beim Übergang CT~$\to$~FSM oder die Zeitstempel-Interpretation beim
+          Übergang DE~$\to$~SR. Genau dort entstehen erfahrungsgemäß die Fehler. Globale
+          Eigenschaften wie Ende-zu-Ende-Deadlines lassen sich über Modellgrenzen hinweg deutlich
+          schwerer beweisen als innerhalb eines Modells. Hinzu kommen konzeptionelle Komplexität,
+          Integration der Werkzeugkette, Co-Simulation und Schulungsaufwand.
+\end{itemize}
+
+Lees Antwort lautet entsprechend: Die Kombination ist \emph{notwendig}, aber nur mit wohldefinierten
+Schnittstellen zwischen den Berechnungsmodellen. In dieser Vorlesung sehen wir genau dieses Muster
+am Robotikbeispiel: Statecharts für die Betriebsmodi, Timed Automata für Deadlines und Watchdogs,
+Simulink für den Regelkreis und ROS\,2 als Publish-Subscribe-Schicht für die Kommunikation.
+\end{loesung}
 
 \begin{thebibliography}{9}
 

@@ -1,0 +1,827 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{false}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\klausurdatum}{}
+\newcommand{\klausurdauer}{2 Stunden}
+\newcommand{\klausuraufgaben}{7}
+\newcommand{\klausurpunkte}{50}
+\input{include/config.tex}
+\usepackage{bussproofs}
+
+% Kopf-/Fußzeile
+\lohead[]{Klausur zur Vorlesung \textit{Mathematik I -- Theoretische Informatik} -- Wintersemester 2025/2026}
+\rohead[]{\textbf{Klausur -- Mathematische Logik}}
+
+\begin{document}
+\input{include/kopf_klausur_logik.tex}
+
+% ============================================================
+\aufgabetitel{$9$}{Kalkül des natürlichen Schließens (Aussagenlogik)}\\
+Beweisen Sie die folgenden Behauptungen im \textbf{Kalkül des natürlichen Schließens}. Geben Sie den Ableitungsbaum vollständig an, benennen Sie \emph{jede} verwendete Regel und kennzeichnen Sie, welche Annahme an welcher Stelle entlastet wird.
+\begin{enumerate}[a)]
+  \item (2 Punkte) $\vdash\; \big(A \to (B \to C)\big) \to \big((A \to B) \to (A \to C)\big)$
+  \item (3 Punkte) $\neg(A \to B) \;\vdash\; A \wedge \neg B$
+  \item (4 Punkte) $\vdash\; (A \to B) \vee (B \to A)$
+\end{enumerate}
+\textit{Hinweise:} Die Regeln finden Sie im Anhang (A.1). Beachten Sie insbesondere, dass eine Regel auch \emph{null} Vorkommen einer Annahme entlasten darf -- aus $B$ allein ist also bereits $A\to B$ ableitbar. In b) und c) kommen Sie ohne $\bot E$ und $\neg\neg E$ nicht aus.
+
+\begin{loesung}
+\textbf{a) $\vdash\big(A\to(B\to C)\big)\to\big((A\to B)\to(A\to C)\big)$:}
+
+\begin{prooftree}
+  \AxiomC{$[A]^3$}
+  \AxiomC{$[A\to B]^2$}
+  \RightLabel{$\to E$}
+  \BinaryInfC{$B$}
+  \AxiomC{$[A]^3$}
+  \AxiomC{$[A\to(B\to C)]^1$}
+  \RightLabel{$\to E$}
+  \BinaryInfC{$B\to C$}
+  \RightLabel{$\to E$}
+  \BinaryInfC{$C$}
+  \RightLabel{$\to I^3$}
+  \UnaryInfC{$A\to C$}
+  \RightLabel{$\to I^2$}
+  \UnaryInfC{$(A\to B)\to(A\to C)$}
+  \RightLabel{$\to I^1$}
+  \UnaryInfC{$\big(A\to(B\to C)\big)\to\big((A\to B)\to(A\to C)\big)$}
+\end{prooftree}
+
+Wir nehmen der Reihe nach $A\to(B\to C)$ (Annahme 1), $A\to B$ (Annahme 2) und $A$ (Annahme 3) an. Zweimal $\to E$ liefert $B$ bzw.\ $B\to C$, ein drittes $\to E$ daraus $C$. Die drei $\to I$-Schritte entlasten die Annahmen in umgekehrter Reihenfolge.
+
+Bemerkenswert ist, dass die Annahme $[A]^3$ \emph{zweimal} vorkommt und durch \emph{einen} Schritt $\to I^3$ entlastet wird: Eine Regel entlastet stets \emph{alle} gleich markierten Vorkommen. Der Beweis benutzt nur $\to$-Regeln, ist also insbesondere intuitionistisch gültig.
+
+\medskip
+\textbf{b) $\neg(A\to B)\vdash A\wedge\neg B$:}
+
+Die Prämisse sagt: \enquote{$A\to B$ ist falsch}. Klassisch bedeutet das $A$ und $\neg B$ -- beide Teile müssen aber einzeln hergeleitet werden, und für $A$ braucht man einen Widerspruchsbeweis.
+
+\textit{Teil 1: $\neg B$.} Aus $B$ folgt mit \emph{leerer} Entlastung bereits $A\to B$ (die Annahme $[A]^5$ wird gar nicht benutzt), im Widerspruch zur Prämisse:
+
+\begin{prooftree}
+  \AxiomC{$[B]^4$}
+  \RightLabel{$\to I^5$}
+  \UnaryInfC{$A\to B$}
+  \AxiomC{$\neg(A\to B)$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\neg I^4$}
+  \UnaryInfC{$\neg B$}
+\end{prooftree}
+
+\textit{Teil 2: $A$.} Wir nehmen $\neg A$ an. Dann ist $A\to B$ herleitbar (aus $A$ und $\neg A$ folgt $\bot$, und $\bot E$ liefert jedes beliebige $B$) -- wieder ein Widerspruch zur Prämisse. Also gilt $\neg\neg A$ und mit $\neg\neg E$ dann $A$:
+
+\begin{prooftree}
+  \AxiomC{$[A]^2$}
+  \AxiomC{$[\neg A]^1$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\bot E$}
+  \UnaryInfC{$B$}
+  \RightLabel{$\to I^2$}
+  \UnaryInfC{$A\to B$}
+  \AxiomC{$\neg(A\to B)$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\neg I^1$}
+  \UnaryInfC{$\neg\neg A$}
+  \RightLabel{$\neg\neg E$}
+  \UnaryInfC{$A$}
+\end{prooftree}
+
+\textit{Teil 3:} Beide Teilableitungen zusammen ergeben mit $\wedge I$ die Behauptung:
+
+\begin{prooftree}
+  \AxiomC{$\begin{array}{c}\vdots\\ A\end{array}$}
+  \AxiomC{$\begin{array}{c}\vdots\\ \neg B\end{array}$}
+  \RightLabel{$\wedge I$}
+  \BinaryInfC{$A\wedge\neg B$}
+\end{prooftree}
+
+Offen bleibt in beiden Teilableitungen nur die Prämisse $\neg(A\to B)$; sie darf mehrfach verwendet werden.
+
+\textit{Bemerkung:} Intuitionistisch ist nur $\neg B$ herleitbar; der Teil $A$ ist ohne $\neg\neg E$ nicht zu bekommen.
+
+\medskip
+\textbf{c) $\vdash(A\to B)\vee(B\to A)$:}
+
+Keines der beiden Disjunkte ist für sich ableitbar -- die Formel ist trotzdem eine Tautologie (ist $A$ falsch, so gilt $A\to B$; ist $A$ wahr, so gilt $B\to A$). Ein direkter Beweis über $\vee I_l$ oder $\vee I_r$ kann also nicht funktionieren; wir nehmen stattdessen die Negation der Behauptung an. Zur Abkürzung sei
+\[
+  D := (A\to B)\vee(B\to A).
+\]
+
+\textit{Schritt 1: Aus $[\neg D]^1$ folgt $\neg(A\to B)$.} Wäre $A\to B$ ableitbar, so wäre es auch $D$:
+
+\begin{prooftree}
+  \AxiomC{$[A\to B]^2$}
+  \RightLabel{$\vee I_l$}
+  \UnaryInfC{$D$}
+  \AxiomC{$[\neg D]^1$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\neg I^2$}
+  \UnaryInfC{$\neg(A\to B)$}
+\end{prooftree}
+
+\textit{Schritt 2: Aus $\neg(A\to B)$ folgt $B\to A$.} Zunächst liefert die Teilableitung aus b) (Teil 1) die Formel $\neg B$; daraus erhält man mit $\bot E$ die Implikation $B\to A$:
+
+\begin{prooftree}
+  \AxiomC{$[B]^4$}
+  \RightLabel{$\to I^5$}
+  \UnaryInfC{$A\to B$}
+  \AxiomC{$\neg(A\to B)$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\neg I^4$}
+  \UnaryInfC{$\neg B$}
+  \AxiomC{$[B]^6$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\bot E$}
+  \UnaryInfC{$A$}
+  \RightLabel{$\to I^6$}
+  \UnaryInfC{$B\to A$}
+\end{prooftree}
+
+\textit{Schritt 3: Widerspruch und Abschluss.} Das eben hergeleitete $B\to A$ ergibt mit $\vee I_r$ wieder $D$, was der Annahme $[\neg D]^1$ widerspricht. Entlastung dieser Annahme liefert $\neg\neg D$, und $\neg\neg E$ die Behauptung:
+
+\begin{prooftree}
+  \AxiomC{$\begin{array}{c}[\neg D]^1\\ \vdots\\ B\to A\end{array}$}
+  \RightLabel{$\vee I_r$}
+  \UnaryInfC{$D$}
+  \AxiomC{$[\neg D]^1$}
+  \RightLabel{$\neg E$}
+  \BinaryInfC{$\bot$}
+  \RightLabel{$\neg I^1$}
+  \UnaryInfC{$\neg\neg D$}
+  \RightLabel{$\neg\neg E$}
+  \UnaryInfC{$(A\to B)\vee(B\to A)$}
+\end{prooftree}
+
+Am Ende ist keine Annahme mehr offen: $[\neg D]^1$ wird -- an beiden Vorkommen zugleich -- von $\neg I^1$ entlastet, $[A\to B]^2$ von $\neg I^2$, $[B]^4$ von $\neg I^4$, $[A]^5$ (leer) von $\to I^5$ und $[B]^6$ von $\to I^6$.
+
+\textit{Bemerkung:} Auch hier ist $\neg\neg E$ unverzichtbar. $(A\to B)\vee(B\to A)$ ist ein Standardbeispiel für eine klassische Tautologie, die intuitionistisch \emph{nicht} beweisbar ist -- genau wie $A\vee\neg A$. Vergleichen Sie den Aufwand mit Aufgabe 2, wo Disjunktionen dieser Art dank mehrelementiger rechter Seite fast von selbst entstehen.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$9$}{Sequenzenkalkül (Aussagenlogik)}\\
+Beweisen Sie die folgenden Sequenzen im \textbf{Sequenzenkalkül}. Geben Sie den Beweisbaum vollständig an und benennen Sie jede verwendete Regel. Alle Blätter müssen Axiome der Form $A\Rightarrow A$ sein.
+\begin{enumerate}[a)]
+  \item (2 Punkte) $A \to B,\; \neg B \;\Rightarrow\; \neg A$
+  \item (3 Punkte) $\neg(A \wedge B) \;\Rightarrow\; \neg A \vee \neg B$
+  \item (4 Punkte) $\Rightarrow\; \big((A \to B) \to A\big) \to A$ \quad (\emph{Peirce'sches Gesetz})
+\end{enumerate}
+\textit{Hinweis:} Die Regeln finden Sie im Anhang (A.2). Beachten Sie, dass die rechte Seite einer Sequenz \emph{mehrere} Formeln enthalten darf und dass Ihnen die Strukturregeln (Verwässerung $W$, Kontraktion $C$) zur Verfügung stehen. In c) benötigen Sie beide.
+
+\begin{loesung}
+\textbf{a) $A\to B,\;\neg B\Rightarrow\neg A$:}
+
+\begin{prooftree}
+  \AxiomC{$A\Rightarrow A$}
+  \AxiomC{$B\Rightarrow B$}
+  \RightLabel{$\to\Rightarrow$}
+  \BinaryInfC{$A\to B,\, A\Rightarrow B$}
+  \RightLabel{$\neg\Rightarrow$}
+  \UnaryInfC{$\neg B,\, A\to B,\, A\Rightarrow$}
+  \RightLabel{$\Rightarrow\neg$}
+  \UnaryInfC{$A\to B,\, \neg B\Rightarrow\neg A$}
+\end{prooftree}
+
+Von unten gelesen: $\Rightarrow\neg$ schiebt das $\neg A$ von rechts nach links (als $A$); die rechte Seite ist dann leer. Die Regel $\neg\Rightarrow$ schiebt $\neg B$ von links nach rechts (als $B$). Übrig bleibt $A\to B,\,A\Rightarrow B$, was mit $\to\Rightarrow$ auf die Axiome $A\Rightarrow A$ und $B\Rightarrow B$ zurückgeführt wird.
+
+\medskip
+\textbf{b) $\neg(A\wedge B)\Rightarrow\neg A\vee\neg B$:}
+
+\begin{prooftree}
+  \AxiomC{$A\Rightarrow A$}
+  \RightLabel{$\Rightarrow\neg$}
+  \UnaryInfC{$\Rightarrow A,\,\neg A$}
+  \RightLabel{$\Rightarrow\vee_l$}
+  \UnaryInfC{$\Rightarrow A,\,\neg A\vee\neg B$}
+  \AxiomC{$B\Rightarrow B$}
+  \RightLabel{$\Rightarrow\neg$}
+  \UnaryInfC{$\Rightarrow B,\,\neg B$}
+  \RightLabel{$\Rightarrow\vee_r$}
+  \UnaryInfC{$\Rightarrow B,\,\neg A\vee\neg B$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$\Rightarrow \neg A\vee\neg B,\, A\wedge B$}
+  \RightLabel{$\neg\Rightarrow$}
+  \UnaryInfC{$\neg(A\wedge B)\Rightarrow\neg A\vee\neg B$}
+\end{prooftree}
+
+Von unten gelesen: $\neg\Rightarrow$ bringt $A\wedge B$ auf die rechte Seite, so dass dort $\Delta = \{\neg A\vee\neg B\}$ mitgeführt wird. Die Regel $\Rightarrow\wedge$ spaltet in die beiden Zweige mit Ziel $A$ bzw.\ $B$; in jedem Zweig wird das mitgeführte $\neg A\vee\neg B$ mit $\Rightarrow\vee_l$ bzw.\ $\Rightarrow\vee_r$ abgebaut und mit $\Rightarrow\neg$ auf ein Axiom zurückgeführt.
+
+\textit{Vergleich mit dem natürlichen Schließen:} Auch hier ist keines der beiden Disjunkte $\neg A$, $\neg B$ für sich allein ableitbar. Im Kalkül des natürlichen Schließens erzwingt das den Umweg über eine Zusatzannahme und $\neg\neg E$ (vgl.\ Aufgabe 1c), wo dasselbe Phänomen auftritt); hier genügen wenige Zeilen. Der Grund ist die \emph{mehrelementige rechte Seite}: Die Sequenz $\Rightarrow A,\neg A$ drückt bereits das \enquote{tertium non datur} aus. Die Klassik steckt im Sequenzenkalkül also im Sequenzenbegriff selbst und nicht in einer eigenen Regel.
+
+\medskip
+\textbf{c) $\Rightarrow((A\to B)\to A)\to A$:}
+
+\begin{prooftree}
+  \AxiomC{$A\Rightarrow A$}
+  \RightLabel{$Wr$}
+  \UnaryInfC{$A\Rightarrow A,\, B$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$\Rightarrow A,\, A\to B$}
+  \AxiomC{$A\Rightarrow A$}
+  \RightLabel{$\to\Rightarrow$}
+  \BinaryInfC{$(A\to B)\to A\Rightarrow A,\, A$}
+  \RightLabel{$Cr$}
+  \UnaryInfC{$(A\to B)\to A\Rightarrow A$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$\Rightarrow\big((A\to B)\to A\big)\to A$}
+\end{prooftree}
+
+Von unten gelesen: $\Rightarrow\to$ liefert das Ziel $(A\to B)\to A\Rightarrow A$. Die Regel $\to\Rightarrow$, angewandt auf die Hauptformel $(A\to B)\to A$, verlangt die beiden Prämissen $\Gamma\Rightarrow\Delta,\,A\to B$ und $A,\Pi\Rightarrow\Lambda$. Wählt man $\Delta=\{A\}$ und $\Lambda=\{A\}$, so ist die rechte Prämisse das Axiom $A\Rightarrow A$, und die linke Prämisse $\Rightarrow A, A\to B$ erhält man aus dem Axiom $A\Rightarrow A$ durch Verwässerung ($Wr$, fügt $B$ rechts hinzu) und $\Rightarrow\to$. In der Konklusion steht $A$ dann zweimal rechts; die Kontraktion $Cr$ macht daraus ein einziges $A$.
+
+\textit{Bemerkung:} Ohne $Cr$ ist das Peirce'sche Gesetz in diesem Kalkül nicht herleitbar -- die beiden Kopien von $A$ entstehen zwangsläufig, weil die Regel $\to\Rightarrow$ die Kontexte $\Delta$ und $\Lambda$ multiplikativ zusammenführt.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$6$}{Syntax der Prädikatenlogik}\\
+Gegeben sei die Sprache $\mathscr{L} = \{c, f, g, p, q\}$ mit
+\begin{itemize}
+  \item einem Konstantensymbol $c$, einem einstelligen Funktionssymbol $f$, einem zweistelligen Funktionssymbol $g$,
+  \item einem zweistelligen Prädikatensymbol $p$ und einem einstelligen Prädikatensymbol $q$.
+\end{itemize}
+
+\begin{enumerate}[a)]
+  \item (3 Punkte) Entscheiden Sie für jede der folgenden Zeichenketten, ob es sich um einen \textbf{Term}, um eine \textbf{Formel} von $\mathscr{L}$ oder um \textbf{keines von beiden} handelt. Begründen Sie jeweils mit einem Satz.
+  \begin{enumerate}[(i)]
+    \item $g(f(c), x)$
+    \item $\forall x.\, f(x)$
+    \item $\neg \exists y.\, \big(p(y, c) \to q(g(y,y))\big)$
+    \item $p\big(x,\, q(c)\big)$
+    \item $\exists q.\, q(c)$
+  \end{enumerate}
+  \item (1,5 Punkte) Bestimmen Sie die Menge $FV(\varphi)$ der freien Variablen von
+  \[
+    \varphi \;=\; \forall x.\, \Big( p(x,y) \to \exists y.\, q\big(g(x,y)\big) \Big).
+  \]
+  \item (1,5 Punkte) Sei $\psi = p(x,y) \to \forall y.\, q(g(x,y))$. Bestimmen Sie $\psi[f(c)/x]$. Erklären Sie außerdem, warum die Substitution $\psi[y/x]$ \emph{problematisch} ist.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a)}
+\begin{enumerate}[(i)]
+  \item \textbf{Term.} $c$ ist ein Term, also auch $f(c)$; $x$ ist als Variable ein Term; $g$ ist zweistellig, also ist $g(f(c),x)$ ein Term. Eine Formel ist es nicht, denn das äußerste Symbol ist ein Funktions-, kein Prädikatensymbol.
+  \item \textbf{Keines von beiden.} $f(x)$ ist ein Term, und Quantoren dürfen nur auf \emph{Formeln} angewendet werden. $\forall x.\,f(x)$ ist damit weder Term (ein Term enthält keine Quantoren) noch Formel.
+  \item \textbf{Formel.} $p(y,c)$ und $q(g(y,y))$ sind atomare Formeln, also ist die Implikation eine Formel, ebenso deren Existenzquantifizierung und deren Negation.
+  \item \textbf{Keines von beiden.} $q$ ist ein \emph{Prädikaten}symbol, $q(c)$ also eine Formel und kein Term. Als zweites Argument von $p$ ist aber ein Term verlangt.
+  \item \textbf{Keines von beiden.} Quantifiziert wird hier über ein Prädikatensymbol. In der Logik \emph{erster} Stufe dürfen nur Variablen quantifiziert werden (das wäre Logik zweiter Stufe).
+\end{enumerate}
+
+\textbf{b)} Wir rechnen von innen nach außen:
+\begin{align*}
+  FV\big(q(g(x,y))\big) &= var(g(x,y)) = \{x,y\} \\
+  FV\big(\exists y.\, q(g(x,y))\big) &= \{x,y\}\setminus\{y\} = \{x\} \\
+  FV\big(p(x,y)\big) &= \{x,y\} \\
+  FV\big(p(x,y)\to\exists y.\,q(g(x,y))\big) &= \{x,y\}\cup\{x\} = \{x,y\} \\
+  FV(\varphi) &= \{x,y\}\setminus\{x\} = \{y\}
+\end{align*}
+Also $FV(\varphi)=\{y\}$. Beachten Sie, dass das $y$ in $g(x,y)$ durch $\exists y$ gebunden ist, das $y$ in $p(x,y)$ dagegen frei -- es handelt sich um zwei verschiedene Vorkommen desselben Variablensymbols.
+
+\textbf{c)} Ersetzt werden nur die \emph{freien} Vorkommen von $x$; in $\psi$ sind das beide:
+\[
+  \psi[f(c)/x] \;=\; p\big(f(c),\,y\big) \to \forall y.\, q\big(g(f(c),\,y)\big)
+\]
+Das ist unproblematisch, weil der eingesetzte Term $f(c)$ keine Variablen enthält.
+
+Bei $\psi[y/x]$ dagegen entstünde $p(y,y)\to\forall y.\,q(g(y,y))$: Das in $\psi$ \emph{freie} $x$ im Skopus von $\forall y$ wird durch $y$ ersetzt und dadurch von diesem Quantor \textbf{eingefangen} (\emph{Variablenkollision}, engl.\ \emph{capture}). Die Bedeutung der Formel ändert sich damit unzulässig: Vorher sprach die Aussage über einen von außen vorgegebenen Wert für $x$, hinterher über die quantifizierte Variable. Korrekt ist die Substitution nur, wenn $y$ \emph{frei für} $x$ in $\psi$ ist; andernfalls muss die gebundene Variable vorher umbenannt werden (z.\,B.\ $\forall z.\,q(g(x,z))$).
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$6$}{Semantik: Strukturen und Modelle entwerfen}\\
+Sei $\mathscr{L}=\{p\}$ eine Sprache mit einem einzigen, zweistelligen Prädikatensymbol $p$. Betrachten Sie die Formeln
+\[
+  \varphi_1 = \forall x.\,\exists y.\, p(x,y),
+  \qquad
+  \varphi_2 = \exists y.\,\forall x.\, p(x,y),
+  \qquad
+  \varphi_3 = \forall x.\,\exists y.\,\big(p(x,y) \wedge \neg p(y,x)\big).
+\]
+\begin{enumerate}[a)]
+  \item (2 Punkte) Geben Sie eine Struktur $\mathcal{M}_1$ an (Trägermenge \emph{und} Interpretation von $p$) mit
+  $\mathcal{M}_1\models\varphi_1$ und $\mathcal{M}_1\not\models\varphi_2$. Begründen Sie beide Aussagen.
+  \item (1 Punkt) Was folgt daraus für die Frage, ob $\varphi_1\models\varphi_2$ gilt? Und gilt umgekehrt $\varphi_2\models\varphi_1$?
+  \item (3 Punkte) Geben Sie eine Struktur $\mathcal{M}_3$ mit \emph{genau drei} Elementen an mit $\mathcal{M}_3\models\varphi_3$. Zeigen Sie außerdem, dass es \emph{keine} Struktur mit genau \emph{einem} oder genau \emph{zwei} Elementen gibt, die $\varphi_3$ erfüllt.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a)} Wähle $\mathcal{M}_1$ mit Trägermenge $D=\NN$ und $p^{\mathcal{M}_1} = \{(a,b)\in\NN^2 \mid a < b\}$.
+\begin{itemize}
+  \item $\mathcal{M}_1\models\varphi_1$: Zu jedem $a\in\NN$ gibt es ein $b\in\NN$ mit $a<b$, etwa $b=a+1$.
+  \item $\mathcal{M}_1\not\models\varphi_2$: $\varphi_2$ verlangt \emph{ein} $b$, das von \emph{allen} $a$ übertroffen wird, also $a<b$ für alle $a\in\NN$. Für $a=b$ ist $b<b$ aber falsch. Ein solches $b$ existiert also nicht.
+\end{itemize}
+(Jede andere Struktur mit derselben Eigenschaft ist ebenso richtig, z.\,B.\ $D=\ZZ$ mit $<$.)
+
+\textbf{b)} $\mathcal{M}_1$ ist ein Modell von $\varphi_1$, aber kein Modell von $\varphi_2$; also gilt
+$\varphi_1\not\models\varphi_2$ -- die Vertauschung der Quantoren ist \emph{keine} gültige Folgerung.
+
+Umgekehrt gilt $\varphi_2\models\varphi_1$: Ist $\mathcal{M}\models\varphi_2$, so gibt es ein $d\in D$ mit $(a,d)\in p^{\mathcal{M}}$ für alle $a\in D$. Dann leistet dieses $d$ für jedes $x$ auch das in $\varphi_1$ geforderte $y$. (Die Richtung \enquote{$\exists\forall \Rightarrow \forall\exists$} ist stets korrekt, die Umkehrung nicht.)
+
+\textbf{c)} \textbf{Struktur mit drei Elementen:} $D=\{0,1,2\}$ und
+\[
+  p^{\mathcal{M}_3} = \{(0,1),\,(1,2),\,(2,0)\} \qquad (\text{ein gerichteter 3-Zyklus}).
+\]
+Prüfung für jedes $x$: für $x=0$ wähle $y=1$: $(0,1)\in p^{\mathcal{M}_3}$ und $(1,0)\notin p^{\mathcal{M}_3}$; für $x=1$ wähle $y=2$; für $x=2$ wähle $y=0$. In allen drei Fällen gilt $p(x,y)\wedge\neg p(y,x)$, also $\mathcal{M}_3\models\varphi_3$.
+
+\textbf{Unmöglichkeit für ein oder zwei Elemente:} Sei $\mathcal{M}$ eine Struktur mit $\mathcal{M}\models\varphi_3$ und $R:=p^{\mathcal{M}}$.
+
+Zunächst eine Vorüberlegung: Für $x=y$ verlangt $\varphi_3$ die Aussage $p(x,x)\wedge\neg p(x,x)$, die niemals gilt. Das zu $x$ gewählte $y$ muss also stets von $x$ \emph{verschieden} sein. Insbesondere ist $|D|=1$ unmöglich.
+
+Sei nun $D=\{d_1,d_2\}$ mit $d_1\neq d_2$. Nach der Vorüberlegung muss zu $x=d_1$ notwendig $y=d_2$ gewählt werden, also
+\[
+  (d_1,d_2)\in R \quad\text{und}\quad (d_2,d_1)\notin R.
+\]
+Zu $x=d_2$ muss ebenso $y=d_1$ gewählt werden, also
+\[
+  (d_2,d_1)\in R \quad\text{und}\quad (d_1,d_2)\notin R.
+\]
+Das ist ein Widerspruch (z.\,B.\ $(d_2,d_1)\in R$ und $(d_2,d_1)\notin R$). Also erfüllt keine zweielementige Struktur die Formel $\varphi_3$; drei Elemente sind minimal.
+
+\textit{Bemerkung:} $\varphi_3$ ist erfüllbar, aber erst ab drei Elementen -- ein Beispiel dafür, dass die \emph{Größe} eines Modells eine echte Rolle spielt.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Konsistenz, Korrektheit und Vollständigkeit}\\
+Sei $T$ eine Formelmenge (Theorie) und seien $\varphi,\psi$ Formeln. Entscheiden Sie, ob die folgenden Aussagen \textbf{wahr} oder \textbf{falsch} sind. Begründen Sie wahre Aussagen mit einem Argument (Sie dürfen die Sätze aus dem Anhang A.4 verwenden), falsche mit einem Gegenbeispiel.
+\begin{enumerate}[a)]
+  \item (1,5 Punkte) Ist $T$ konsistent und gilt $T \nvdash \varphi$, so ist $T \cup \{\neg\varphi\}$ konsistent.
+  \item (1,5 Punkte) Sind $T \cup \{\varphi\}$ \emph{und} $T \cup \{\neg\varphi\}$ beide inkonsistent, so ist bereits $T$ inkonsistent.
+  \item (1,5 Punkte) Gilt $T \vdash \varphi$, so gibt es eine \emph{endliche} Teilmenge $T_0 \subseteq T$ mit $T_0 \vdash \varphi$.
+  \item (1,5 Punkte) Es gibt eine Theorie $T$ und eine Formel $\varphi$ mit $T \models \varphi$, aber $T \nvdash \varphi$.
+  \item (2 Punkte) Ist $T$ konsistent und \emph{vollständig} (d.\,h.\ für jede Formel $\chi$ gilt $T\vdash\chi$ oder $T\vdash\neg\chi$), so folgt aus $T \vdash \varphi \vee \psi$ bereits $T \vdash \varphi$ oder $T \vdash \psi$.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Wahr.} Wir zeigen die Kontraposition. Wäre $T\cup\{\neg\varphi\}$ inkonsistent, so gälte nach dem Zusammenhang
+\[
+  T\vdash\varphi \quad\Longleftrightarrow\quad T\cup\{\neg\varphi\}\ \text{inkonsistent}
+\]
+gerade $T\vdash\varphi$ -- im Widerspruch zur Voraussetzung $T\nvdash\varphi$. (Direkt argumentiert: Aus $T\cup\{\neg\varphi\}\vdash\bot$ liefert $\neg I$ die Ableitung $T\vdash\neg\neg\varphi$ und $\neg\neg E$ dann $T\vdash\varphi$.) Die Konsistenz von $T$ wird dabei gar nicht benötigt; sie stellt nur sicher, dass die Aussage nicht leer ist.
+
+\textbf{b) Wahr.} Aus $T\cup\{\varphi\}\vdash\bot$ folgt mit $\neg I$ (Entlastung von $\varphi$) die Ableitung $T\vdash\neg\varphi$. Aus $T\cup\{\neg\varphi\}\vdash\bot$ folgt ebenso $T\vdash\neg\neg\varphi$. Mit $\neg E$ aus $\neg\varphi$ und $\neg\neg\varphi$ erhält man $T\vdash\bot$, also ist $T$ inkonsistent.
+
+\textit{Semantisch gelesen:} Jedes Modell von $T$ erfüllt $\varphi$ oder $\neg\varphi$; hat $T$ ein Modell, so wäre eine der beiden Erweiterungen erfüllbar und damit konsistent.
+
+\textbf{c) Wahr} (\emph{Endlichkeitssatz} für $\vdash$). Eine Ableitung ist per Definition ein \emph{endlicher} Baum. Sie besitzt daher nur endlich viele Blätter und benutzt somit nur endlich viele offene Annahmen $\chi_1,\dots,\chi_n\in T$. Mit $T_0:=\{\chi_1,\dots,\chi_n\}$ ist dieselbe Ableitung ein Beweis für $T_0\vdash\varphi$.
+
+(Zusammen mit Korrektheit und Vollständigkeit ergibt das den Kompaktheitssatz: Gilt $T\models\varphi$, so gilt schon $T_0\models\varphi$ für eine endliche Teilmenge $T_0$.)
+
+\textbf{d) Falsch.} Das ist genau die Aussage, die der \emph{Gödel'sche Vollständigkeitssatz} ausschließt: Für die Prädikatenlogik erster Stufe gilt $T\models\varphi \Rightarrow T\vdash\varphi$ für \emph{alle} $T$ und $\varphi$. Ein solches Paar $(T,\varphi)$ kann es also nicht geben.
+
+\textit{Achtung, häufige Verwechslung:} Der Gödel'sche \emph{Un}vollständigkeitssatz ist eine andere Aussage. Er besagt, dass hinreichend ausdrucksstarke, rekursiv aufzählbare Theorien (z.\,B.\ die Arithmetik) nicht \emph{vollständig als Theorie} sind, d.\,h.\ es gibt ein $\varphi$ mit $T\nvdash\varphi$ und $T\nvdash\neg\varphi$. Das widerspricht der Vollständigkeit des Kalküls nicht: Dieses $\varphi$ ist eben auch keine semantische Folgerung aus $T$.
+
+\textbf{e) Wahr.} Angenommen, es gälte weder $T\vdash\varphi$ noch $T\vdash\psi$. Da $T$ vollständig ist, folgt daraus $T\vdash\neg\varphi$ und $T\vdash\neg\psi$. Aus $T\vdash\varphi\vee\psi$ erhalten wir nun mit $\vee E$ einen Widerspruch: Im Fall $[\varphi]$ liefert $\neg E$ mit $\neg\varphi$ den Wert $\bot$, im Fall $[\psi]$ ebenso mit $\neg\psi$. Also $T\vdash\bot$, im Widerspruch zur Konsistenz von $T$. Folglich gilt $T\vdash\varphi$ oder $T\vdash\psi$.
+
+\textit{Bemerkung:} Die Voraussetzung \enquote{vollständig} ist wesentlich. Für $T=\emptyset$, $\varphi=A$, $\psi=\neg A$ gilt $T\vdash A\vee\neg A$, aber weder $T\vdash A$ noch $T\vdash\neg A$ -- $\emptyset$ ist eben nicht vollständig.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$4$}{Existenz von Formeln}\\
+\begin{enumerate}[a)]
+  \item (2 Punkte) Gibt es eine aussagenlogische Formel $\varphi$ über den Atomen $A, B, C$, die genau von denjenigen Belegungen erfüllt wird, unter denen \textbf{genau zwei} der drei Atome wahr sind? Geben Sie eine solche Formel an oder begründen Sie, warum es keine geben kann.
+  \item (1 Punkt) Wie viele paarweise \textbf{nicht äquivalente} aussagenlogische Formeln über den Atomen $A, B$ gibt es? Begründen Sie.
+  \item (1 Punkt) Begründen Sie allgemein: Zu \emph{jeder} Funktion $f:\{0,1\}^n\to\{0,1\}$ gibt es eine Formel $\varphi$ über den Atomen $A_1,\dots,A_n$, deren Wahrheitstafel genau $f$ ist.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{a) Ja.} Man liest die Formel direkt aus der Wahrheitstafel ab: Für jede der drei erfüllenden Belegungen bildet man die Konjunktion der zutreffenden Literale und verbindet diese Konjunktionen disjunktiv (\emph{disjunktive Normalform}):
+\[
+  \varphi \;=\; (A\wedge B\wedge\neg C)\;\vee\;(A\wedge\neg B\wedge C)\;\vee\;(\neg A\wedge B\wedge C)
+\]
+Jede der drei Klauseln ist unter genau einer Belegung wahr, nämlich unter derjenigen, aus der sie gebildet wurde. Damit ist $\varphi$ unter genau diesen drei Belegungen wahr -- und das sind genau die $\binom{3}{2}=3$ Belegungen mit genau zwei wahren Atomen.
+
+\textbf{b) $2^4 = 16$.} Über zwei Atomen gibt es $2^2=4$ Belegungen. Zwei Formeln sind genau dann äquivalent, wenn sie dieselbe Modellmenge $\mathrm{Mod}(\varphi)\subseteq\{0,1\}^2$ haben; eine Äquivalenzklasse ist also durch eine Teilmenge der vier Belegungen eindeutig bestimmt. Umgekehrt wird nach dem Argument aus a) (bzw.\ c)) \emph{jede} dieser $2^4=16$ Teilmengen von einer Formel realisiert (die leere Menge z.\,B.\ durch $A\wedge\neg A$). Also gibt es genau $16$ Klassen.
+
+\textbf{c)} Sei $f:\{0,1\}^n\to\{0,1\}$ gegeben und $S=\{\vec{b}\in\{0,1\}^n \mid f(\vec{b})=1\}$ die Menge der Belegungen, die $f$ auf $1$ abbildet.
+\begin{itemize}
+  \item Ist $S=\emptyset$, so wähle $\varphi = A_1\wedge\neg A_1$ (bzw.\ $\bot$).
+  \item Andernfalls setze für $\vec{b}=(b_1,\dots,b_n)\in S$ die \emph{Minterm}-Konjunktion
+  \[
+    K_{\vec{b}} \;=\; L_1 \wedge \dots \wedge L_n
+    \qquad\text{mit}\qquad
+    L_i = \begin{cases} A_i, & b_i = 1\\ \neg A_i, & b_i = 0\end{cases}
+  \]
+  und definiere $\varphi = \bigvee_{\vec{b}\in S} K_{\vec{b}}$.
+\end{itemize}
+$K_{\vec{b}}$ ist unter einer Belegung $\vec{c}$ genau dann wahr, wenn $\vec{c}=\vec{b}$. Also ist $\varphi$ unter $\vec{c}$ genau dann wahr, wenn $\vec{c}\in S$, d.\,h.\ wenn $f(\vec{c})=1$. Da $S$ endlich ist, ist $\varphi$ eine wohlgeformte (endliche) Formel.
+
+Damit ist gezeigt: Die Junktorenmenge $\{\neg,\wedge,\vee\}$ ist \textbf{funktional vollständig} -- jede Boole'sche Funktion lässt sich durch eine Formel darstellen, und man kommt stets mit einer disjunktiven Normalform aus.
+\end{loesung}
+
+% ============================================================
+\aufgabetitel{$8$}{Ordnungen und Verbände}\\
+\textbf{Teil 1.} Gegeben sei die partielle Ordnung $(V,\sqsubseteq)$ mit $V=\{a,b,c,d,e\}$ durch folgendes Hasse-Diagramm:
+
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+  \node (a) at (0,0)   {$a$};
+  \node (b) at (-1,1)  {$b$};
+  \node (c) at (1,1)   {$c$};
+  \node (d) at (-1,2)  {$d$};
+  \node (e) at (1,2)   {$e$};
+  \draw (a)--(b) (a)--(c) (b)--(d) (b)--(e) (c)--(d) (c)--(e);
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[a)]
+  \item (2 Punkte) Bestimmen Sie für $W=\{b,c\}$: alle oberen und alle unteren Schranken, $\sup(W)$, $\inf(W)$, alle maximalen und minimalen Elemente von $W$ sowie das größte und das kleinste Element von $W$ -- oder begründen Sie jeweils, warum es nicht existiert.
+  \item (1 Punkt) Ist $(V,\sqsubseteq)$ ein \textbf{Verband}? Begründen Sie.
+  \item (1 Punkt) Erweitern Sie $(V,\sqsubseteq)$ durch Hinzunahme möglichst weniger Elemente zu einem Verband und zeichnen Sie das zugehörige Hasse-Diagramm.
+\end{enumerate}
+
+\medskip
+\textbf{Teil 2.} Betrachten Sie nun die sechs aussagenlogischen Formeln
+\[
+  V_2 \;=\; \{\,\bot,\;\; A\wedge B,\;\; A,\;\; B,\;\; A\vee B,\;\; \top\,\}
+\]
+über den Atomen $A,B$, geordnet durch die \textbf{Folgerungsbeziehung}
+\[
+  \varphi \sqsubseteq \psi \quad :\Longleftrightarrow\quad \varphi \models \psi .
+\]
+\begin{enumerate}[a)]\setcounter{enumi}{3}
+  \item (1 Punkt) Zeichnen Sie das Hasse-Diagramm von $(V_2,\sqsubseteq)$.
+  \item (1,5 Punkte) Bestimmen Sie $\sup(\{A,B\})$, $\inf(\{A,B\})$, das größte und das kleinste Element von $V_2$ sowie alle maximalen Elemente von $V_2$.
+  \item (1,5 Punkte) Zeigen Sie allgemein für beliebige Formeln $\varphi,\psi$, dass $\varphi\wedge\psi$ bezüglich $\sqsubseteq$ das Infimum von $\{\varphi,\psi\}$ ist. Erklären Sie außerdem, warum man streng genommen nicht mit Formeln, sondern mit \emph{Äquivalenzklassen} von Formeln arbeiten muss.
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Teil 1, a)} Aus dem Diagramm liest man ab: $a\sqsubset b$, $a\sqsubset c$, $b\sqsubset d$, $b\sqsubset e$, $c\sqsubset d$, $c\sqsubset e$ (sowie alle reflexiven und transitiven Konsequenzen); $b$ und $c$ sind unvergleichbar, ebenso $d$ und $e$.
+\begin{itemize}
+  \item \textbf{Obere Schranken} von $W=\{b,c\}$: alle $s\in V$ mit $b\sqsubseteq s$ und $c\sqsubseteq s$, also $\{d,e\}$.
+  \item \textbf{Untere Schranken:} alle $s$ mit $s\sqsubseteq b$ und $s\sqsubseteq c$, also $\{a\}$.
+  \item $\sup(W)$ \textbf{existiert nicht}: Ein Supremum müsste die \emph{kleinste} obere Schranke sein, also ein Element aus $\{d,e\}$, das unterhalb der jeweils anderen liegt. $d$ und $e$ sind aber unvergleichbar.
+  \item $\inf(W)=a$: $a$ ist die einzige untere Schranke und damit trivialerweise die größte.
+  \item \textbf{Maximale Elemente von $W$:} $b$ und $c$ (in $W$ liegt kein Element oberhalb von $b$ bzw.\ $c$). \textbf{Minimale Elemente von $W$:} ebenfalls $b$ und $c$.
+  \item \textbf{Größtes/kleinstes Element von $W$: existiert nicht.} Ein größtes Element müsste in $W$ liegen und über \emph{allen} Elementen von $W$ liegen; wegen $b\not\sqsubseteq c$ und $c\not\sqsubseteq b$ leistet das weder $b$ noch $c$. Analog für das kleinste Element.
+\end{itemize}
+Das illustriert den Unterschied zwischen \emph{maximal} und \emph{größt}: Maximale Elemente können mehrere existieren, ein größtes Element ist -- falls vorhanden -- eindeutig.
+
+\textbf{Teil 1, b) Nein.} In einem Verband müssen \emph{je zwei} Elemente ein Supremum und ein Infimum besitzen. Nach a) besitzt $\{b,c\}$ aber kein Supremum. (Ebenso besitzt $\{d,e\}$ kein Infimum: die unteren Schranken sind $a,b,c$, und darunter gibt es keine größte, da $b$ und $c$ unvergleichbar sind. Außerdem hat $V$ kein größtes Element.)
+
+\textbf{Teil 1, c)} Es genügt, zwei Elemente hinzuzunehmen: ein Element $m$ zwischen $\{b,c\}$ und $\{d,e\}$ sowie ein größtes Element $t$:
+
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+  \node (a) at (0,0)   {$a$};
+  \node (b) at (-1,1)  {$b$};
+  \node (c) at (1,1)   {$c$};
+  \node (m) at (0,2)   {$m$};
+  \node (d) at (-1,3)  {$d$};
+  \node (e) at (1,3)   {$e$};
+  \node (t) at (0,4)   {$t$};
+  \draw (a)--(b) (a)--(c) (b)--(m) (c)--(m) (m)--(d) (m)--(e) (d)--(t) (e)--(t);
+\end{tikzpicture}
+\end{center}
+
+Nun gilt $\sup(\{b,c\})=m$, $\inf(\{d,e\})=m$ und $\sup(\{d,e\})=t$; alle übrigen Paare sind vergleichbar, so dass Supremum und Infimum jeweils das größere bzw.\ kleinere Element sind. Damit ist die Ordnung ein Verband (eine Kette von Antiketten: $a \sqsubset \{b,c\} \sqsubset m \sqsubset \{d,e\} \sqsubset t$).
+
+\textit{Alternative:} Man kann auch $d$ und $e$ zu einem einzigen Element verschmelzen (bzw.\ $e$ streichen). Dann entsteht $a\sqsubset b,c\sqsubset d$, und mit $\sup(\{b,c\})=d$, $\inf(\{b,c\})=a$ ist auch das ein Verband -- allerdings wurde dabei ein Element entfernt statt hinzugefügt.
+
+\medskip
+\textbf{Teil 2, d)} Es gilt $\bot\models A\wedge B\models A\models A\vee B\models\top$ und $A\wedge B\models B\models A\vee B$, während $A$ und $B$ unvergleichbar sind ($A\not\models B$, da die Belegung $A\mapsto 1, B\mapsto 0$ ein Gegenbeispiel ist, und umgekehrt):
+
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+  \node (bot) at (0,0)  {$\bot$};
+  \node (ab)  at (0,1)  {$A\wedge B$};
+  \node (A)   at (-1.3,2) {$A$};
+  \node (B)   at (1.3,2)  {$B$};
+  \node (ob)  at (0,3)  {$A\vee B$};
+  \node (top) at (0,4)  {$\top$};
+  \draw (bot)--(ab) (ab)--(A) (ab)--(B) (A)--(ob) (B)--(ob) (ob)--(top);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Teil 2, e)}
+\begin{itemize}
+  \item $\sup(\{A,B\}) = A\vee B$: Die oberen Schranken sind $A\vee B$ und $\top$; die kleinste ist $A\vee B$.
+  \item $\inf(\{A,B\}) = A\wedge B$: Die unteren Schranken sind $A\wedge B$ und $\bot$; die größte ist $A\wedge B$.
+  \item \textbf{Größtes Element:} $\top$ (jede Formel folgert $\top$). \textbf{Kleinstes Element:} $\bot$ (aus $\bot$ folgt jede Formel, \emph{ex falso quodlibet}).
+  \item \textbf{Maximale Elemente:} nur $\top$. Da ein größtes Element existiert, ist es auch das einzige maximale Element.
+\end{itemize}
+$(V_2,\sqsubseteq)$ ist übrigens ein Verband, denn je zwei Elemente besitzen Supremum und Infimum.
+
+\textbf{Teil 2, f)} Zu zeigen ist, dass $\varphi\wedge\psi$ die \emph{größte untere Schranke} von $\{\varphi,\psi\}$ ist.
+\begin{enumerate}[1.]
+  \item \textit{Untere Schranke:} Ist $\mathcal{M}$ ein Modell von $\varphi\wedge\psi$, so gilt nach Definition der Semantik $\mathcal{M}\models\varphi$ und $\mathcal{M}\models\psi$. Also $\varphi\wedge\psi\models\varphi$ und $\varphi\wedge\psi\models\psi$, d.\,h.\ $\varphi\wedge\psi\sqsubseteq\varphi$ und $\varphi\wedge\psi\sqsubseteq\psi$.
+  \item \textit{Größte untere Schranke:} Sei $\chi$ eine beliebige untere Schranke, also $\chi\models\varphi$ und $\chi\models\psi$. Für jedes Modell $\mathcal{M}$ von $\chi$ gilt dann $\mathcal{M}\models\varphi$ und $\mathcal{M}\models\psi$, also $\mathcal{M}\models\varphi\wedge\psi$. Damit ist $\chi\models\varphi\wedge\psi$, d.\,h.\ $\chi\sqsubseteq\varphi\wedge\psi$.
+\end{enumerate}
+Also ist $\varphi\wedge\psi=\inf(\{\varphi,\psi\})$, und der Verbandsoperator $\sqcap$ entspricht der Konjunktion (dual entspricht $\sqcup$ der Disjunktion).
+
+\textbf{Warum Äquivalenzklassen?} Die Relation $\sqsubseteq\ =\ \models$ ist zwar reflexiv ($\varphi\models\varphi$) und transitiv, aber \textbf{nicht antisymmetrisch}: Aus $\varphi\models\psi$ und $\psi\models\varphi$ folgt nur $\varphi\equiv\psi$, nicht $\varphi=\psi$. Gegenbeispiel: $A\wedge B$ und $B\wedge A$ (oder $A$ und $\neg\neg A$) folgen wechselseitig auseinander, sind aber syntaktisch verschiedene Formeln. $\sqsubseteq$ ist also nur eine \emph{Quasiordnung} (Präordnung). Erst auf der Menge der Äquivalenzklassen $[\varphi]=\{\psi \mid \psi\equiv\varphi\}$ wird daraus eine partielle Ordnung -- und diese ist ein Verband (die sogenannte \emph{Lindenbaum-Algebra}). Streng genommen bezeichnen die sechs Elemente in Teil 2 daher Äquivalenzklassen, nicht einzelne Formeln.
+\end{loesung}
+
+% ============================================================
+\newpage
+\section*{Anhang -- Formelsammlung}\label{anhang}
+
+% -----------------------------------------------------------
+\subsection*{A.1\quad Kalkül des natürlichen Schließens (Aussagenlogik)}
+
+\textit{Konvention:} $[A]^i$ bezeichnet eine Annahme, die bei der mit $i$ markierten Regel entlastet (geschlossen) wird. Die Entlastung bedeutet, dass $A$ nicht mehr als offene Annahme gilt. $T\vdash\varphi$ heißt: Es gibt eine Ableitung von $\varphi$, deren offene Annahmen sämtlich in $T$ liegen.
+
+\noindent\textit{Entlastung:} Ein Entlastungsschritt schließt \emph{alle} gleich markierten Vorkommen der Annahme auf einmal -- und er darf auch \emph{null} Vorkommen entlasten. Insbesondere ist $\dfrac{B}{A\to B}\;\to I$ (leere Entlastung) zulässig: Gilt $B$, so gilt $A\to B$ für jedes $A$. Offene Annahmen dürfen mehrfach als Blatt verwendet werden.
+
+\medskip
+\noindent\textbf{Konjunktion $(\wedge)$:}
+\[
+\dfrac{A \qquad B}{A \wedge B}\;\wedge I
+\qquad\qquad\qquad
+\dfrac{A \wedge B}{A}\;\wedge E_l
+\qquad\qquad\qquad
+\dfrac{A \wedge B}{B}\;\wedge E_r
+\]
+
+\medskip
+\noindent\textbf{Disjunktion $(\vee)$:}
+\[
+\dfrac{A}{A \vee B}\;\vee I_l
+\qquad\qquad
+\dfrac{B}{A \vee B}\;\vee I_r
+\qquad\qquad
+\dfrac{A \vee B \qquad \begin{array}{c}[A]^i \\ \vdots \\ C\end{array} \qquad \begin{array}{c}[B]^j \\ \vdots \\ C\end{array}}{C}\;\vee E^{i,j}
+\]
+
+\medskip
+\noindent\textbf{Implikation $(\to)$:}
+\[
+\dfrac{\begin{array}{c}[A]^i \\ \vdots \\ B\end{array}}{A \to B}\;{\to I^i}
+\qquad\qquad\qquad\qquad\qquad
+\dfrac{A \qquad A \to B}{B}\;{\to E}
+\]
+
+\medskip
+\noindent\textbf{Negation und Falsum $(\neg,\, \bot)$:}
+\[
+\dfrac{\begin{array}{c}[A]^i \\ \vdots \\ \bot\end{array}}{\neg A}\;{\neg I^i}
+\qquad\qquad
+\dfrac{A \qquad \neg A}{\bot}\;{\neg E}
+\qquad\qquad
+\dfrac{\bot}{A}\;{\bot E}
+\qquad\qquad
+\dfrac{\neg\neg A}{A}\;{\neg\neg E}
+\]
+
+\noindent\textit{Die Regel $\neg\neg E$ ist die einzige \emph{klassische} Regel; ohne sie erhält man den intuitionistischen Kalkül, in dem z.\,B.\ $A\vee\neg A$ nicht ableitbar ist.}
+
+% -----------------------------------------------------------
+\subsection*{A.2\quad Sequenzenkalkül (Aussagenlogik)}
+
+\textit{Konvention:} $\Gamma, \Delta, \Pi, \Lambda$ sind Multimengen von Formeln. Die Sequenz $\Gamma \Rightarrow \Delta$ bedeutet: Die Konjunktion aller Formeln aus $\Gamma$ impliziert die Disjunktion aller Formeln aus $\Delta$. Eine leere linke Seite steht für $\top$, eine leere rechte Seite für $\bot$.
+
+\medskip
+\noindent\textbf{Axiom und Schnitt:}
+\[
+\dfrac{\phantom{X}}{A \Rightarrow A}\;\mathrm{Ax}
+\qquad\qquad\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\, A \qquad A,\, \Pi \Rightarrow \Lambda}{\Gamma,\,\Pi \Rightarrow \Delta,\,\Lambda}\;\mathrm{Cut}
+\]
+
+\medskip
+\noindent\textbf{Strukturregeln -- Verwässerung $(W)$ und Kontraktion $(C)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta}{A,\,\Gamma \Rightarrow \Delta}\;Wl
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta}{\Gamma \Rightarrow \Delta,\,A}\;Wr
+\qquad
+\dfrac{A,\,A,\,\Gamma \Rightarrow \Delta}{A,\,\Gamma \Rightarrow \Delta}\;Cl
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A,\,A}{\Gamma \Rightarrow \Delta,\,A}\;Cr
+\]
+
+\medskip
+\noindent\textbf{Konjunktion $(\wedge)$:}
+\[
+\dfrac{A,\,\Gamma \Rightarrow \Delta}{A \wedge B,\,\Gamma \Rightarrow \Delta}\;\wedge\Rightarrow_l
+\qquad
+\dfrac{B,\,\Gamma \Rightarrow \Delta}{A \wedge B,\,\Gamma \Rightarrow \Delta}\;\wedge\Rightarrow_r
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A \qquad \Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \wedge B}\;\Rightarrow\wedge
+\]
+
+\medskip
+\noindent\textbf{Disjunktion $(\vee)$:}
+\[
+\dfrac{A,\,\Gamma \Rightarrow \Delta \qquad B,\,\Gamma \Rightarrow \Delta}{A \vee B,\,\Gamma \Rightarrow \Delta}\;\vee\Rightarrow
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,A}{\Gamma \Rightarrow \Delta,\,A \vee B}\;\Rightarrow\vee_l
+\qquad
+\dfrac{\Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \vee B}\;\Rightarrow\vee_r
+\]
+
+\medskip
+\noindent\textbf{Implikation $(\to)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta,\,A \qquad B,\,\Pi \Rightarrow \Lambda}{A \to B,\,\Gamma,\,\Pi \Rightarrow \Delta,\,\Lambda}\;\to\Rightarrow
+\qquad\qquad\qquad
+\dfrac{A,\,\Gamma \Rightarrow \Delta,\,B}{\Gamma \Rightarrow \Delta,\,A \to B}\;\Rightarrow\to
+\]
+
+\medskip
+\noindent\textbf{Negation $(\neg)$:}
+\[
+\dfrac{\Gamma \Rightarrow \Delta,\,A}{\neg A,\,\Gamma \Rightarrow \Delta}\;\neg\Rightarrow
+\qquad\qquad\qquad\qquad
+\dfrac{A,\,\Gamma \Rightarrow \Delta}{\Gamma \Rightarrow \Delta,\,\neg A}\;\Rightarrow\neg
+\]
+
+\medskip
+\noindent\textit{Hinweis zur Beweissuche:} Man liest den Baum \emph{von unten nach oben} und baut die zu zeigende Sequenz Schritt für Schritt ab, bis alle Blätter Axiome $A\Rightarrow A$ sind. Die klassische Logik steckt darin, dass rechts \emph{mehrere} Formeln stehen dürfen.
+
+% -----------------------------------------------------------
+\newpage
+\subsection*{A.3\quad Syntax und Semantik der Prädikatenlogik erster Stufe}
+
+\noindent\textbf{Sprache.} Eine Sprache $\mathscr{L}$ besteht aus Variablen $x, y, z, \dots$, $n$-stelligen Funktionssymbolen (die $0$-stelligen heißen \emph{Konstanten}), $n$-stelligen Prädikatensymbolen (die $0$-stelligen sind $\top$ und $\bot$) sowie den Junktoren $\neg,\wedge,\vee,\to,\leftrightarrow$ und den Quantoren $\forall,\exists$.
+
+\medskip
+\noindent\textbf{Terme} (induktiv): Jede Variable ist ein Term. Sind $t_1,\dots,t_n$ Terme und ist $f$ ein $n$-stelliges Funktionssymbol, so ist $f(t_1,\dots,t_n)$ ein Term. \emph{Sonst nichts.}
+
+\medskip
+\noindent\textbf{Formeln} (induktiv):
+\begin{itemize}
+  \item Sind $t_1,\dots,t_n$ Terme und ist $p$ ein $n$-stelliges Prädikatensymbol, so ist $p(t_1,\dots,t_n)$ eine (atomare) Formel.
+  \item Sind $\varphi,\psi$ Formeln, so auch $\neg\varphi$, $(\varphi\wedge\psi)$, $(\varphi\vee\psi)$, $(\varphi\to\psi)$, $(\varphi\leftrightarrow\psi)$.
+  \item Ist $\varphi$ eine Formel und $x$ eine Variable, so sind $\forall x.\varphi$ und $\exists x.\varphi$ Formeln.
+\end{itemize}
+\emph{Insbesondere ist ein Term keine Formel und eine Formel kein Term; quantifiziert wird ausschließlich über Variablen.}
+
+\medskip
+\noindent\textbf{Freie Variablen:}
+\[
+  FV\big(p(t_1,\dots,t_n)\big)=var(t_1)\cup\dots\cup var(t_n),\qquad
+  FV(\neg\varphi)=FV(\varphi),
+\]
+\[
+  FV(\varphi\ast\psi)=FV(\varphi)\cup FV(\psi)\ \ (\ast\in\{\wedge,\vee,\to,\leftrightarrow\}),\qquad
+  FV(\forall x.\varphi)=FV(\exists x.\varphi)=FV(\varphi)\setminus\{x\}
+\]
+
+\medskip
+\noindent\textbf{Substitution.} $\varphi[t/x]$ ersetzt jedes \emph{freie} Vorkommen von $x$ in $\varphi$ durch den Term $t$. Sie ist nur zulässig, wenn dabei keine Variable von $t$ in den Wirkungsbereich eines Quantors gerät (\emph{$t$ ist frei für $x$ in $\varphi$}); andernfalls muss die gebundene Variable vorher umbenannt werden.
+
+\medskip
+\noindent\textbf{Struktur (Interpretation).} Eine Struktur $\mathcal{M}$ für $\mathscr{L}$ besteht aus
+\begin{itemize}
+  \item einer nichtleeren Trägermenge $D$,
+  \item einer Funktion $f^{\mathcal{M}}:D^n\to D$ für jedes $n$-stellige Funktionssymbol $f$ (für Konstanten: einem Element $c^{\mathcal{M}}\in D$),
+  \item einer Relation $p^{\mathcal{M}}\subseteq D^n$ für jedes $n$-stellige Prädikatensymbol $p$.
+\end{itemize}
+Eine \textbf{Belegung} ist eine Abbildung $\sigma:\text{Variablen}\to D$; $\sigma[x\mapsto d]$ bezeichnet die an der Stelle $x$ zu $d$ abgeänderte Belegung.
+
+\medskip
+\noindent\textbf{Auswertung von Termen:} $\llbracket x\rrbracket^{\mathcal{M}}_\sigma=\sigma(x)$ \quad und \quad $\llbracket f(t_1,\dots,t_n)\rrbracket^{\mathcal{M}}_\sigma=f^{\mathcal{M}}\big(\llbracket t_1\rrbracket^{\mathcal{M}}_\sigma,\dots,\llbracket t_n\rrbracket^{\mathcal{M}}_\sigma\big)$.
+
+\medskip
+\noindent\textbf{Erfüllungsrelation:}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{l X}
+$\mathcal{M},\sigma\models p(t_1,\dots,t_n)$ & gdw. $\big(\llbracket t_1\rrbracket^{\mathcal{M}}_\sigma,\dots,\llbracket t_n\rrbracket^{\mathcal{M}}_\sigma\big)\in p^{\mathcal{M}}$ \\
+$\mathcal{M},\sigma\models\neg\varphi$ & gdw. $\mathcal{M},\sigma\not\models\varphi$ \\
+$\mathcal{M},\sigma\models\varphi\wedge\psi$ & gdw. $\mathcal{M},\sigma\models\varphi$ \emph{und} $\mathcal{M},\sigma\models\psi$ \\
+$\mathcal{M},\sigma\models\varphi\vee\psi$ & gdw. $\mathcal{M},\sigma\models\varphi$ \emph{oder} $\mathcal{M},\sigma\models\psi$ \\
+$\mathcal{M},\sigma\models\varphi\to\psi$ & gdw. aus $\mathcal{M},\sigma\models\varphi$ folgt $\mathcal{M},\sigma\models\psi$ \\
+$\mathcal{M},\sigma\models\forall x.\varphi$ & gdw. $\mathcal{M},\sigma[x\mapsto d]\models\varphi$ für \emph{alle} $d\in D$ \\
+$\mathcal{M},\sigma\models\exists x.\varphi$ & gdw. $\mathcal{M},\sigma[x\mapsto d]\models\varphi$ für \emph{mindestens ein} $d\in D$ \\
+\end{tabularx}
+\end{center}
+
+\noindent$\mathcal{M}$ ist ein \textbf{Modell} von $\varphi$ ($\mathcal{M}\models\varphi$), wenn $\mathcal{M},\sigma\models\varphi$ für alle Belegungen $\sigma$ gilt. Für Formeln ohne freie Variablen (\emph{Sätze}) ist die Belegung irrelevant.
+
+% -----------------------------------------------------------
+\newpage
+\subsection*{A.4\quad Grundbegriffe der Logik}
+
+Sei $T$ eine Menge von Formeln (eine \textbf{Theorie}) und seien $\varphi,\psi$ Formeln. Im aussagenlogischen Fall ist eine Struktur $\mathcal{M}$ einfach eine \textbf{Belegung} der Atome mit Wahrheitswerten. $\mathcal{M}\models T$ heißt: $\mathcal{M}\models\chi$ für \emph{alle} $\chi\in T$.
+
+\medskip
+\noindent\textbf{Semantische Begriffe} -- Symbol $\models$, es geht um \emph{Modelle}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+$\varphi$ \textbf{erfüllbar} & $\varphi$ hat \emph{mindestens ein} Modell: $\exists\,\mathcal{M}:\ \mathcal{M}\models\varphi$ \\
+$\varphi$ \textbf{unerfüllbar} & $\varphi$ hat \emph{kein} Modell (z.\,B. $A\wedge\neg A$ oder $\bot$) \\
+$\varphi$ \textbf{gültig / allgemeingültig} & $\varphi$ gilt in \emph{allen} Strukturen: $\models\varphi$; auch \textbf{Tautologie} (z.\,B. $A\vee\neg A$) \\
+$T$ \textbf{erfüllbar} & Es gibt ein $\mathcal{M}$, das \emph{alle} Formeln aus $T$ zugleich erfüllt \\
+$T\models\varphi$ \quad(\textbf{Folgerung}) & \emph{Jedes} Modell von $T$ ist auch ein Modell von $\varphi$ \\
+$\varphi\equiv\psi$ \quad(\textbf{äquivalent}) & $\varphi\models\psi$ und $\psi\models\varphi$, d.\,h.\ $\varphi$ und $\psi$ haben dieselben Modelle \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Syntaktische Begriffe} -- Symbol $\vdash$, es geht um \emph{Beweise} in einem Kalkül (A.1 bzw.\ A.2):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+$T\vdash\varphi$ \quad(\textbf{herleitbar}) & Es gibt eine \emph{endliche} Ableitung von $\varphi$, deren offene Annahmen sämtlich aus $T$ stammen. Synonym: \emph{beweisbar}, \emph{ableitbar} \\
+$\vdash\varphi$ \quad(\textbf{Theorem}) & $\varphi$ ist ohne jede offene Annahme herleitbar \\
+$T$ \textbf{inkonsistent} & $T\vdash\bot$; gleichwertig: es gibt ein $\varphi$ mit $T\vdash\varphi$ \emph{und} $T\vdash\neg\varphi$ (\emph{widersprüchlich}) \\
+$T$ \textbf{konsistent} & $T\nvdash\bot$, d.\,h.\ aus $T$ lässt sich kein Widerspruch herleiten (\emph{widerspruchsfrei}) \\
+$T$ \textbf{vollständige Theorie} & Für jede Formel $\varphi$ gilt $T\vdash\varphi$ oder $T\vdash\neg\varphi$ \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Merkhilfe:} $\models$ ist \emph{semantisch} (\enquote{was ist wahr in allen Modellen?}), $\vdash$ ist \emph{syntaktisch} (\enquote{was lässt sich mit den Regeln aufschreiben?}). \emph{Erfüllbarkeit} und \emph{Konsistenz} sind die semantische bzw.\ die syntaktische Version derselben Idee \enquote{$T$ ist widerspruchsfrei}.
+
+\medskip
+\noindent\textbf{Brücke zwischen $\vdash$ und $\models$:}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{l l X}
+\textbf{Satz} & \textbf{Aussage} & \textbf{Lesart} \\
+\hline
+\textbf{Korrektheit} & $T\vdash\varphi \;\Rightarrow\; T\models\varphi$ & Was beweisbar ist, ist auch wahr (der Kalkül \enquote{lügt} nicht) \\
+\textbf{Vollständigkeit} & $T\models\varphi \;\Rightarrow\; T\vdash\varphi$ & Was wahr ist, ist auch beweisbar (Gödel'scher Vollständigkeitssatz) \\
+\textbf{Adäquatheit} & $T\vdash\varphi \;\Longleftrightarrow\; T\models\varphi$ & Beide Sätze zusammen: $\vdash$ und $\models$ fallen zusammen \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Wichtige Zusammenhänge:}
+\begin{itemize}\itemsep2pt
+  \item $\varphi$ ist allgemeingültig $\;\Longleftrightarrow\;$ $\neg\varphi$ ist unerfüllbar.
+  \item $T\models\varphi \;\Longleftrightarrow\; T\cup\{\neg\varphi\}$ ist unerfüllbar \quad(Grundlage des Widerspruchsbeweises).
+  \item $T\vdash\varphi \;\Longleftrightarrow\; T\cup\{\neg\varphi\}$ ist inkonsistent.
+  \item \textbf{Modellexistenzsatz:} $T$ ist konsistent $\;\Longleftrightarrow\;$ $T$ ist erfüllbar (hat ein Modell).
+  \item \textbf{Deduktionstheorem:} $T\cup\{\varphi\}\vdash\psi \;\Longleftrightarrow\; T\vdash\varphi\to\psi$.
+  \item \textbf{Kompaktheitssatz:} $T$ ist erfüllbar $\;\Longleftrightarrow\;$ jede \emph{endliche} Teilmenge von $T$ ist erfüllbar.
+  \item \textbf{Achtung:} Aus $T\models\varphi\vee\psi$ folgt \emph{nicht} $T\models\varphi$ oder $T\models\psi$ (verschiedene Modelle dürfen verschiedene Disjunkte wahr machen).
+\end{itemize}
+
+% -----------------------------------------------------------
+\newpage
+\subsection*{A.5\quad Ordnungen -- Begriffe}
+
+Eine Relation $\sqsubseteq\ \subseteq V\times V$ heißt \textbf{partielle Ordnung}, wenn sie reflexiv, antisymmetrisch und transitiv ist. Wir schreiben $a\sqsubset b$ für $a\sqsubseteq b$ und $a\neq b$. Sei $(V,\sqsubseteq)$ eine partielle Ordnung und $W\subseteq V$.
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{l X}
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+Obere Schranke von $W$ & $s \in V$ mit $w \sqsubseteq s$ für alle $w \in W$ \\
+Untere Schranke von $W$ & $s \in V$ mit $s \sqsubseteq w$ für alle $w \in W$ \\
+Supremum $\sup(W)$ & \emph{kleinste} obere Schranke von $W$ (eindeutig, falls existent) \\
+Infimum $\inf(W)$ & \emph{größte} untere Schranke von $W$ (eindeutig, falls existent) \\
+Maximales Element von $W$ & $m \in W$, so dass kein $w \in W$ mit $m \sqsubset w$ existiert \\
+Minimales Element von $W$ & $m \in W$, so dass kein $w \in W$ mit $w \sqsubset m$ existiert \\
+Größtes Element von $W$ & $m \in W$ mit $w \sqsubseteq m$ für alle $w \in W$ (falls existent: eindeutig) \\
+Kleinstes Element von $W$ & $m \in W$ mit $m \sqsubseteq w$ für alle $w \in W$ (falls existent: eindeutig) \\
+\end{tabularx}
+\end{center}
+
+\medskip
+\noindent\textbf{Achtung:} Schranken, Supremum und Infimum dürfen \emph{außerhalb} von $W$ liegen; größte, kleinste, maximale und minimale Elemente müssen dagegen \emph{in} $W$ liegen. Ein größtes Element ist stets auch maximal, aber nicht umgekehrt: Es kann mehrere maximale Elemente geben (dann existiert kein größtes).
+
+\medskip
+\noindent\textbf{Hasse-Diagramm:} Darstellung einer partiellen Ordnung als Graph:
+\begin{itemize}
+  \item Elemente als Knoten; $a$ liegt \emph{tiefer} als $b$, wenn $a \sqsubset b$.
+  \item Eine Kante $a$--$b$ (mit $a$ tiefer) existiert genau dann, wenn $a \sqsubset b$ und kein $c$ mit $a \sqsubset c \sqsubset b$ existiert (keine Zwischenelemente).
+  \item $a \sqsubseteq b$ gilt genau dann, wenn ein aufsteigender Pfad von $a$ nach $b$ existiert. Reflexivität und Transitivität werden nicht gezeichnet.
+\end{itemize}
+
+% -----------------------------------------------------------
+\subsection*{A.6\quad Verbände}
+
+\noindent\textbf{Ordnungstheoretische Definition:} Eine partielle Ordnung $(V,\sqsubseteq)$ ist ein \textbf{Verband}, wenn \emph{je zwei} Elemente $a,b \in V$ ein Supremum $a \sqcup b := \sup(\{a,b\})$ und ein Infimum $a \sqcap b := \inf(\{a,b\})$ besitzen.
+
+\medskip
+\noindent\textbf{Algebraische Definition:} Eine Menge $V$ mit Operationen $\sqcap, \sqcup : V \times V \to V$ ist ein Verband, wenn für alle $a,b,c \in V$ gilt:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l l l}
+\textbf{Abgeschlossenheit:} & $a \sqcap b \in V$ & $a \sqcup b \in V$ \\
+\textbf{Assoziativität:} & $a \sqcap (b \sqcap c) = (a \sqcap b) \sqcap c$ & $a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$ \\
+\textbf{Kommutativität:} & $a \sqcap b = b \sqcap a$ & $a \sqcup b = b \sqcup a$ \\
+\textbf{Absorption:}     & $a \sqcap (a \sqcup b) = a$ & $a \sqcup (a \sqcap b) = a$ \\
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Weitere Eigenschaften} (aus den Axiomen ableitbar):
+\begin{itemize}
+  \item \textbf{Idempotenz:} $a \sqcap a = a$ und $a \sqcup a = a$
+  \item \textbf{Induzierte Ordnung:} $a \sqsubseteq b \;\Longleftrightarrow\; a \sqcap b = a \;\Longleftrightarrow\; a \sqcup b = b$
+  \item Jeder \emph{endliche, nichtleere} Verband besitzt ein größtes und ein kleinstes Element.
+\end{itemize}
+
+\noindent\textbf{Beispiele:} $(\mathcal{P}(M),\subseteq)$ mit $\cap,\cup$; die Teiler einer Zahl mit $\mid$, $\text{ggT}$ und $\text{kgV}$; die Formeln (modulo $\equiv$) mit $\models$, $\wedge$ und $\vee$. \\
+\noindent\textbf{Gegenbeispiel:} Eine Ordnung mit zwei unvergleichbaren maximalen Elementen über einem Paar $\{b,c\}$ ist kein Verband, da $\sup(\{b,c\})$ nicht existiert.
+
+\end{document}

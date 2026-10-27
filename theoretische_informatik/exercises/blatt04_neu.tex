@@ -1,0 +1,597 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{4}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage{bussproofs}
+% Änderungen 2020: Hinweise auf Digitallehre angepasst; Rechnergeschichte entfernt; Blatt 1 und 2 zusammengefasst.
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+% \begin{notes} \small
+% 	\textbf{Abgabetermine für Blatt 1:}
+	
+% 	Aufgaben 1.2/1.3: Montag, 11. April, 09:00 Uhr \\
+% 	Aufgabe 1.4: Mittwoch, 20. April, 18:00 Uhr
+% \end{notes}
+
+
+
+\aufgabetitel{$8$}{Beweise in Kalkülen}\\
+
+Beweisen Sie im Kalkül des natürlichen Schließens und im Sequenzenkalkül (alle Formeln sind aussagenlogisch, es werden also keine Quantorenregeln benötigt):
+\begin{enumerate}[a)]
+  \item $\vdash X\vee(Y\wedge Z)\to(X\vee Y)\wedge(X\vee Z)$
+  \item $A\vee\neg A, \neg A\to B\vdash A\vee B$
+  \item $\neg (A\wedge B), A\vdash\neg B$
+  \item $(A\vee B),\neg A\vdash B$
+  \item $\vdash\neg(A\vee B)\to(\neg A\wedge\neg B)$
+  \item $A\to B,\ B\to C\vdash A\to C$
+  \item $\vdash (A\to B)\to(\neg B\to\neg A)$
+  \item $A\wedge(B\vee C)\vdash (A\wedge B)\vee(A\wedge C)$
+\end{enumerate}
+
+\begin{loesung}
+\textbf{Vorbemerkungen.}
+\begin{itemize}
+  \item Im Kalkül des natürlichen Schließens schreiben wir gestrichene (\emph{gecancelte}) Annahmen als $[\varphi]^n$ und markieren die Regel, die sie streicht, mit derselben Nummer $n$. Ungeklammerte Blätter sind die Prämissen aus $\Gamma$; sie bleiben stehen.
+  \item Wir benutzen $\vee I$ und $\wedge E$ jeweils in beiden symmetrischen Varianten und schreiben dafür $\vee I_1$ ($\frac{A}{A\vee B}$), $\vee I_2$ ($\frac{B}{A\vee B}$) sowie $\wedge E_1$ ($\frac{A\wedge B}{A}$), $\wedge E_2$ ($\frac{A\wedge B}{B}$).
+  \item Sequenzenkalkülbeweise liest man \emph{von unten nach oben}: unten steht das Ziel, oben stehen ausschließlich Axiome (Taut). Die Strukturregeln (Vertauschen, Kontraktion, Abschwächung) wenden wir stillschweigend an; insbesondere schreiben wir die Formel, auf die eine Regel wirkt, immer an das passende Ende der Sequenz.
+\end{itemize}
+
+\textbf{a) $\vdash X\vee(Y\wedge Z)\to(X\vee Y)\wedge(X\vee Z)$}
+
+\emph{Natürliches Schließen:} Wir nehmen $X\vee(Y\wedge Z)$ an und machen eine Fallunterscheidung mit $\vee E$.
+
+\begin{scprooftree}{0.72}
+  \AxiomC{$[X\vee(Y\wedge Z)]^1$}
+    \AxiomC{$[X]^2$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$X\vee Y$}
+    \AxiomC{$[X]^2$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$X\vee Z$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$(X\vee Y)\wedge(X\vee Z)$}
+      \AxiomC{$[Y\wedge Z]^2$}
+      \RightLabel{$\wedge E_1$}
+      \UnaryInfC{$Y$}
+      \RightLabel{$\vee I_2$}
+      \UnaryInfC{$X\vee Y$}
+      \AxiomC{$[Y\wedge Z]^2$}
+      \RightLabel{$\wedge E_2$}
+      \UnaryInfC{$Z$}
+      \RightLabel{$\vee I_2$}
+      \UnaryInfC{$X\vee Z$}
+      \RightLabel{$\wedge I$}
+      \BinaryInfC{$(X\vee Y)\wedge(X\vee Z)$}
+  \RightLabel{$\vee E^2$}
+  \TrinaryInfC{$(X\vee Y)\wedge(X\vee Z)$}
+  \RightLabel{$\rightarrow I^1$}
+  \UnaryInfC{$X\vee(Y\wedge Z)\to(X\vee Y)\wedge(X\vee Z)$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:} Zuerst die beiden Teilbäume. Links:
+
+\begin{scprooftree}{0.85}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$X\Rightarrow X,Y$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$Y,Z\Rightarrow X,Y$}
+    \RightLabel{$\wedge\Rightarrow$}
+    \UnaryInfC{$Y\wedge Z\Rightarrow X,Y$}
+  \RightLabel{$\vee\Rightarrow$}
+  \BinaryInfC{$X\vee(Y\wedge Z)\Rightarrow X,Y$}
+  \RightLabel{$\Rightarrow\vee$}
+  \UnaryInfC{$X\vee(Y\wedge Z)\Rightarrow X\vee Y$}
+\end{scprooftree}
+
+Rechts völlig analog, mit $Z$ an der Stelle von $Y$:
+
+\begin{scprooftree}{0.85}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$X\Rightarrow X,Z$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$Y,Z\Rightarrow X,Z$}
+    \RightLabel{$\wedge\Rightarrow$}
+    \UnaryInfC{$Y\wedge Z\Rightarrow X,Z$}
+  \RightLabel{$\vee\Rightarrow$}
+  \BinaryInfC{$X\vee(Y\wedge Z)\Rightarrow X,Z$}
+  \RightLabel{$\Rightarrow\vee$}
+  \UnaryInfC{$X\vee(Y\wedge Z)\Rightarrow X\vee Z$}
+\end{scprooftree}
+
+Zusammengesetzt ergibt sich, mit $\mathcal{D}_1,\mathcal{D}_2$ für die beiden Teilbäume:
+
+\begin{scprooftree}{0.8}
+  \AxiomC{$\mathcal{D}_1$}
+  \noLine
+  \UnaryInfC{$X\vee(Y\wedge Z)\Rightarrow X\vee Y$}
+    \AxiomC{$\mathcal{D}_2$}
+    \noLine
+    \UnaryInfC{$X\vee(Y\wedge Z)\Rightarrow X\vee Z$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$X\vee(Y\wedge Z)\Rightarrow(X\vee Y)\wedge(X\vee Z)$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$\Rightarrow X\vee(Y\wedge Z)\to(X\vee Y)\wedge(X\vee Z)$}
+\end{scprooftree}
+
+\textbf{b) $A\vee\neg A,\ \neg A\to B\vdash A\vee B$}
+
+\emph{Natürliches Schließen:} Fallunterscheidung über $A\vee\neg A$.
+
+\begin{scprooftree}{0.85}
+  \AxiomC{$A\vee\neg A$}
+    \AxiomC{$[A]^1$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$A\vee B$}
+      \AxiomC{$[\neg A]^1$}
+      \AxiomC{$\neg A\to B$}
+      \RightLabel{$\rightarrow E$}
+      \BinaryInfC{$B$}
+      \RightLabel{$\vee I_2$}
+      \UnaryInfC{$A\vee B$}
+  \RightLabel{$\vee E^1$}
+  \TrinaryInfC{$A\vee B$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:}
+
+\begin{scprooftree}{0.85}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A,\neg A\to B\Rightarrow A,B$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$\neg A\Rightarrow A,\neg A$}
+      \AxiomC{}
+      \RightLabel{Taut}
+      \UnaryInfC{$B\Rightarrow B$}
+    \RightLabel{$\to\Rightarrow$}
+    \BinaryInfC{$\neg A\to B,\neg A\Rightarrow A,B$}
+  \RightLabel{$\vee\Rightarrow$}
+  \BinaryInfC{$A\vee\neg A,\neg A\to B\Rightarrow A,B$}
+  \RightLabel{$\Rightarrow\vee$}
+  \UnaryInfC{$A\vee\neg A,\neg A\to B\Rightarrow A\vee B$}
+\end{scprooftree}
+
+Man beachte, dass $A\vee\neg A$ hier gar nicht gebraucht würde: Die Sequenz $\neg A\to B\Rightarrow A\vee B$ ist bereits ableitbar, weil das Tertium non datur im Sequenzenkalkül in der Regel \glqq{}Taut\grqq{} (bzw.\ in den mehrelementigen rechten Seiten) schon eingebaut ist.
+
+\textbf{c) $\neg(A\wedge B),\ A\vdash\neg B$}
+
+\emph{Natürliches Schließen:} Wir nehmen $B$ an und leiten daraus sowohl $A\wedge B$ als auch $\neg(A\wedge B)$ her; die Regel $\neg I$ streicht die Annahme.
+
+\begin{scprooftree}{0.9}
+  \AxiomC{$A$}
+  \AxiomC{$[B]^1$}
+  \RightLabel{$\wedge I$}
+  \BinaryInfC{$A\wedge B$}
+    \AxiomC{$\neg(A\wedge B)$}
+  \RightLabel{$\neg I^1$}
+  \BinaryInfC{$\neg B$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:}
+
+\begin{scprooftree}{0.9}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A,B\Rightarrow A$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$A,B\Rightarrow B$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$A,B\Rightarrow A\wedge B$}
+  \RightLabel{$\neg\Rightarrow$}
+  \UnaryInfC{$A,B,\neg(A\wedge B)\Rightarrow$}
+  \RightLabel{$\Rightarrow\neg$}
+  \UnaryInfC{$A,\neg(A\wedge B)\Rightarrow\neg B$}
+\end{scprooftree}
+
+\textbf{d) $A\vee B,\ \neg A\vdash B$ (Disjunktiver Syllogismus)}
+
+\emph{Natürliches Schließen:} Im Fall $A$ erhalten wir einen Widerspruch und daraus mit \emph{ex falso quodlibet} das gewünschte $B$.
+
+\begin{scprooftree}{0.9}
+  \AxiomC{$A\vee B$}
+    \AxiomC{$[A]^1$}
+    \AxiomC{$\neg A$}
+    \RightLabel{$\neg E$}
+    \BinaryInfC{$\bot$}
+    \RightLabel{$\bot E$}
+    \UnaryInfC{$B$}
+      \AxiomC{$[B]^1$}
+  \RightLabel{$\vee E^1$}
+  \TrinaryInfC{$B$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:}
+
+\begin{scprooftree}{0.9}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A\Rightarrow B,A$}
+  \RightLabel{$\neg\Rightarrow$}
+  \UnaryInfC{$A,\neg A\Rightarrow B$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$B,\neg A\Rightarrow B$}
+  \RightLabel{$\vee\Rightarrow$}
+  \BinaryInfC{$A\vee B,\neg A\Rightarrow B$}
+\end{scprooftree}
+
+\textbf{e) $\vdash\neg(A\vee B)\to(\neg A\wedge\neg B)$ (eine De-Morgan-Richtung)}
+
+\emph{Natürliches Schließen:} Aus der Annahme $\neg(A\vee B)$ erhalten wir $\neg A$ und $\neg B$ jeweils durch $\neg I$.
+
+\begin{scprooftree}{0.75}
+  \AxiomC{$[A]^2$}
+  \RightLabel{$\vee I_1$}
+  \UnaryInfC{$A\vee B$}
+    \AxiomC{$[\neg(A\vee B)]^1$}
+  \RightLabel{$\neg I^2$}
+  \BinaryInfC{$\neg A$}
+    \AxiomC{$[B]^3$}
+    \RightLabel{$\vee I_2$}
+    \UnaryInfC{$A\vee B$}
+      \AxiomC{$[\neg(A\vee B)]^1$}
+    \RightLabel{$\neg I^3$}
+    \BinaryInfC{$\neg B$}
+  \RightLabel{$\wedge I$}
+  \BinaryInfC{$\neg A\wedge\neg B$}
+  \RightLabel{$\rightarrow I^1$}
+  \UnaryInfC{$\neg(A\vee B)\to(\neg A\wedge\neg B)$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:}
+
+\begin{scprooftree}{0.8}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A\Rightarrow A,B$}
+  \RightLabel{$\Rightarrow\vee$}
+  \UnaryInfC{$A\Rightarrow A\vee B$}
+  \RightLabel{$\neg\Rightarrow$}
+  \UnaryInfC{$A,\neg(A\vee B)\Rightarrow$}
+  \RightLabel{$\Rightarrow\neg$}
+  \UnaryInfC{$\neg(A\vee B)\Rightarrow\neg A$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$B\Rightarrow A,B$}
+    \RightLabel{$\Rightarrow\vee$}
+    \UnaryInfC{$B\Rightarrow A\vee B$}
+    \RightLabel{$\neg\Rightarrow$}
+    \UnaryInfC{$B,\neg(A\vee B)\Rightarrow$}
+    \RightLabel{$\Rightarrow\neg$}
+    \UnaryInfC{$\neg(A\vee B)\Rightarrow\neg B$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$\neg(A\vee B)\Rightarrow\neg A\wedge\neg B$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$\Rightarrow\neg(A\vee B)\to(\neg A\wedge\neg B)$}
+\end{scprooftree}
+
+\textbf{f) $A\to B,\ B\to C\vdash A\to C$ (Kettenschluss)}
+
+\emph{Natürliches Schließen:} Zweimal $\rightarrow E$, dann $\rightarrow I$.
+
+\begin{scprooftree}{0.9}
+  \AxiomC{$[A]^1$}
+  \AxiomC{$A\to B$}
+  \RightLabel{$\rightarrow E$}
+  \BinaryInfC{$B$}
+    \AxiomC{$B\to C$}
+  \RightLabel{$\rightarrow E$}
+  \BinaryInfC{$C$}
+  \RightLabel{$\rightarrow I^1$}
+  \UnaryInfC{$A\to C$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:} Zweimal $\to\Rightarrow$, unten einmal $\Rightarrow\to$.
+
+\begin{scprooftree}{0.9}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A\Rightarrow A$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$B\Rightarrow B$}
+      \AxiomC{}
+      \RightLabel{Taut}
+      \UnaryInfC{$C\Rightarrow C$}
+    \RightLabel{$\to\Rightarrow$}
+    \BinaryInfC{$B\to C,B\Rightarrow C$}
+  \RightLabel{$\to\Rightarrow$}
+  \BinaryInfC{$A\to B,B\to C,A\Rightarrow C$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$A\to B,B\to C\Rightarrow A\to C$}
+\end{scprooftree}
+
+\textbf{g) $\vdash(A\to B)\to(\neg B\to\neg A)$ (Kontraposition)}
+
+\emph{Natürliches Schließen:} Drei geschachtelte Annahmen $A\to B$, $\neg B$ und $A$; die innerste wird durch $\neg I$ gestrichen.
+
+\begin{scprooftree}{0.85}
+  \AxiomC{$[A]^3$}
+  \AxiomC{$[A\to B]^1$}
+  \RightLabel{$\rightarrow E$}
+  \BinaryInfC{$B$}
+    \AxiomC{$[\neg B]^2$}
+  \RightLabel{$\neg I^3$}
+  \BinaryInfC{$\neg A$}
+  \RightLabel{$\rightarrow I^2$}
+  \UnaryInfC{$\neg B\to\neg A$}
+  \RightLabel{$\rightarrow I^1$}
+  \UnaryInfC{$(A\to B)\to(\neg B\to\neg A)$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:}
+
+\begin{scprooftree}{0.85}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A\Rightarrow A$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$B\Rightarrow B$}
+  \RightLabel{$\to\Rightarrow$}
+  \BinaryInfC{$A\to B,A\Rightarrow B$}
+  \RightLabel{$\neg\Rightarrow$}
+  \UnaryInfC{$A\to B,A,\neg B\Rightarrow$}
+  \RightLabel{$\Rightarrow\neg$}
+  \UnaryInfC{$A\to B,\neg B\Rightarrow\neg A$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$A\to B\Rightarrow\neg B\to\neg A$}
+  \RightLabel{$\Rightarrow\to$}
+  \UnaryInfC{$\Rightarrow(A\to B)\to(\neg B\to\neg A)$}
+\end{scprooftree}
+
+\textbf{h) $A\wedge(B\vee C)\vdash(A\wedge B)\vee(A\wedge C)$ (Distributivität, Gegenstück zu Teilaufgabe a)}
+
+\emph{Natürliches Schließen:} Die Prämisse darf mehrfach als Blatt auftreten; wir gewinnen aus ihr sowohl $A$ als auch $B\vee C$.
+
+\begin{scprooftree}{0.68}
+  \AxiomC{$A\wedge(B\vee C)$}
+  \RightLabel{$\wedge E_2$}
+  \UnaryInfC{$B\vee C$}
+    \AxiomC{$A\wedge(B\vee C)$}
+    \RightLabel{$\wedge E_1$}
+    \UnaryInfC{$A$}
+    \AxiomC{$[B]^1$}
+    \RightLabel{$\wedge I$}
+    \BinaryInfC{$A\wedge B$}
+    \RightLabel{$\vee I_1$}
+    \UnaryInfC{$(A\wedge B)\vee(A\wedge C)$}
+      \AxiomC{$A\wedge(B\vee C)$}
+      \RightLabel{$\wedge E_1$}
+      \UnaryInfC{$A$}
+      \AxiomC{$[C]^1$}
+      \RightLabel{$\wedge I$}
+      \BinaryInfC{$A\wedge C$}
+      \RightLabel{$\vee I_2$}
+      \UnaryInfC{$(A\wedge B)\vee(A\wedge C)$}
+  \RightLabel{$\vee E^1$}
+  \TrinaryInfC{$(A\wedge B)\vee(A\wedge C)$}
+\end{scprooftree}
+
+\emph{Sequenzenkalkül:} Auch hier zuerst die beiden Teilbäume $\mathcal{D}_1$ (Fall $B$) und $\mathcal{D}_2$ (Fall $C$):
+
+\begin{scprooftree}{0.8}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A,B\Rightarrow A\wedge C,A$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$A,B\Rightarrow A\wedge C,B$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$A,B\Rightarrow A\wedge C,A\wedge B$}
+  \RightLabel{$\Rightarrow\vee$}
+  \UnaryInfC{$A,B\Rightarrow(A\wedge B)\vee(A\wedge C)$}
+\end{scprooftree}
+
+\begin{scprooftree}{0.8}
+  \AxiomC{}
+  \RightLabel{Taut}
+  \UnaryInfC{$A,C\Rightarrow A\wedge B,A$}
+    \AxiomC{}
+    \RightLabel{Taut}
+    \UnaryInfC{$A,C\Rightarrow A\wedge B,C$}
+  \RightLabel{$\Rightarrow\wedge$}
+  \BinaryInfC{$A,C\Rightarrow A\wedge B,A\wedge C$}
+  \RightLabel{$\Rightarrow\vee$}
+  \UnaryInfC{$A,C\Rightarrow(A\wedge B)\vee(A\wedge C)$}
+\end{scprooftree}
+
+Daraus:
+
+\begin{scprooftree}{0.8}
+  \AxiomC{$\mathcal{D}_1$}
+  \noLine
+  \UnaryInfC{$A,B\Rightarrow(A\wedge B)\vee(A\wedge C)$}
+    \AxiomC{$\mathcal{D}_2$}
+    \noLine
+    \UnaryInfC{$A,C\Rightarrow(A\wedge B)\vee(A\wedge C)$}
+  \RightLabel{$\vee\Rightarrow$}
+  \BinaryInfC{$A,B\vee C\Rightarrow(A\wedge B)\vee(A\wedge C)$}
+  \RightLabel{$\wedge\Rightarrow$}
+  \UnaryInfC{$A\wedge(B\vee C)\Rightarrow(A\wedge B)\vee(A\wedge C)$}
+\end{scprooftree}
+\end{loesung}
+
+\aufgabetitel{$4$}{Korrektheit Kalküle}\\
+Machen Sie sich die Korrektheit der folgenden Regeln klar:
+\begin{enumerate}[a)]
+  % \item \begin{prooftree}
+  %         \AxiomC{$A\wedge B$}
+  %         \RightLabel{$\wedge E_1$}
+  %         \UnaryInfC{$A$}
+  %       \end{prooftree}
+  %       im Kalkül des natürlichen Schließens
+
+  \item \begin{prooftree}
+          \AxiomC{$\Gamma\Rightarrow\Delta,\varphi,\psi$}
+          \RightLabel{$\Rightarrow\vee$}
+          \UnaryInfC{$\Gamma\Rightarrow\Delta,\varphi\vee\psi$}
+        \end{prooftree}
+        im Sequenzenkalkül
+
+  \item  \begin{prooftree}
+              \AxiomC{$\Gamma\Rightarrow\Delta,\varphi\hspace*{0.5cm}\psi,\Pi\Rightarrow\Lambda$}
+              \RightLabel{$\to\Rightarrow$}
+              \UnaryInfC{$\varphi\to\psi,\Gamma,\Pi\Rightarrow \Delta,\Lambda$}
+            \end{prooftree}
+        im Sequenzenkalkül
+  
+  
+\end{enumerate}
+
+% \begin{loesung}
+% \textbf{Was ist zu zeigen?}
+
+% Wir schreiben $\beta\models\varphi$ dafür, dass die Belegung $\beta$ die (aussagenlogische) Formel $\varphi$ wahr macht, und $\beta\models\Gamma$ dafür, dass $\beta\models\gamma$ für \emph{alle} $\gamma\in\Gamma$ gilt.
+
+% \begin{itemize}
+%   \item Eine Regel des natürlichen Schließens $\frac{\varphi_1\ \ldots\ \varphi_n}{\psi}$ heißt \textbf{korrekt}, wenn für jede Formelmenge $\Gamma$ gilt: Aus $\Gamma\models\varphi_1,\ \ldots,\ \Gamma\models\varphi_n$ folgt $\Gamma\models\psi$. (Regeln mit Annahmen wie $\varphi\vdash\psi$ in der Prämisse liest man entsprechend als $\Gamma\cup\{\varphi\}\models\psi$.)
+%   \item Eine Sequenz $\Gamma\Rightarrow\Delta$ heißt \textbf{allgemeingültig}, wenn für jede Belegung $\beta$ gilt: Ist $\beta\models\Gamma$, so gibt es ein $\delta\in\Delta$ mit $\beta\models\delta$. Gleichbedeutend: $\models\bigwedge\Gamma\to\bigvee\Delta$. Eine Regel des Sequenzenkalküls ist \textbf{korrekt}, wenn ihre Konklusion allgemeingültig ist, sobald alle ihre Prämissen allgemeingültig sind.
+% \end{itemize}
+
+% Dass \emph{jede einzelne} Regel korrekt ist, genügt: Der Korrektheitssatz $T\vdash\varphi\Rightarrow T\models\varphi$ folgt daraus per Induktion über die Höhe des Ableitungsbaums.
+
+% \medskip
+% \textbf{a) $\wedge E_1$}
+
+% Sei $\Gamma\models A\wedge B$, und sei $\beta$ eine beliebige Belegung mit $\beta\models\Gamma$. Dann ist $\beta\models A\wedge B$. Nach der Semantik der Konjunktion gilt $\beta\models A\wedge B$ genau dann, wenn $\beta\models A$ \emph{und} $\beta\models B$. Insbesondere ist $\beta\models A$. Da $\beta$ beliebig war, folgt $\Gamma\models A$. \qed
+
+% (Für $\wedge E_2$ argumentiert man wörtlich genauso mit der zweiten Komponente.)
+
+% \medskip
+% \textbf{a) $\Rightarrow\vee$}
+
+% Die Prämisse $\Gamma\Rightarrow\Delta,\varphi,\psi$ sei allgemeingültig. Sei $\beta$ eine Belegung mit $\beta\models\Gamma$. Nach Voraussetzung ist dann mindestens eine Formel der rechten Seite $\Delta\cup\{\varphi,\psi\}$ unter $\beta$ wahr. Zwei Fälle:
+% \begin{itemize}
+%   \item Es ist $\beta\models\delta$ für ein $\delta\in\Delta$. Dann ist die rechte Seite der Konklusion schon erfüllt.
+%   \item Es ist $\beta\models\varphi$ oder $\beta\models\psi$. Nach der Semantik der Disjunktion ist dann $\beta\models\varphi\vee\psi$, also ebenfalls eine Formel der rechten Seite der Konklusion wahr.
+% \end{itemize}
+% In beiden Fällen ist $\Gamma\Rightarrow\Delta,\varphi\vee\psi$ unter $\beta$ erfüllt; da $\beta$ beliebig war, ist die Konklusion allgemeingültig. \qed
+
+% \emph{Bemerkung:} Dieselbe Rechnung liest sich auch rückwärts -- ist die Konklusion allgemeingültig, so auch die Prämisse. Die Regel ist also sogar \emph{invertierbar}, und genau deshalb darf man sie beim Beweisen von unten nach oben bedenkenlos anwenden, ohne sich etwas zu verbauen.
+
+% \medskip
+% \textbf{b) $\to\Rightarrow$}
+
+% Beide Prämissen seien allgemeingültig, also
+% \[(1)\ \Gamma\Rightarrow\Delta,\varphi \qquad\text{und}\qquad (2)\ \psi,\Pi\Rightarrow\Lambda .\]
+% Sei $\beta$ eine Belegung, die alle Formeln der linken Seite der Konklusion wahr macht, d.h.\ $\beta\models\varphi\to\psi$, $\beta\models\Gamma$ und $\beta\models\Pi$. Zu zeigen: $\beta$ macht eine Formel aus $\Delta\cup\Lambda$ wahr.
+
+% Wegen $\beta\models\Gamma$ liefert (1): Es ist $\beta\models\delta$ für ein $\delta\in\Delta$, oder es ist $\beta\models\varphi$.
+% \begin{itemize}
+%   \item Im ersten Fall sind wir fertig, denn $\delta\in\Delta\subseteq\Delta\cup\Lambda$.
+%   \item Im zweiten Fall gilt $\beta\models\varphi$ und $\beta\models\varphi\to\psi$, nach der Semantik der Implikation also $\beta\models\psi$. Zusammen mit $\beta\models\Pi$ macht $\beta$ damit die gesamte linke Seite von (2) wahr, und (2) liefert ein $\lambda\in\Lambda$ mit $\beta\models\lambda$. Auch hier sind wir fertig.
+% \end{itemize}
+% Also ist $\varphi\to\psi,\Gamma,\Pi\Rightarrow\Delta,\Lambda$ allgemeingültig. \qed
+
+% \emph{Anschaulich:} Die Regel ist die Sequenzenversion des Modus Ponens. Wer $\varphi\to\psi$ voraussetzt, hat zwei Möglichkeiten: entweder $\varphi$ scheitert -- dann muss der \emph{linke} Zweig die Konklusion liefern -- oder $\psi$ gilt -- dann übernimmt der \emph{rechte} Zweig.
+% \end{loesung}
+
+\aufgabetitel{$11$}{Terminologien}\\
+Machen Sie sich die folgenden Sachverhalte klar:
+\begin{enumerate}[a)]
+  \item $T\vdash \varphi$
+  \item $T\models \varphi$
+  \item Korrektheit eines Kalküls
+  \item Vollständigkeit eines Kalküls
+  \item $Erf(T)$
+  \item Konsistenz
+  \item $T$ konsistent gdw. es gibt keine Formel $\varphi$ mit $T\vdash \varphi$ und $T\vdash \neg\varphi$
+  \item $T$ konsistent gdw. es gibt eine Formel $\varphi$ mit $T\nvdash \varphi$
+  \item Jede konsistente Theorie hat ein Modell
+  \item Für alle $T,\varphi$ gilt: $T\models \varphi$ gdw. nicht $Erf(T\cup\{\neg\varphi\})$
+\end{enumerate}
+
+\begin{loesung}
+Die Leitidee der ganzen Aufgabe ist die Trennung zweier Welten: $\vdash$ ist \emph{Syntax} (Symbole schieben nach Regeln), $\models$ ist \emph{Semantik} (Wahrheit in Strukturen bzw.\ unter Belegungen). Korrektheit und Vollständigkeit sind genau die beiden Brücken zwischen diesen Welten.
+
+\begin{enumerate}[a)]
+  \item \textbf{$T\vdash\varphi$ (\glqq{}$\varphi$ ist aus $T$ herleitbar\grqq{}).} Rein syntaktischer Begriff: Es gibt einen \emph{endlichen} Ableitungsbaum des gewählten Kalküls, dessen Wurzel $\varphi$ ist und dessen nicht gestrichene Blätter alle in $T$ liegen. Nachprüfen kann man das rein mechanisch, ohne über Wahrheit zu reden. Da Ableitungen endlich sind, gilt stets: $T\vdash\varphi$ impliziert $T_0\vdash\varphi$ für eine endliche Teilmenge $T_0\subseteq T$.
+
+  \item \textbf{$T\models\varphi$ (\glqq{}$\varphi$ folgt aus $T$\grqq{}).} Rein semantischer Begriff: \emph{Jedes} Modell von $T$ ist auch ein Modell von $\varphi$. Aussagenlogisch: Für jede Belegung $\beta$ mit $\beta\models\tau$ für alle $\tau\in T$ gilt auch $\beta\models\varphi$. Hier wird über \emph{alle} (unendlich vielen) Strukturen quantifiziert -- es ist a priori nicht klar, wie man das nachprüfen soll.
+
+  \item \textbf{Korrektheit (\emph{soundness}).} Der Kalkül beweist nur Wahres:
+  \[T\vdash\varphi\ \Longrightarrow\ T\models\varphi .\]
+  Beweisidee: per Induktion über den Ableitungsbaum, wobei man für jede einzelne Regel die Korrektheit nachweist -- genau das war Aufgabe 2. Korrektheit ist die \glqq{}Mindestanforderung\grqq{}: ein inkorrekter Kalkül ist wertlos.
+
+  \item \textbf{Vollständigkeit (\emph{completeness}).} Der Kalkül beweist alles Wahre:
+  \[T\models\varphi\ \Longrightarrow\ T\vdash\varphi .\]
+  Das ist die tiefere Richtung (Gödelscher Vollständigkeitssatz). Zusammen gilt für Kalküle des natürlichen Schließens und den Sequenzenkalkül
+  \[T\vdash\varphi\iff T\models\varphi,\]
+  d.h.\ die semantische Frage lässt sich durch endliche Symbolmanipulation beantworten.
+
+  \emph{Warnung vor einer klassischen Verwechslung:} Vollständigkeit eines \emph{Kalküls} heißt \textbf{nicht}, dass für jede Formel $T\vdash\varphi$ oder $T\vdash\neg\varphi$ gilt. Letzteres ist die Vollständigkeit einer \emph{Theorie} und ein ganz anderer Begriff (Stichwort Gödelscher \emph{Un}vollständigkeitssatz).
+
+  \item \textbf{$Erf(T)$ (\glqq{}$T$ ist erfüllbar\grqq{}).} Es gibt \emph{mindestens ein} Modell von $T$, d.h.\ eine Belegung bzw.\ Struktur, die alle Formeln aus $T$ gleichzeitig wahr macht. Wieder ein rein semantischer Begriff. Man beachte den Unterschied der Quantoren: $Erf(T)$ ist ein \glqq{}es gibt ein Modell\grqq{}, $T\models\varphi$ ein \glqq{}für alle Modelle\grqq{}.
+
+  \item \textbf{Konsistenz (Widerspruchsfreiheit).} Rein syntaktischer Begriff: $T$ heißt konsistent, wenn sich aus $T$ \emph{kein} Widerspruch herleiten lässt, also $T\nvdash\bot$ -- gleichwertig (siehe g)): wenn es keine Formel $\varphi$ mit $T\vdash\varphi$ und $T\vdash\neg\varphi$ gibt. Konsistenz gehört auf die $\vdash$-Seite, Erfüllbarkeit auf die $\models$-Seite; dass beides zusammenfällt, ist gerade der Inhalt von i).
+
+  \item \textbf{$T$ konsistent $\iff$ es gibt keine Formel $\varphi$ mit $T\vdash\varphi$ und $T\vdash\neg\varphi$.}
+
+  \glqq{}$\Rightarrow$\grqq{}: Gäbe es ein solches $\varphi$, so lieferte $\neg E$ aus $\varphi$ und $\neg\varphi$ sofort $T\vdash\bot$, im Widerspruch zur Konsistenz.
+
+  \glqq{}$\Leftarrow$\grqq{}: Wäre $T\vdash\bot$, so wäre mit $\bot E$ auch $T\vdash\varphi$ und $T\vdash\neg\varphi$ für ein beliebiges $\varphi$ -- ein solches Paar gibt es nach Voraussetzung aber nicht.
+
+  Die beiden Formulierungen sind also austauschbar; welche man als \emph{Definition} nimmt, ist Geschmackssache.
+
+  \item \textbf{$T$ konsistent $\iff$ es gibt eine Formel $\varphi$ mit $T\nvdash\varphi$.}
+
+  Kernpunkt ist \emph{ex falso quodlibet}: Aus einem Widerspruch folgt alles.
+
+  \glqq{}$\Rightarrow$\grqq{}: Sei $T$ konsistent. Wäre \emph{jede} Formel herleitbar, so insbesondere $T\vdash\bot$ (bzw.\ $T\vdash\psi$ und $T\vdash\neg\psi$ für ein $\psi$) -- Widerspruch. Also gibt es ein $\varphi$ mit $T\nvdash\varphi$.
+
+  \glqq{}$\Leftarrow$\grqq{}: Sei $\varphi$ mit $T\nvdash\varphi$ gegeben, und angenommen, $T$ wäre inkonsistent, also $T\vdash\psi$ und $T\vdash\neg\psi$ für ein $\psi$. Mit $\neg E$ folgt $T\vdash\bot$ und mit $\bot E$ dann $T\vdash\chi$ für \emph{jede} Formel $\chi$, insbesondere $T\vdash\varphi$ -- Widerspruch zur Wahl von $\varphi$. Also ist $T$ konsistent.
+
+  Merksatz: Eine inkonsistente Theorie ist genau diejenige, die \emph{alles} beweist; sie sagt damit über die Welt nichts mehr aus.
+
+  \item \textbf{Jede konsistente Theorie hat ein Modell (Modellexistenzsatz).} Das ist die semantische Fassung des Vollständigkeitssatzes; beide sind äquivalent. Aus der Vollständigkeit erhält man die Aussage so:
+
+  Sei $T$ konsistent und angenommen, $T$ hätte \emph{kein} Modell. Dann ist die Aussage \glqq{}jedes Modell von $T$ erfüllt $\psi$\grqq{} leer erfüllt, es gilt also $T\models\psi$ für \emph{jede} Formel $\psi$, insbesondere $T\models\psi$ \emph{und} $T\models\neg\psi$. Mit der Vollständigkeit folgt $T\vdash\psi$ und $T\vdash\neg\psi$, also ist $T$ inkonsistent -- Widerspruch. Folglich hat $T$ ein Modell.
+
+  Die Umkehrung \glqq{}erfüllbar $\Rightarrow$ konsistent\grqq{} ist die leichte Richtung und folgt aus der Korrektheit. Zusammen:
+  \[T\ \text{konsistent}\iff Erf(T).\]
+  Der eigentliche Beweis des Modellexistenzsatzes (Henkin-Konstruktion) baut das Modell aus der Syntax: Man erweitert $T$ zu einer maximal konsistenten Menge und liest daraus direkt eine Belegung bzw.\ Struktur ab.
+
+  \item \textbf{$T\models\varphi\iff$ nicht $Erf(T\cup\{\neg\varphi\})$.}
+
+  \glqq{}$\Rightarrow$\grqq{}: Sei $T\models\varphi$ und angenommen, $T\cup\{\neg\varphi\}$ hätte ein Modell $\mathcal{A}$. Wegen $\mathcal{A}\models T$ und $T\models\varphi$ ist $\mathcal{A}\models\varphi$; zugleich ist $\mathcal{A}\models\neg\varphi$, also $\mathcal{A}\not\models\varphi$ -- Widerspruch.
+
+  \glqq{}$\Leftarrow$\grqq{}: Sei $T\cup\{\neg\varphi\}$ unerfüllbar und sei $\mathcal{A}$ ein beliebiges Modell von $T$. Wäre $\mathcal{A}\not\models\varphi$, so $\mathcal{A}\models\neg\varphi$ und damit $\mathcal{A}\models T\cup\{\neg\varphi\}$ -- Widerspruch zur Unerfüllbarkeit. Also $\mathcal{A}\models\varphi$, und da $\mathcal{A}$ beliebig war, $T\models\varphi$.
+
+  \emph{Warum ist das wichtig?} Die Aussage übersetzt die \emph{Allaussage} \glqq{}folgt aus\grqq{} in eine \emph{Unerfüllbarkeitsaussage}. Genau davon leben alle Widerlegungsverfahren: Um $T\models\varphi$ zu zeigen, nimmt man $\neg\varphi$ hinzu und leitet einen Widerspruch her (Resolution, Tableaux, SAT-Solver, und letztlich auch der Beweis \glqq{}durch Widerspruch\grqq{} von Hand).
+\end{enumerate}
+
+\medskip
+\textbf{Das Gesamtbild in einer Zeile:}
+\[T\vdash\varphi\ \overset{\text{Korrektheit}}{\Longrightarrow}\ T\models\varphi\ \overset{\text{Vollst.}}{\Longrightarrow}\ T\vdash\varphi,
+\qquad
+T\ \text{konsistent}\iff Erf(T),
+\qquad
+T\models\varphi\iff \neg Erf(T\cup\{\neg\varphi\}).\]
+\end{loesung}
+
+% \aufgabetitel{$4$}{Beweis im Sequenzenkalkül}\\
+% Der Sequenzenkalkül ist ein anderer Kalkül. In jeder Zeile stehen Sequenzen von Formeln (also Listen von Formeln), getrennt durch einen Doppelpfeil. Die Semantik ist, dass die Konjunktion der Formeln links vom Pfeil die Disjunktion der Formeln rechts vom Pfeil impliziert. Die Schlussregeln sind in den Slides.
+% Anders als beim Kalkül des natürlichen Schließens startet man hier üblicherweise unten mit dem Ziel und arbeitet sich nach oben vor, bis man zu Axiomem gelangt.\\
+% Beweisen Sie im Sequenzenkalkül:
+% \begin{enumerate}[a)]
+%   \item $\vdash\neg(A\vee B)\to(\neg A\wedge \neg B)$
+%   \item $\vdash\forall x.P(x)\wedge\forall x.Q(x)\to\forall y.(P(y)\wedge Q(y))$
+% \end{enumerate}
+
+
+\end{document}

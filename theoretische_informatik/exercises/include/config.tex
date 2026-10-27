@@ -42,6 +42,11 @@
   \allowdisplaybreaks
   \usepackage{bm}
   \usepackage{wasysym}
+  \usepackage{bussproofs}
+  % skalierbarer Beweisbaum: \begin{scprooftree}{0.8} ... \end{scprooftree}
+  \newenvironment{scprooftree}[1]%
+    {\gdef\scalefactor{#1}\center\proofSkipAmount \leavevmode}%
+    {\scalebox{\scalefactor}{\DisplayProof}\proofSkipAmount \endcenter}
 % ===========================================================
 
 % TikZ

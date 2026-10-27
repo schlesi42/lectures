@@ -286,7 +286,7 @@
     \column{0.5\textwidth}
     \begin{prooftree}
     \AxiomC{$\bot$}
-    \RightLabel{$\bot I$}
+    \RightLabel{$\bot E$}
     \UnaryInfC{$A$}
   \end{prooftree}
   \column{0.5\textwidth}
@@ -299,33 +299,34 @@
   \begin{columns}
     \column{0.5\textwidth}
     \begin{prooftree}
-    \AxiomC{$A[u/x]$ (for a variable $u\notin FV(A)$)}
+    \AxiomC{$\Gamma\vdash A[u/x]$ (wherefo $u\notin FV(\Gamma)$)}
     \RightLabel{$\forall I$}
-    \UnaryInfC{$\forall x.A$}
+    \UnaryInfC{$\Gamma\vdash \forall x.A$}
   \end{prooftree}
   \column{0.5\textwidth}
   \begin{prooftree}
     \AxiomC{$\forall x.A$}
     \RightLabel{$\forall E$}
-    \UnaryInfC{$A(t)$ for a term $t$}
+    \UnaryInfC{$A[t/x]$  $t$ free for $x$ in $A$}
   \end{prooftree}
   \end{columns}
 
-  \begin{columns}
-    \column{0.5\textwidth}
-    \begin{prooftree}
-    \AxiomC{$A[u/x]$ (for a variable $u\notin FV(A)$)}
-    \RightLabel{$\forall I$}
-    \UnaryInfC{$\forall x.A$}
-  \end{prooftree}
-  \column{0.5\textwidth}
-  \begin{prooftree}
-    \AxiomC{$\forall x.A$}
-    \RightLabel{$\forall E$}
-    \UnaryInfC{$A(t)$ for a term $t$}
-  \end{prooftree}
-  \end{columns}
-
+  % \begin{columns}
+  %   \column{0.5\textwidth}
+  %   \begin{prooftree}
+  %   \AxiomC{$A[u/x]$ (for a variable $u\notin FV(A)$)}
+  %   \RightLabel{$\forall I$}
+  %   \UnaryInfC{$\forall x.A$}
+  % \end{prooftree}
+  % \column{0.5\textwidth}
+  % \begin{prooftree}
+  %   \AxiomC{$\forall x.A$}
+  %   \RightLabel{$\forall E$}
+  %   \UnaryInfC{$A(t)$ for a term $t$}
+  % \end{prooftree}
+  % \end{columns}
+\vspace{0.5cm}
+  Note: $t$ free for $x$ in $A$ means: after inserting $t$ for all free occurrences of $x$ in $A$, no variable in $t$ becomes bound by a quantifier in $A$.
   
 
   \end{frame}
@@ -335,15 +336,15 @@
 
 
       \begin{prooftree}
-      \AxiomC{$A[t/x]$ (for a term $t$)}
+      \AxiomC{$A[t/x]$ ($t$ free for $x$ in $A$)}
       \RightLabel{$\exists I$}
       \UnaryInfC{$\exists x.A$}
     \end{prooftree}
 
     \begin{prooftree}
-      \AxiomC{$\exists x.A\hspace*{0.5cm} A(u)\vdash B$ where $u$ is a variable not in $B$}
+      \AxiomC{$\Gamma\vdash\exists x.A\hspace*{0.5cm} \Gamma,A[u/x]\vdash B$ where $u\notin FV(\Gamma)\cup FV(B)$ is a fresh variable}
       \RightLabel{$\exists E$}
-      \UnaryInfC{$B$}
+      \UnaryInfC{$\Gamma\vdash B$}
     \end{prooftree}
 
 
@@ -787,13 +788,13 @@
           \begin{prooftree}
             \AxiomC{$\Gamma,\varphi[t/x]\Rightarrow\Delta$}
             \RightLabel{$\forall\Rightarrow$}
-            \UnaryInfC{$\Gamma,\forall x.\varphi(x)\Rightarrow\Delta$}
+            \UnaryInfC{$\Gamma,\forall x.\varphi\Rightarrow\Delta$}
           \end{prooftree}
           \column{0.5\textwidth}
           \begin{prooftree}
             \AxiomC{$\Gamma\Rightarrow\Delta,\varphi[y/x]$}
             \RightLabel{$\Rightarrow\forall$}
-            \UnaryInfC{$\Gamma\Rightarrow\Delta,\forall x.\varphi(x)$}
+            \UnaryInfC{$\Gamma\Rightarrow\Delta,\forall x.\varphi$}
           \end{prooftree}
           \end{columns}
 
@@ -804,26 +805,26 @@
             \begin{prooftree}
               \AxiomC{$\Gamma,\varphi[y/x]\Rightarrow\Delta$}
               \RightLabel{$\exists\Rightarrow$}
-              \UnaryInfC{$\Gamma,\exists x.\varphi(x)\Rightarrow\Delta$}
+              \UnaryInfC{$\Gamma,\exists x.\varphi\Rightarrow\Delta$}
             \end{prooftree}
             \column{0.5\textwidth}
             \begin{prooftree}
-              \AxiomC{$\Gamma\Rightarrow\Delta,\exists x.\varphi(x),\varphi[t/x]$}
+              \AxiomC{$\Gamma\Rightarrow\Delta,\exists x.\varphi,\varphi[t/x]$}
               \RightLabel{$\Rightarrow\exists$}
-              \UnaryInfC{$\Gamma\Rightarrow\Delta,\exists x.\varphi(x)$}
+              \UnaryInfC{$\Gamma\Rightarrow\Delta,\exists x.\varphi$}
             \end{prooftree}
             \end{columns}
 
             \vspace{0.5cm}
 
-            In the quantifier rules, $t$ is a term, and $y$ is a 'fresh' variable, i.e., a variable that does not occur in $\Gamma$, $\Delta$, or $\varphi$. 
+            In the quantifier rules, $t$ is a term that is free for $x$ in $\varphi$, and $y$ is a 'fresh' variable, i.e., a variable that does not occur in $\Gamma$, $\Delta$, or $\varphi$. 
             
             Alternatively, the rules can also be stated in the form
         
             \begin{prooftree}
               \AxiomC{$\Gamma\Rightarrow\Delta,\varphi$}
               \RightLabel{$\Rightarrow\forall$}
-              \UnaryInfC{$\Gamma\Rightarrow\Delta,\forall x.\varphi(x)$}
+              \UnaryInfC{$\Gamma\Rightarrow\Delta,\forall x.\varphi$}
             \end{prooftree}
 
             Here, it must be guaranteed that $x$ is not free in any formula in $\Gamma$ or $\Delta$. The existential formula can be handled similarly.
@@ -959,28 +960,28 @@
 
       
 
-        \begin{frame}
-          \frametitle{Example Deduction: \(\forall x.(P(x)\wedge Q\Rightarrow\forall x.P(x)\)}
+        % \begin{frame}
+        %   \frametitle{Example Deduction: \(\forall x.(P(x)\wedge Q\Rightarrow\forall x.P(x)\)}
           
-          \begin{prooftree}
-            \AxiomC{}
-            \RightLabel{Taut}
-            \UnaryInfC{$P(x),Q\Rightarrow P(x)$}
+        %   \begin{prooftree}
+        %     \AxiomC{}
+        %     \RightLabel{Taut}
+        %     \UnaryInfC{$P(x),Q\Rightarrow P(x)$}
           
             
-            \RightLabel{$\wedge\Rightarrow$ }
-            \UnaryInfC{$P(x)\wedge Q\Rightarrow P(x)$}
+        %     \RightLabel{$\wedge\Rightarrow$ }
+        %     \UnaryInfC{$P(x)\wedge Q\Rightarrow P(x)$}
           
-            \RightLabel{$\forall\Rightarrow$}
-            \UnaryInfC{$\forall x.(P(x\wedge Q)\Rightarrow P(x))$}
+        %     \RightLabel{$\forall\Rightarrow$}
+        %     \UnaryInfC{$\forall x.(P(x\wedge Q)\Rightarrow P(x))$}
           
-            \RightLabel{$\Rightarrow\forall$}
-            \UnaryInfC{$\forall x.(P(x)\wedge Q)\Rightarrow\forall x.P(x)$}
+        %     \RightLabel{$\Rightarrow\forall$}
+        %     \UnaryInfC{$\forall x.(P(x)\wedge Q)\Rightarrow\forall x.P(x)$}
           
-          \end{prooftree}
-          \vspace*{0.5cm}
-          Here, $\forall\Rightarrow$ uses $[x/x]$ as replacement, i.e., just the same free variable is taken.
-          \end{frame}
+        %   \end{prooftree}
+        %   \vspace*{0.5cm}
+        %   Here, $\forall\Rightarrow$ uses $[x/x]$ as replacement, i.e., just the same free variable is taken.
+        %   \end{frame}
 
 
           \begin{frame}

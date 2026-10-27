@@ -1,0 +1,585 @@
+%!TEX TS-program = pdflatex
+%!TEX TS-options = -shell-escape
+% % % % %   Die folgenden Zeilen müssen ihre Zeilennummern 4 und 5 behalten !!!    % % % % %
+\newcommand{\printpraesenzlsg}{false}
+\newcommand{\printloesungen}{true}
+\newcommand{\printbewertungen}{false}
+% % % % %   \newcommand{\printloesungen}{false}                                    % % % % %
+\newcommand{\blattnummer}{6}
+%\newcommand{\abgabetermin}{\textcolor{red}{bis 11.04.2022, 09:00 Uhr}}
+\input{include/config.tex}
+\usepackage{bussproofs}
+% Aufbau und Aufgaben 1--7 nach blatt05.tex; Aufgaben 8--9 ergänzen das Blatt.
+% Zeile 5: true = mit Lösungen, false = nur Aufgaben.
+% Korrekte laufende Kopfzeile nur für dieses Blatt (gemeinsame Vorlage unverändert).
+\lohead[]{Übungen zur Vorlesung \textit{Theoretische Informatik} -- Wintersemester 2026}
+\begin{document}
+\iforiginal{\input{include/kopf.tex}}
+
+\begin{notes}\small\raggedright
+\textbf{Konventionen:} DFA sind vollständig anzugeben; bei NFA dürfen
+Übergangsmengen leer sein. In Übergangstabellen markiert $\to$ den Startzustand
+und $*$ einen Endzustand. Ein Automat kann durch sein Tupel und eine
+Übergangstabelle oder durch einen eindeutig beschrifteten Zustandsgraphen angegeben werden.
+Bei der Potenzmengenkonstruktion genügen die erreichbaren Zustandsmengen.
+\end{notes}
+
+\aufgabetitel{$2$}{Formale Sprache modellieren}\\
+
+Gegeben ist die Sprache $L = \{ w \in \{a,b\}^* \mid |w|_a=1 \}$, also die Anzahl der $a$ in $w$ ist 1.
+Entwerfen Sie einen DFA, der $L$ erkennt.
+
+\begin{loesung}
+Ein vollständiger DFA ist $M=(Q,\Sigma,\delta,q_0,F)$ mit
+$Q=\{q_0,q_1,q_2\}$, $\Sigma=\{a,b\}$, Startzustand $q_0$ und
+$F=\{q_1\}$. Seine Übergänge sind:
+\begin{center}
+\begin{tabular}{c|cc}
+ & $a$ & $b$\\\hline
+$\to q_0$ & $q_1$ & $q_0$\\
+$*q_1$ & $q_2$ & $q_1$\\
+$q_2$ & $q_2$ & $q_2$
+\end{tabular}
+\end{center}
+Die Zustände speichern, wie viele $a$ bisher gelesen wurden:
+\begin{itemize}
+  \item $q_0$: noch kein $a$,
+  \item $q_1$: genau ein $a$,
+  \item $q_2$: mindestens zwei $a$ (Fangzustand).
+\end{itemize}
+Ein $b$ verändert die Anzahl der $a$ nicht und lässt daher den Zustand
+unverändert. Beim ersten $a$ wechselt der Automat von $q_0$ nach $q_1$,
+beim zweiten von $q_1$ nach $q_2$. Danach kann kein weiteres Zeichen die
+Anzahl wieder verringern, also bleibt der Automat in $q_2$.
+Damit wird genau dann akzeptiert, wenn das Wort genau ein $a$ enthält.
+Beispielsweise werden $a$, $ab$ und $bbabb$ akzeptiert;
+$\varepsilon$, $bbb$ und $aba$ werden verworfen.
+\end{loesung}
+
+\aufgabetitel{$3$}{Minimierung von DFA}\\
+Gegeben ist folgender DFA $M = (Q, \Sigma, \delta, q_0, F)$ mit:
+\begin{itemize}
+    \item $Q = \{A, B, C, D, E\}$
+    \item $\Sigma = \{0,1\}$
+    \item $\delta(A,0)=B,\ \delta(A,1)=C$
+    \item $\delta(B,0)=A,\ \delta(B,1)=D$
+    \item $\delta(C,0)=E,\ \delta(C,1)=A$
+    \item $\delta(D,0)=E,\ \delta(D,1)=B$
+    \item $\delta(E,0)=E,\ \delta(E,1)=E$
+    \item $q_0 = A$
+    \item $F = \{A, D\}$
+\end{itemize}
+Minimieren Sie den DFA.
+
+\begin{loesung}
+Alle Zustände sind erreichbar: $A$ durch $\varepsilon$, $B$ durch $0$,
+$C$ durch $1$, $D$ durch $01$ und $E$ durch $10$.
+Wir wenden den Tabellenalgorithmus auf die ungeordneten Paare verschiedener
+Zustände an. Eine Markierung bedeutet: Die beiden Zustände sind nicht äquivalent.
+
+\textbf{Anfangsmarkierung:} Da $F=\{A,D\}$, markieren wir alle Paare,
+bei denen genau ein Zustand akzeptierend ist:
+\[
+\{A,B\},\ \{A,C\},\ \{A,E\},\ \{B,D\},\ \{C,D\},\ \{D,E\}.
+\]
+Diese Paare sind bereits durch das leere Wort $\varepsilon$ unterscheidbar.
+
+\textbf{Erste Runde:} Wir markieren weitere Paare, sobald ihre Folgezustände
+für mindestens ein Eingabezeichen ein bereits markiertes Paar bilden:
+\begin{center}
+\begin{tabular}{c|c|c}
+Neues markiertes Paar & Eingabezeichen & Bereits markiertes Folgepaar\\\hline
+$\{B,C\}$ & $0$ & $\{A,E\}$\\
+$\{B,E\}$ & $0$ & $\{A,E\}$\\
+$\{C,E\}$ & $1$ & $\{A,E\}$
+\end{tabular}
+\end{center}
+\textbf{Zweite Runde:} Nun wird auch $\{A,D\}$ markiert: Bei Eingabe von $0$
+sind die Folgezustände $B$ und $E$, deren Paar in der ersten Runde markiert wurde.
+Eine unterscheidende Fortsetzung für $A$ und $D$ ist daher $00$.
+
+Die fertige Tabelle lautet; $\times_0$ steht für die Anfangsmarkierung,
+$\times_1$ bzw.\ $\times_2$ für die Markierung in der ersten bzw.\ zweiten Runde:
+\begin{center}
+\begin{tabular}{c|cccc}
+ & $A$ & $B$ & $C$ & $D$\\\hline
+$B$ & $\times_0$ & & &\\
+$C$ & $\times_0$ & $\times_1$ & &\\
+$D$ & $\times_2$ & $\times_0$ & $\times_0$ &\\
+$E$ & $\times_0$ & $\times_1$ & $\times_1$ & $\times_0$
+\end{tabular}
+\end{center}
+Nur die Felder unterhalb der Diagonale stehen für Zustandspaare.
+Dort bleibt kein Paar unmarkiert. Daher können keine zwei Zustände
+verschmolzen werden: Der gegebene DFA ist bereits minimal.
+
+\emph{Hinweis:} Die Runden sind hier so dargestellt, dass jeweils nur
+Markierungen aus vorherigen Runden verwendet werden. Verwendet man neue
+Markierungen sofort, kann sich die Reihenfolge ändern; das Endergebnis bleibt gleich.
+\end{loesung}
+
+\aufgabetitel{$3$}{Minimierung von DFA}\\
+Gegeben ist folgender DFA $M = (Q, \Sigma, \delta, q_0, F)$ mit:
+\begin{itemize}
+    \item $Q = \{A, B, C, D\}$
+    \item $\Sigma = \{0,1\}$
+    \item $\delta(A,0)=C,\ \delta(A,1)=B$
+    \item $\delta(B,0)=D,\ \delta(B,1)=A$
+    \item $\delta(C,0)=A,\ \delta(C,1)=D$
+    \item $\delta(D,0)=B,\ \delta(D,1)=C$
+    \item $q_0 = A$
+    \item $F = \{A,C\}$
+\end{itemize}
+Minimieren Sie den DFA.
+
+\begin{loesung}
+
+Alle Zustände sind erreichbar: $A$ durch $\varepsilon$, $B$ durch $1$,
+$C$ durch $0$ und $D$ durch $01$.
+Wir wenden den Tabellenalgorithmus auf die ungeordneten Paare verschiedener
+Zustände an.
+
+\textbf{Anfangsmarkierung:} Da $F=\{A,C\}$, markieren wir alle Paare,
+bei denen genau ein Zustand akzeptierend ist:
+\[
+\{A,B\},\quad \{A,D\},\quad \{B,C\},\quad \{C,D\}.
+\]
+Unmarkiert bleiben zunächst $\{A,C\}$ und $\{B,D\}$.
+
+\textbf{Prüfung der unmarkierten Paare:} Für beide Eingabezeichen betrachten
+wir jeweils das Paar der Folgezustände:
+\begin{center}
+\begin{tabular}{c|cc}
+Unmarkiertes Paar & Folgepaar bei $0$ & Folgepaar bei $1$\\\hline
+$\{A,C\}$ & $\{A,C\}$ & $\{B,D\}$\\
+$\{B,D\}$ & $\{B,D\}$ & $\{A,C\}$
+\end{tabular}
+\end{center}
+Keines dieser Folgepaare ist markiert. Es kommt daher keine neue Markierung
+hinzu; der Algorithmus endet. Die fertige Zustandspaartabelle lautet:
+\begin{center}
+\begin{tabular}{c|ccc}
+ & $A$ & $B$ & $C$\\\hline
+$B$ & $\times_0$ & &\\
+$C$ & $-$ & $\times_0$ &\\
+$D$ & $\times_0$ & $-$ & $\times_0$
+\end{tabular}
+\end{center}
+Hier bezeichnet $\times_0$ eine Anfangsmarkierung und $-$ ein unmarkiertes
+Paar. Nur die Felder unterhalb der Diagonale stehen für Zustandspaare.
+Somit sind $A$ und $C$ äquivalent, ebenso $B$ und $D$.
+Wir verschmelzen diese Paare zu $X=\{A,C\}$ und $Y=\{B,D\}$.
+Der minimale DFA hat die Zustände $X$ und $Y$,
+Startzustand $X$, Endzustandsmenge $\{X\}$ und folgende Übergänge:
+\begin{center}
+\begin{tabular}{c|cc}
+ & $0$ & $1$\\\hline
+$\to *X$ & $X$ & $Y$\\
+$Y$ & $Y$ & $X$
+\end{tabular}
+\end{center}
+Die Zustände sind durch $\varepsilon$ unterscheidbar, also ist der DFA minimal.
+Er erkennt genau die Wörter mit einer geraden Anzahl von Einsen.
+\end{loesung}
+
+\aufgabetitel{$5$}{NFA und DFA für eine Sprache}\\
+Konstruieren Sie einen NFA für die Sprache
+$L = \{ w \in \{0,1\}^* \mid \text{ das dritte Zeichen von rechts ist } 1 \}$.
+
+Wandeln Sie den NFA in einen äquivalenten DFA um.
+
+\begin{loesung}
+
+Ein NFA hat $Q=\{q_0,q_1,q_2,q_3\}$, Startzustand $q_0$,
+$F=\{q_3\}$ und die Übergangstabelle
+\begin{center}
+\begin{tabular}{c|cc}
+ & $0$ & $1$\\\hline
+$\to q_0$ & $\{q_0\}$ & $\{q_0,q_1\}$\\
+$q_1$ & $\{q_2\}$ & $\{q_2\}$\\
+$q_2$ & $\{q_3\}$ & $\{q_3\}$\\
+$*q_3$ & $\varnothing$ & $\varnothing$
+\end{tabular}
+\end{center}
+Er rät mit dem Übergang $q_0\xrightarrow{1}q_1$ die drittletzte Position
+und liest danach genau zwei weitere Zeichen.
+
+Die Potenzmengenkonstruktion liefert acht erreichbare Zustände.
+Wir schreiben die Namen der enthaltenen NFA-Zustände hintereinander:
+So steht $q_0q_1$ für $\{q_0,q_1\}$ und $q_0q_1q_2$ für
+$\{q_0,q_1,q_2\}$. Auch $q_0$ bezeichnet in der folgenden DFA-Tabelle
+die Zustandsmenge $\{q_0\}$.
+\begin{center}
+\begin{tabular}{c|cc}
+ & $0$ & $1$\\\hline
+$\to q_0$ & $q_0$ & $q_0q_1$\\
+$q_0q_1$ & $q_0q_2$ & $q_0q_1q_2$\\
+$q_0q_2$ & $q_0q_3$ & $q_0q_1q_3$\\
+$q_0q_1q_2$ & $q_0q_2q_3$ & $q_0q_1q_2q_3$\\
+$*q_0q_3$ & $q_0$ & $q_0q_1$\\
+$*q_0q_1q_3$ & $q_0q_2$ & $q_0q_1q_2$\\
+$*q_0q_2q_3$ & $q_0q_3$ & $q_0q_1q_3$\\
+$*q_0q_1q_2q_3$ & $q_0q_2q_3$ & $q_0q_1q_2q_3$
+\end{tabular}
+\end{center}
+Für jeden Übergang vereinigen wir die Folgezustände aller enthaltenen
+NFA-Zustände. Beispielsweise ergibt sich bei Eingabe von $1$ aus
+$\{q_0,q_1\}$ die Menge $\{q_0,q_1\}\cup\{q_2\}=\{q_0,q_1,q_2\}$.
+
+Startzustand ist $q_0$. Genau die Zustandsmengen, die $q_3$ enthalten,
+sind akzeptierend. Die acht Tabellenzustände sind in der angegebenen
+Reihenfolge durch $\varepsilon$, $1$, $10$, $11$, $100$, $101$, $110$ und $111$
+erreichbar. Die Tabelle enthält für beide Eingabezeichen alle Übergänge;
+weitere Zustandsmengen entstehen nicht.
+Wörter mit weniger als drei Zeichen werden verworfen, weil dann $q_3$
+noch nicht erreicht werden kann.
+\end{loesung}
+
+\aufgabetitel{$3$}{Pumping Lemma}\\
+Zeigen Sie mit Hilfe des Pumping-Lemmas, dass die Sprache
+$L = \{ a^n b^{2n} \mid n\geq 0\}$ nicht regulär ist.
+
+\begin{loesung}
+Angenommen, $L$ sei regulär. Dann gibt es eine Pumping-Länge $p\geq1$.
+Wir wählen $w=a^pb^{2p}\in L$ mit $|w|=3p\geq p$.
+Sei $w=xyz$ eine beliebige Zerlegung mit $|xy|\leq p$ und $|y|\geq1$.
+Dann liegt $y$ vollständig im ersten $a$-Block, also $y=a^k$ mit $1\leq k\leq p$.
+Für $i=0$ folgt
+\[
+xy^0z=a^{p-k}b^{2p}.
+\]
+Dieses Wort enthält $p-k$ Zeichen $a$, aber weiterhin $2p$ Zeichen $b$.
+Für die Zugehörigkeit zu $L$ müssten es genau $2(p-k)$ Zeichen $b$ sein.
+Wegen $k\geq1$ gilt jedoch $2(p-k)<2p$, also $xy^0z\notin L$.
+Dies gilt für jede zulässige Zerlegung und widerspricht dem Pumping-Lemma.
+Also ist $L$ nicht regulär. \qed
+\end{loesung}
+
+% \aufgabetitel{$5$}{Reguläre Ausdrücke}\\
+% Gegeben ist der reguläre Ausdruck
+% $r = (ab^*)^*a$
+
+% Geben Sie einen NFA an und einen äquivalenten DFA, die beide die von $r$ beschriebene Sprache erkennen.
+
+% \begin{loesung}
+
+% Es gilt $L(r)=\{a\}\cup\{aua\mid u\in\{a,b\}^*\}$:
+% Ein nichtleeres Wort aus $(ab^*)^*$ beginnt mit $a$, und jedes mit $a$
+% beginnende Wort lässt sich vor jedem weiteren $a$ in Blöcke $ab^*$ zerlegen.
+% Das abschließende $a$ des Ausdrucks kommt noch hinzu.
+
+% Ein NFA ohne $\varepsilon$-Übergänge hat Startzustand $s$, Endzustandsmenge
+% $\{f\}$ und folgende Übergänge:
+% \begin{center}
+% \begin{tabular}{c|cc}
+%  & $a$ & $b$\\\hline
+% $\to s$ & $\{t,f\}$ & $\varnothing$\\
+% $t$ & $\{t,f\}$ & $\{t\}$\\
+% $*f$ & $\varnothing$ & $\varnothing$
+% \end{tabular}
+% \end{center}
+% Der Übergang nach $f$ rät das letzte $a$; in $t$ können weitere Blöcke entstehen.
+% Der zugehörige vollständige DFA hat die erreichbaren Zustände
+% $X=\{s\}$, $Y=\{t,f\}$, $Z=\{t\}$ und $\bot=\varnothing$:
+% \begin{center}
+% \begin{tabular}{c|cc}
+%  & $a$ & $b$\\\hline
+% $\to X$ & $Y$ & $\bot$\\
+% $*Y$ & $Y$ & $Z$\\
+% $Z$ & $Y$ & $Z$\\
+% $\bot$ & $\bot$ & $\bot$
+% \end{tabular}
+% \end{center}
+% \end{loesung}
+
+\aufgabetitel{$2$}{Grammatik}\\
+Gegeben ist die Grammatik $G$:
+$S\rightarrow aSb \mid bSa \mid \varepsilon$
+
+Geben Sie die Elemente von $L_4:=\{w\in L(G)\mid |w|\leq 4\}$ an.
+
+Ist $L(G)$ regulär? Begründen Sie.
+
+\begin{loesung}
+
+Jeder nichtabschließende Schritt fügt genau zwei Zeichen hinzu. Damit ist
+\[
+L_4=\{\varepsilon,ab,ba,aabb,abab,baba,bbaa\}.
+\]
+Die Sprache ist nicht regulär. Angenommen, sie sei regulär mit Pumping-Länge $p\geq1$.
+Das Wort $w=a^pb^p$ liegt in $L(G)$: Man wendet $p$-mal $S\to aSb$ und dann
+$S\to\varepsilon$ an. Für jede zulässige Zerlegung $w=xyz$ mit $|xy|\leq p$
+und $|y|\geq1$ ist $y=a^k$ mit $k\geq1$.
+Durch Abpumpen entsteht $xz=a^{p-k}b^p$.
+Jedes Wort aus $L(G)$ enthält jedoch gleich viele $a$ wie $b$, denn jede
+nichtabschließende Regel erzeugt genau eines von beiden. Also gilt $xz\notin L(G)$,
+ein Widerspruch zum Pumping-Lemma. \qed
+\end{loesung}
+
+
+\ifthenelse{\boolean{loesungen}}{}{\newpage}
+\aufgabetitel{$14$}{Kombinationsaufgabe: Grammatik, NFA, DFA und Minimierung}\\
+Gegeben sei die reguläre Grammatik $G=(V,\Sigma,P,S)$ mit
+$V=\{S,A,B,C,D,E\}$, $\Sigma=\{a,b\}$ und den Produktionen
+\[
+\begin{aligned}
+S&\to aS\mid bS\mid aA\mid bB,\\
+A&\to aC\mid bD, & B&\to aD\mid bC,\\
+C&\to bE, & D&\to bE, & E&\to\varepsilon.
+\end{aligned}
+\]
+Wie auf Blatt 5 sind Regeln der Form $X\to\varepsilon$ hier zugelassen.
+\begin{enumerate}[a)]
+\item Konstruieren Sie unmittelbar aus den Produktionen einen äquivalenten NFA
+mit einem Zustand pro Variable. Geben Sie alle Übergänge, Startzustand und
+Endzustände an. Erklären Sie, wo Nichtdeterminismus auftritt. (3 Punkte)
+\item Wandeln Sie diesen NFA mit der Potenzmengenkonstruktion in einen
+vollständigen DFA um. Dokumentieren Sie alle erreichbaren Zustandsmengen
+und ihre Übergänge. Fassen Sie noch keine äquivalenten Zustände zusammen. (5 Punkte)
+\item Minimieren Sie den DFA aus b) mit dem Tabellenalgorithmus. Geben Sie die
+Zustandspaartabelle mit den Markierungsrunden und die Übergangstabelle
+des minimalen DFA an.
+Begründen Sie, warum keine weitere Zusammenfassung möglich ist. (4 Punkte)
+\item Beschreiben Sie $L(G)$ in Mengenschreibweise und geben Sie einen
+regulären Ausdruck dafür an. Erklären Sie die Bedeutung der Zustände
+des minimalen DFA. (2 Punkte)
+\end{enumerate}
+
+\begin{loesung}
+\begin{enumerate}[a)]
+\item Eine Produktion $X\to cY$ wird zum Übergang $X\xrightarrow{c}Y$;
+wegen $E\to\varepsilon$ ist $E$ akzeptierend. Es ist
+$N=(V,\Sigma,\delta_N,S,\{E\})$ mit
+\begin{center}
+\begin{tabular}{c|cc}
+ & $a$ & $b$\\\hline
+$\to S$ & $\{S,A\}$ & $\{S,B\}$\\
+$A$ & $\{C\}$ & $\{D\}$\\
+$B$ & $\{D\}$ & $\{C\}$\\
+$C$ & $\varnothing$ & $\{E\}$\\
+$D$ & $\varnothing$ & $\{E\}$\\
+$*E$ & $\varnothing$ & $\varnothing$
+\end{tabular}
+\end{center}
+In $S$ gibt es für jedes Zeichen zwei mögliche Folgezustände.
+Der NFA rät dort den Beginn der letzten drei Zeichen.
+Die $\varepsilon$-Produktion macht $E$ zum Endzustand; sie erfordert hier
+keinen $\varepsilon$-Übergang.
+
+\newpage
+\item Für eine Zustandsmenge $T$ gilt
+$\delta_D(T,c)=\bigcup_{q\in T}\delta_N(q,c)$.
+Startmenge ist $\{S\}$; genau die Mengen mit $E$ sind akzeptierend.
+Die vollständige Tabelle der erreichbaren Mengen lautet:
+\begin{center}
+\begin{tabular}{c|l|cc|l}
+ & Zustandsmenge & $a$ & $b$ & erreichbar durch\\\hline
+$\to q_0$ & $\{S\}$ & $q_1$ & $q_2$ & $\varepsilon$\\
+$q_1$ & $\{S,A\}$ & $q_3$ & $q_4$ & $a$\\
+$q_2$ & $\{S,B\}$ & $q_5$ & $q_6$ & $b$\\
+$q_3$ & $\{S,A,C\}$ & $q_3$ & $q_7$ & $aa$\\
+$q_4$ & $\{S,B,D\}$ & $q_5$ & $q_8$ & $ab$\\
+$q_5$ & $\{S,A,D\}$ & $q_3$ & $q_7$ & $ba$\\
+$q_6$ & $\{S,B,C\}$ & $q_5$ & $q_8$ & $bb$\\
+$*q_7$ & $\{S,B,D,E\}$ & $q_5$ & $q_8$ & $aab$\\
+$*q_8$ & $\{S,B,C,E\}$ & $q_5$ & $q_8$ & $abb$
+\end{tabular}
+\end{center}
+Beispielsweise ist
+\[
+\delta_D(\{S,A,C\},b)
+=\{S,B\}\cup\{D\}\cup\{E\}=\{S,B,D,E\}.
+\]
+Die Tabelle enthält alle erreichbaren Mengen und ist unter beiden Übergängen
+abgeschlossen. Da $S$ immer enthalten bleibt, ist $\varnothing$ nicht erreichbar.
+
+\newpage
+\item Wir markieren die ungeordneten Paare verschiedener Zustände wie in
+Aufgabe 2 und 3. Alle neun Zustände sind nach b) erreichbar.
+
+\textbf{Anfangsmarkierung ($\times_0$):} Genau $q_7$ und $q_8$ sind
+akzeptierend. Deshalb markieren wir die 14 Paare $\{q_i,q_j\}$ mit
+$i\in\{0,\ldots,6\}$ und $j\in\{7,8\}$.
+
+\textbf{Erste Runde ($\times_1$):} Wir markieren die zwölf Paare
+$\{q_i,q_j\}$ mit $i\in\{0,1,2\}$ und $j\in\{3,4,5,6\}$.
+Bei Eingabe von $b$ führt $q_i$ in einen nichtakzeptierenden Zustand
+($q_2$, $q_4$ oder $q_6$), $q_j$ hingegen nach $q_7$ oder $q_8$.
+Das jeweilige Folgepaar ist daher bereits mit $\times_0$ markiert.
+Zum Beispiel führt $\{q_0,q_3\}$ bei $b$ zum markierten Paar $\{q_2,q_7\}$.
+
+\textbf{Zweite Runde ($\times_2$):} Es kommen zwei Markierungen hinzu:
+\begin{center}
+\begin{tabular}{c|c|c}
+Neues markiertes Paar & Eingabezeichen & Bereits markiertes Folgepaar\\\hline
+$\{q_0,q_1\}$ & $a$ & $\{q_1,q_3\}$\\
+$\{q_0,q_2\}$ & $a$ & $\{q_1,q_5\}$
+\end{tabular}
+\end{center}
+Die fertige Tabelle lautet ($-$ bedeutet unmarkiert):
+\begin{center}
+\begin{tabular}{c|cccccccc}
+ & $q_0$ & $q_1$ & $q_2$ & $q_3$ & $q_4$ & $q_5$ & $q_6$ & $q_7$\\\hline
+$q_1$ & $\times_2$ &  &  &  &  &  &  & \\
+$q_2$ & $\times_2$ & $-$ &  &  &  &  &  & \\
+$q_3$ & $\times_1$ & $\times_1$ & $\times_1$ &  &  &  &  & \\
+$q_4$ & $\times_1$ & $\times_1$ & $\times_1$ & $-$ &  &  &  & \\
+$q_5$ & $\times_1$ & $\times_1$ & $\times_1$ & $-$ & $-$ &  &  & \\
+$q_6$ & $\times_1$ & $\times_1$ & $\times_1$ & $-$ & $-$ & $-$ &  & \\
+$q_7$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & \\
+$q_8$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $\times_0$ & $-$\\
+\end{tabular}
+\end{center}
+Nur die Felder unterhalb der Diagonale stehen für Zustandspaare.
+Es entstehen keine weiteren Markierungen:
+\begin{itemize}
+\item $\{q_1,q_2\}$ führt bei $a$ zu $\{q_3,q_5\}$ und bei $b$ zu
+$\{q_4,q_6\}$; beide Paare bleiben unmarkiert.
+\item Bei Paaren aus $q_3,q_4,q_5,q_6$ sind die Folgezustände entweder gleich
+oder bilden bei $a$ das unmarkierte Paar $\{q_3,q_5\}$ bzw.\ bei $b$ das
+unmarkierte Paar $\{q_7,q_8\}$.
+\item $q_7$ und $q_8$ haben für jedes Zeichen denselben Folgezustand.
+\end{itemize}
+Wir verschmelzen die unmarkierten Paare zu den Zuständen
+\[
+K_0=\{q_0\},\quad K_1=\{q_1,q_2\},\quad
+K_2=\{q_3,q_4,q_5,q_6\},\quad K_3=\{q_7,q_8\}.
+\]
+Startzustand ist $K_0$, einziger Endzustand ist $K_3$.
+Die Übergangstabelle des minimalen DFA lautet:
+\begin{center}
+\begin{tabular}{c|cc}
+ & $a$ & $b$\\\hline
+$\to K_0$ & $K_1$ & $K_1$\\
+$K_1$ & $K_2$ & $K_2$\\
+$K_2$ & $K_2$ & $K_3$\\
+$*K_3$ & $K_2$ & $K_3$
+\end{tabular}
+\end{center}
+Alle vier Zustände sind erreichbar (z.\,B.\ durch $\varepsilon,a,aa,aab$).
+$K_3$ ist von allen anderen durch $\varepsilon$ unterscheidbar.
+$K_2$ unterscheidet sich von $K_0$ und $K_1$ durch die Fortsetzung $b$.
+$K_0$ und $K_1$ unterscheiden sich durch $ab$.
+Somit sind alle Paare unterscheidbar und der DFA ist minimal.
+
+\newpage
+\item Es gilt
+\[
+L(G)=\{w\in\{a,b\}^*\mid |w|\geq3\text{ und $w$ endet auf }b\},
+\qquad r=(a\mid b)^*(a\mid b)(a\mid b)b.
+\]
+In $S$ entsteht ein beliebiges Präfix. Nach Verlassen von $S$ entstehen
+genau drei Zeichen: Die ersten beiden sind beliebig, das dritte ist $b$.
+Umgekehrt erhält man jedes solche Wort, indem man sein Präfix in $S$ erzeugt
+und die letzten drei Zeichen über $A$ bzw.\ $B$ und $C$ bzw.\ $D$ ableitet.
+
+$K_0$ steht für das leere Wort, $K_1$ für Wörter der Länge $1$,
+$K_2$ für Wörter der Länge $2$ sowie längere Wörter mit letztem Zeichen $a$.
+$K_3$ steht für Wörter der Länge mindestens $3$ mit letztem Zeichen $b$.
+
+\end{enumerate}
+\end{loesung}
+
+% \aufgabetitel{$6$}{Pumping-Lemma: zwei Schranken}\\
+% Betrachten Sie die Sprache
+% \[
+% L=\{a^n b^m\mid n,m\in\mathbb{N}_0,\ n<m\leq2n\}.
+% \]
+% \begin{enumerate}[a)]
+% \item Zeigen Sie mit dem Pumping-Lemma für reguläre Sprachen, dass $L$ nicht
+% regulär ist. Wählen Sie ein geeignetes Wort in Abhängigkeit von der
+% Pumping-Länge $p$ und argumentieren Sie für \emph{jede} zulässige Zerlegung. (4 Punkte)
+% \item Jemand wählt $w=a^pb^{p+1}$ und behauptet, Abpumpen ($i=0$) führe
+% für jede zulässige Zerlegung aus $L$ heraus. Prüfen Sie diese Behauptung.
+% Kann man mit demselben Wort und einem anderen Pumpfaktor den Beweis führen? (2 Punkte)
+% \end{enumerate}
+
+% \begin{loesung}
+% \begin{enumerate}[a)]
+% \item Angenommen, $L$ sei regulär. Dann existiert eine Pumping-Länge $p\geq1$.
+% Wir wählen das Wort an der oberen Schranke:
+% \[
+% w=a^pb^{2p}\in L,\qquad |w|=3p\geq p.
+% \]
+% Sei $w=xyz$ eine beliebige Zerlegung mit $|xy|\leq p$ und $|y|\geq1$.
+% Da die ersten $p$ Zeichen alle $a$ sind, ist $y=a^k$ mit $1\leq k\leq p$.
+% Für $i=0$ ist
+% \[
+% xy^0z=a^{p-k}b^{2p}.
+% \]
+% Dieses Wort liegt nicht in $L$, denn die obere Schranke wäre
+% $2p\leq2(p-k)$, während wegen $k\geq1$ tatsächlich $2p>2(p-k)$ gilt.
+% Damit scheitert für jede zulässige Zerlegung mindestens ein Pumpfaktor.
+% Das widerspricht dem Pumping-Lemma, also ist $L$ nicht regulär. \qed
+
+% \item Die Behauptung zum Abpumpen ist falsch. Für $p=3$ ist etwa
+% $w=a^3b^4$ und die Zerlegung $x=\varepsilon$, $y=a$, $z=a^2b^4$ zulässig.
+% Nach Abpumpen bleibt $a^2b^4\in L$, denn $2<4\leq4$.
+% Allgemein funktioniert dieses Gegenbeispiel mit $|y|=1$ für jedes $p\geq3$.
+% Das widerlegt nur die vorgeschlagene Beweisführung, nicht die Nichtregularität.
+
+% Mit $i=2$ gelingt der Beweis für dasselbe Wort: Für jede zulässige Zerlegung
+% ist wieder $y=a^k$ mit $k\geq1$, und
+% \[
+% xy^2z=a^{p+k}b^{p+1}\notin L,
+% \]
+% weil die erforderliche strikte Ungleichung $p+k<p+1$ verletzt ist.
+% $w=a^pb^{p+1}$ liegt für jedes $p\geq1$ in $L$, da $p<p+1\leq2p$.
+% Somit liefert auch diese Wahl einen vollständigen Widerspruchsbeweis.
+% \end{enumerate}
+% \end{loesung}
+
+\aufgabetitel{$5$}{Grammatik zu einer nichtregulären Sprache}\\
+Gegeben ist die nichtreguläre Sprache
+\[
+L=\{a^n b^m c^n\mid n,m\in\mathbb{N}_0\}.
+\]
+Die Wörter bestehen aus einem $a$-Block, einem $b$-Block und einem $c$-Block.
+Dabei gibt es gleich viele $a$ wie $c$; die Anzahl der $b$ ist unabhängig davon.
+Einzelne Blöcke dürfen leer sein.
+\begin{enumerate}[a)]
+\item Geben Sie eine kontextfreie Grammatik $G$ mit $L(G)=L$ an. (2 Punkte)
+\item Geben Sie mit Ihrer Grammatik Ableitungen für $aabbcc$, $bbb$ und
+$\varepsilon$ an. (1 Punkt)
+\item Begründen Sie, warum Ihre Grammatik genau die Wörter aus $L$ erzeugt.
+Berücksichtigen Sie beide Inklusionen. (2 Punkte)
+\end{enumerate}
+Die Nichtregularität von $L$ darf als bekannt vorausgesetzt werden.
+
+\begin{loesung}
+\begin{enumerate}[a)]
+\item Eine mögliche Grammatik ist $G=(\{S,B\},\{a,b,c\},P,S)$ mit
+\[
+P:\qquad S\to aSc\mid B,\qquad B\to bB\mid\varepsilon.
+\]
+Die Regel $S\to aSc$ erzeugt jeweils ein zusammengehöriges $a$ und $c$.
+Nach dem Wechsel zu $B$ wird der mittlere $b$-Block erzeugt.
+Da jede linke Seite eine einzelne Variable ist, ist die Grammatik kontextfrei.
+
+\item Die gewünschten Ableitungen lauten:
+\begin{align*}
+S&\Rightarrow aSc\Rightarrow aaScc\Rightarrow aaBcc
+  \Rightarrow aabBcc\Rightarrow aabbBcc\Rightarrow aabbcc,\\
+S&\Rightarrow B\Rightarrow bB\Rightarrow bbB\Rightarrow bbbB
+  \Rightarrow bbb,\\
+S&\Rightarrow B\Rightarrow\varepsilon.
+\end{align*}
+
+\item \emph{$L(G)\subseteq L$:} Solange $S$ vorkommt, haben die Satzformen
+ die Gestalt $a^nSc^n$. Nach $S\to B$ haben sie die Gestalt $a^nb^mBc^n$.
+Die einzige Möglichkeit, die letzte Variable zu entfernen, ist $B\to\varepsilon$.
+Jedes erzeugte Wort hat daher die Form $a^nb^mc^n$ mit $n,m\geq0$ und liegt in $L$.
+
+\emph{$L\subseteq L(G)$:} Seien $n,m\geq0$ beliebig.
+Wir wenden $n$-mal $S\to aSc$, dann einmal $S\to B$,
+$m$-mal $B\to bB$ und schließlich $B\to\varepsilon$ an:
+\[
+S\Rightarrow^* a^nSc^n\Rightarrow a^nBc^n
+ \Rightarrow^* a^nb^mBc^n\Rightarrow a^nb^mc^n.
+\]
+Dieses Schema gilt auch für $n=0$ oder $m=0$; die jeweilige Regel wird dann
+keinmal angewendet. Also ist jedes Wort aus $L$ ableitbar und insgesamt $L(G)=L$. \qed
+\end{enumerate}
+\end{loesung}
+
+\end{document}
